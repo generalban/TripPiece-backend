@@ -40,7 +40,7 @@
 # Git Commit Message Convention
 
 ```
-[Issue_종류] 구현_내용 #이슈_번호
+[Issue_종류(소문자)] 구현_내용 #이슈_번호
 ex) [feature] 000 기능 추가 #2 
 ```
 
