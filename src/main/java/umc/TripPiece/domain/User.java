@@ -12,7 +12,7 @@ import umc.TripPiece.domain.common.BaseEntity;
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false)
+    @Column(name="user_id", unique = true, nullable = false)
     private Long id;
 
     @Column(nullable = false, length = 20)
