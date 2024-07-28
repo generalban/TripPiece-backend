@@ -11,7 +11,7 @@
     - 반드시 `develop`에서 뻗어나와 develop으로 **`merge`** 되어야한다.
     
 
----
+<br/>
 
 # 개발 전 작업
 
@@ -24,7 +24,7 @@
     
 2. **`git fetch` && `git pull`** 
 
----
+<br/>
 
 # Issue 종류
 
@@ -35,17 +35,26 @@
 - `reconstruct` : 프로젝트 구성 변경
 - `test` : 테스트 코드
 
----
+<br/>
 
 # Git Commit Message Convention
 
 ```
 [Issue_종류] 구현_내용 #이슈_번호
+ex) [feature] 000 기능 추가 #2 
 ```
 
-- Pull Request만 날리고, Approve는 reviewer가 한다.
+<br/>
 
----
+# PR Convention
+- Pull Request만 날리고, Approve는 reviewer가 한다.
+```
+[Issue_종류(소문자)] PR 제목 (작업 내용)
+```
+![image](https://github.com/user-attachments/assets/76ad8e31-9ed8-4f01-b853-bffdf9849901)
+
+
+<br/>
 
 # Package Convention
 
@@ -70,7 +79,7 @@
     - `dto`
     - `controller`
 
----
+<br/>
 
 # etc
 
