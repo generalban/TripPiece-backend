@@ -12,9 +12,9 @@ public class Like {
     @Column(name = "like_id")
     private BigInteger id;
 
-    //    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id")
-//    private User user; 회원 엔티티 만들면 연결
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "travel_id")
