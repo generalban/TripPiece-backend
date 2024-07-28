@@ -1,4 +1,4 @@
-package umc.TripPiece.domain.common;
+package umc.TripPiece.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;

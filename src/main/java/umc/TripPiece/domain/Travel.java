@@ -1,11 +1,9 @@
-package umc.TripPiece.domain.common;
+package umc.TripPiece.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import org.hibernate.type.descriptor.jdbc.TinyIntJdbcType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.w3c.dom.Text;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
