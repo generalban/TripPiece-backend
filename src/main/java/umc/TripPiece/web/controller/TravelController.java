@@ -1,4 +1,4 @@
-package umc.TripPiece.controller;
+package umc.TripPiece.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

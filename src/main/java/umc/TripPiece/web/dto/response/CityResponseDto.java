@@ -1,22 +1,15 @@
-package umc.TripPiece.dto.City;
+package umc.TripPiece.web.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-public class CitySearchDto {
+public class CityResponseDto {
     @Getter
     @AllArgsConstructor
-    public static class Response{
+    public static class searchDto{
         private String cityName;
         private String countryName;
         private String cityDescription;
         private String cityImage;
-    }
-
-    @Getter
-    @NoArgsConstructor
-    public static class Request{
-        private String keyword;
     }
 }

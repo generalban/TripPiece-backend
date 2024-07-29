@@ -5,13 +5,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.TripPiece.domain.City;
 import umc.TripPiece.domain.Country;
-import umc.TripPiece.dto.City.CitySearchDto;
 import umc.TripPiece.repository.CityRepository;
 import umc.TripPiece.repository.CountryRepository;
+import umc.TripPiece.web.dto.request.CityRequestDto;
+import umc.TripPiece.web.dto.response.CityResponseDto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,21 +20,21 @@ public class CityService {
     private final CityRepository cityRepository;
     private final CountryRepository countryRepository;
 
-    public List<CitySearchDto.Response> searchCity(CitySearchDto.Request request){
+    public List<CityResponseDto.searchDto> searchCity(CityRequestDto.searchDto request){
         String keyword = request.getKeyword();
         List<City> cities = cityRepository.findByNameContainingIgnoreCase(keyword);
         List<Country> countries = countryRepository.findByNameContainingIgnoreCase(keyword);
 
-        List<CitySearchDto.Response> searched = new ArrayList<>();
+        List<CityResponseDto.searchDto> searched = new ArrayList<>();
 
-        searched.addAll(cities.stream().map(city -> new CitySearchDto.Response(
+        searched.addAll(cities.stream().map(city -> new CityResponseDto.searchDto(
                 city.getName(), city.getCountry().getName(), city.getComment(), city.getCityImage()
         )).toList());
 
         countries.forEach(country -> {
             List<City> citiesInCountry = cityRepository.findByCountryId(country.getId());
 
-            searched.addAll(citiesInCountry.stream().map(city -> new CitySearchDto.Response(
+            searched.addAll(citiesInCountry.stream().map(city -> new CityResponseDto.searchDto(
                             city.getName(), city.getCountry().getName(), city.getComment(), city.getCityImage()
                     )).toList()
             );
