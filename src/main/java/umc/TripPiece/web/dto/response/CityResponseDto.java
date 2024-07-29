@@ -11,5 +11,6 @@ public class CityResponseDto {
         private String countryName;
         private String cityDescription;
         private String cityImage;
+        private Long logCount;
     }
 }

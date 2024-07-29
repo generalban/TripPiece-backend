@@ -28,14 +28,14 @@ public class CityService {
         List<CityResponseDto.searchDto> searched = new ArrayList<>();
 
         searched.addAll(cities.stream().map(city -> new CityResponseDto.searchDto(
-                city.getName(), city.getCountry().getName(), city.getComment(), city.getCityImage()
+                city.getName(), city.getCountry().getName(), city.getComment(), city.getCityImage(), city.getLogCount()
         )).toList());
 
         countries.forEach(country -> {
             List<City> citiesInCountry = cityRepository.findByCountryId(country.getId());
 
             searched.addAll(citiesInCountry.stream().map(city -> new CityResponseDto.searchDto(
-                            city.getName(), city.getCountry().getName(), city.getComment(), city.getCityImage()
+                            city.getName(), city.getCountry().getName(), city.getComment(), city.getCityImage(), city.getLogCount()
                     )).toList()
             );
         });
