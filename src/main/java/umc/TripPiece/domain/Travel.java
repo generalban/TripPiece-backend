@@ -38,4 +38,7 @@ public class Travel extends BaseEntity {
     @OneToMany(mappedBy = "travel")
     private List<Like> likes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "travel")
+    private List<TripPiece> tripPieces = new ArrayList<>();
+
 }
