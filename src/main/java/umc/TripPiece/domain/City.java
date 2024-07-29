@@ -12,7 +12,7 @@ import java.util.List;
 public class City {
     @Id @GeneratedValue
     @Column(name = "city_id")
-    private BigInteger id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_id")
@@ -21,7 +21,7 @@ public class City {
     private String name;
     private String comment;
     private String cityImage;
-    private BigInteger logCount;
+    private Long logCount;
 
     @OneToMany(mappedBy = "city")
     private List<Travel> travels = new ArrayList<>();

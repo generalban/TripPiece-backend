@@ -10,7 +10,7 @@ import java.math.BigInteger;
 public class Like {
     @Id @GeneratedValue
     @Column(name = "like_id")
-    private BigInteger id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
