@@ -6,8 +6,8 @@ import umc.TripPiece.domain.Travel;
 import java.math.BigInteger;
 import java.util.List;
 
-public interface TravelRepository extends JpaRepository<Travel, BigInteger> {
-    List<Travel> findByCityId(BigInteger cityId);
-    List<Travel> findByCity_CountryId(BigInteger countryId);
+public interface TravelRepository extends JpaRepository<Travel, Long> {
+    List<Travel> findByCityId(Long cityId);
+    List<Travel> findByCity_CountryId(Long countryId);
 
 }

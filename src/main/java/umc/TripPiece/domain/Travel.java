@@ -17,7 +17,7 @@ public class Travel extends BaseEntity {
     @Id
     @GeneratedValue
     @Column(name = "travel_id")
-    private BigInteger id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -32,7 +32,7 @@ public class Travel extends BaseEntity {
     private LocalDateTime endDate;
     private String description;
     private boolean travelOpen;
-    private BigInteger likeCount;
+    private Long likeCount;
     private String thumbnail;
 
     @OneToMany(mappedBy = "travel")

@@ -13,7 +13,7 @@ public class Country {
 
     @Id @GeneratedValue
     @Column(name = "country_id")
-    private BigInteger id;
+    private Long id;
 
     private String name;
     private String countryImage;
