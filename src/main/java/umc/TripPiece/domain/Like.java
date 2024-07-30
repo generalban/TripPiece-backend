@@ -16,8 +16,8 @@ public class Like {
     @JoinColumn(name = "user_id")
     private User user;
 
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "travel_id")
-   private Travel travel;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "travel_id")
+    private Travel travel;
 
 }

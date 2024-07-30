@@ -9,18 +9,17 @@ import umc.TripPiece.domain.common.BaseEntity;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Picture extends BaseEntity {
+public class Emoji extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(unique = true)
-    private String pictureUrl;
+    private String emoji;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trip_piece_id")
     private TripPiece tripPiece;
-
 
 }

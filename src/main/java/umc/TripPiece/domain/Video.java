@@ -1,11 +1,14 @@
 package umc.TripPiece.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 import umc.TripPiece.domain.common.BaseEntity;
 
 @Entity
 @Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Video extends BaseEntity {
 
     @Id
@@ -15,7 +18,7 @@ public class Video extends BaseEntity {
     @Column(unique = true)
     private String videoUrl;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trip_piece_id")
     private TripPiece tripPiece;
 

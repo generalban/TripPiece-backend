@@ -1,7 +1,7 @@
 package umc.TripPiece.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import umc.TripPiece.domain.common.BaseEntity;
 import umc.TripPiece.domain.enums.Category;
@@ -11,6 +11,9 @@ import java.util.List;
 
 @Entity
 @Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class TripPiece extends BaseEntity {
 
     @Id
@@ -24,7 +27,8 @@ public class TripPiece extends BaseEntity {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
+    @Column
+    @ColumnDefault("true")
     private Boolean travel_contain;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,4 +38,17 @@ public class TripPiece extends BaseEntity {
     @OneToMany(mappedBy = "tripPiece", cascade = CascadeType.ALL)
     private List<Picture> pictures = new ArrayList<>();
 
+    @OneToMany(mappedBy = "tripPiece", cascade = CascadeType.ALL)
+    private List<Video> videos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "tripPiece", cascade = CascadeType.ALL)
+    private List<Emoji> emojis = new ArrayList<>();
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public void setTravel(Travel travel) {
+        this.travel = travel;
+    }
 }

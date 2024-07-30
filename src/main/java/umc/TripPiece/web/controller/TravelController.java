@@ -1,11 +1,19 @@
 package umc.TripPiece.web.controller;
 
+
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import umc.TripPiece.converter.TravelConverter;
+import umc.TripPiece.domain.Picture;
 import umc.TripPiece.domain.Travel;
+import umc.TripPiece.domain.TripPiece;
+import umc.TripPiece.payload.ApiResponse;
 import umc.TripPiece.service.TravelService;
+import umc.TripPiece.web.dto.request.TravelRequestDto;
+import umc.TripPiece.web.dto.response.TravelResponseDto;
 
 import java.util.List;
 
@@ -19,4 +27,48 @@ public class TravelController {
     public List<Travel> searchByKeyword(@RequestParam String keyword) {
         return travelService.searchByKeyword(keyword);
     }
+
+    @PostMapping("/mytravels/{travelId}/memo")
+    @Operation(summary = "메모 기록 API", description = "특정 여행기에서의 여행조각 추가")
+    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceMemo(@RequestBody TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId){
+        TripPiece tripPiece = travelService.createMemo(travelId, request);
+        return ApiResponse.onSuccess(TravelConverter.toCreateTripPieceResultDto(tripPiece));
+    }
+
+    @PostMapping("/mytravels/{travelId}/emoji")
+    @Operation(summary = "이모지 기록 API", description = "특정 여행기에서의 여행조각 추가")
+    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceEmoji(@RequestBody TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestParam(name = "emoji") String emoji){
+        TripPiece tripPiece = travelService.createEmoji(travelId, emoji, request);
+        return ApiResponse.onSuccess(TravelConverter.toCreateTripPieceResultDto(tripPiece));
+    }
+
+    @PostMapping(value = "/mytravels/{travelId}/picture", consumes = "multipart/form-data")
+    @Operation(summary = "사진 기록 API", description = "특정 여행기에서의 여행조각 추가")
+    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPiecePicture(@RequestPart TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestPart MultipartFile photo){
+        TripPiece tripPiece = travelService.createPicture(travelId, photo, request);
+        return ApiResponse.onSuccess(TravelConverter.toCreateTripPieceResultDto(tripPiece));
+    }
+
+    @PostMapping(value = "/mytravels/{travelId}/selfie", consumes = "multipart/form-data")
+    @Operation(summary = "셀카 기록 API", description = "특정 여행기에서의 여행조각 추가")
+    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceSelfie(@RequestPart TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestPart MultipartFile photo){
+        TripPiece tripPiece = travelService.createSelfie(travelId, photo, request);
+        return ApiResponse.onSuccess(TravelConverter.toCreateTripPieceResultDto(tripPiece));
+    }
+
+    @PostMapping(value = "/mytravels/{travelId}/video", consumes = "multipart/form-data")
+    @Operation(summary = "비디오 기록 API", description = "특정 여행기에서의 여행조각 추가")
+    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceVideo(@RequestPart TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestPart MultipartFile video){
+        TripPiece tripPiece = travelService.createVideo(travelId, video, request);
+        return ApiResponse.onSuccess(TravelConverter.toCreateTripPieceResultDto(tripPiece));
+    }
+
+    @PostMapping(value = "/mytravels/{travelId}/where", consumes = "multipart/form-data")
+    @Operation(summary = "'지금 어디에 있나요?' 카테고리 기록 API", description = "특정 여행기에서의 여행조각 추가")
+    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceWhere(@RequestPart TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestPart MultipartFile video){
+        TripPiece tripPiece = travelService.createWhere(travelId, video, request);
+        return ApiResponse.onSuccess(TravelConverter.toCreateTripPieceResultDto(tripPiece));
+    }
+
+
 }
