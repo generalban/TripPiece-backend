@@ -35,6 +35,13 @@ public class TravelController {
         return ApiResponse.onSuccess(response);
     }
 
+    @PostMapping("/mytravels/{travelId}/end")
+    @Operation(summary = "여행 종료 API", description = "여행을 종료하고 요약 정보 반환")
+    public ApiResponse<TravelResponseDto.TravelSummaryDto> endTravel(@PathVariable("travelId") Long travelId) {
+        TravelResponseDto.TravelSummaryDto response = travelService.endTravel(travelId);
+        return ApiResponse.onSuccess(response);
+    }
+
     @PostMapping("/mytravels/{travelId}/memo")
     @Operation(summary = "메모 기록 API", description = "특정 여행기에서의 여행조각 추가")
     public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceMemo(@RequestBody TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId){
