@@ -1,7 +1,7 @@
 package umc.TripPiece.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 import umc.TripPiece.domain.common.BaseEntity;
 
 import java.time.LocalDateTime;
@@ -10,6 +10,9 @@ import java.util.List;
 
 @Entity
 @Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Travel extends BaseEntity {
     @Id
     @GeneratedValue

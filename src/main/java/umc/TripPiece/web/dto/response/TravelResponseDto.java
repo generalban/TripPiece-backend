@@ -10,6 +10,12 @@ import java.time.LocalDate;
 
 public class TravelResponseDto {
 
+    @Getter
+    @AllArgsConstructor
+    public static class Create {
+        private Long travelId;
+    }
+
     @Builder
     @Getter
     @NoArgsConstructor
