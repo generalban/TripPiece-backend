@@ -28,7 +28,7 @@ public class TravelController {
         return travelService.searchByKeyword(keyword);
     }
 
-    @PostMapping("/travels")
+    @PostMapping("/mytravels")
     @Operation(summary = "여행 생성 API", description = "여행 시작하기")
     public ApiResponse<TravelResponseDto.Create> createTravel(@RequestBody TravelRequestDto.Create request){
         TravelResponseDto.Create response = travelService.createTravel(request);
