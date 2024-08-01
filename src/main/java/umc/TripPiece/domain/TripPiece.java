@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import umc.TripPiece.domain.common.BaseEntity;
+import umc.TripPiece.domain.enums.Category;
 //import umc.TripPiece.domain.enums.Category;
 
 import java.util.ArrayList;
@@ -20,9 +21,9 @@ public class TripPiece extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @Enumerated(EnumType.STRING)
-//    @ColumnDefault("'MEMO'")
-//    private Category category;
+    @Enumerated(EnumType.STRING)
+    @ColumnDefault("'MEMO'")
+    private Category category;
 
     @Column(nullable = false)
     private String description;
@@ -44,9 +45,9 @@ public class TripPiece extends BaseEntity {
     @OneToMany(mappedBy = "tripPiece", cascade = CascadeType.ALL)
     private List<Emoji> emojis = new ArrayList<>();
 
-//    public void setCategory(Category category) {
-//        this.category = category;
-//    }
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
     public void setTravel(Travel travel) {
         this.travel = travel;
