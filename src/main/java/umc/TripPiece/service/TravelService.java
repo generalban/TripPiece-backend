@@ -10,6 +10,7 @@ import umc.TripPiece.domain.*;
 import umc.TripPiece.domain.enums.Category;
 import umc.TripPiece.repository.*;
 import umc.TripPiece.web.dto.request.TravelRequestDto;
+import umc.TripPiece.web.dto.response.TravelResponseDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -132,5 +133,14 @@ public class TravelService {
         return tripPieceRepository.save(newTripPiece);
 
     }
+
+    @Transactional
+    public TravelResponseDto.Create createTravel(TravelRequestDto.Create request) {
+        City city = cityRepository.findByNameContainingIgnoreCase(request.getCityName()).stream().findFirst().orElseThrow(() -> new RuntimeException("city not found"));
+        Travel travel = TravelConverter.toTravel(request, city);
+        Travel savedTravel = travelRepository.save(travel);
+        return TravelConverter.toCreateResponseDto(savedTravel);
+    }
+
 
 }

@@ -28,6 +28,13 @@ public class TravelController {
         return travelService.searchByKeyword(keyword);
     }
 
+    @PostMapping("/travels")
+    @Operation(summary = "여행 생성 API", description = "여행 시작하기")
+    public ApiResponse<TravelResponseDto.Create> createTravel(@RequestBody TravelRequestDto.Create request){
+        TravelResponseDto.Create response = travelService.createTravel(request);
+        return ApiResponse.onSuccess(response);
+    }
+
     @PostMapping("/mytravels/{travelId}/memo")
     @Operation(summary = "메모 기록 API", description = "특정 여행기에서의 여행조각 추가")
     public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceMemo(@RequestBody TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId){
