@@ -1,14 +1,16 @@
 package umc.TripPiece.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import umc.TripPiece.domain.common.BaseEntity;
+import umc.TripPiece.domain.enums.Gender;
+import umc.TripPiece.domain.enums.UserMethod;
 
 @Entity
 @Getter
-@Setter
-
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,14 +27,15 @@ public class User extends BaseEntity {
     private String password;
 
     @Column(nullable = false, length = 20)
-    private String phone;
-
-    @Column(nullable = false, length = 20)
     private String nickname;
 
-    @Column(nullable = false, length = 20)
-    private String gender;
+    @Column(nullable = false, length = 10)
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
+    @Column(nullable = false, length = 20)
+    private String birth;
+    
     @Column
     private String profile_img;
 
@@ -43,7 +46,8 @@ public class User extends BaseEntity {
     private Boolean gps_consent;
 
     @Column(nullable = false, length = 10)
-    private String method;
+    @Enumerated(EnumType.STRING)
+    private UserMethod method;
 
     @Column(nullable = false)
     private Boolean is_public;
