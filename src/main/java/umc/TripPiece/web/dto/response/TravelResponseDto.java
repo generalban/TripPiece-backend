@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import umc.TripPiece.domain.enums.Category;
 //import umc.TripPiece.domain.enums.Category;
 
 import java.time.LocalDate;
@@ -31,7 +32,7 @@ public class TravelResponseDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class TravelSummaryDto {
+    public static class TripSummaryDto {
         private String title;
         private String city;
         private String country;
@@ -41,18 +42,28 @@ public class TravelResponseDto {
         private int memoCount;
         private int pictureCount;
         private int videoCount;
-        private List<TripPictureSummaryDto> pictureSummaries;
+        private List<TripPieceSummaryDto> pictureSummaries;
     }
 
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class TripPictureSummaryDto {
+    public static class TripPieceSummaryDto {
         private Long id;
         private String description;
-        private String pictureUrl;
+        private Category category;
+        private String mediaUrl;
         private LocalDateTime createdAt;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DailySummaryDto {
+        private LocalDateTime date;
+        private List<TripPieceSummaryDto> tripPieces;
     }
 
 

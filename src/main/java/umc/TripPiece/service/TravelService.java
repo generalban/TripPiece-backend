@@ -143,7 +143,13 @@ public class TravelService {
     }
 
     @Transactional
-    public TravelResponseDto.TravelSummaryDto endTravel(Long travelId) {
+    public TravelResponseDto.TripSummaryDto endTravel(Long travelId) {
+        //메소드 추후 구현
+        return null;
+    }
+
+    @Transactional
+    public List<TravelResponseDto.DailySummaryDto> continueTravel(Long travelId) {
         //메소드 추후 구현
         return null;
     }

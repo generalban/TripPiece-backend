@@ -37,8 +37,14 @@ public class TravelController {
 
     @PostMapping("/mytravels/{travelId}/end")
     @Operation(summary = "여행 종료 API", description = "여행을 종료하고 요약 정보 반환")
-    public ApiResponse<TravelResponseDto.TravelSummaryDto> endTravel(@PathVariable("travelId") Long travelId) {
-        TravelResponseDto.TravelSummaryDto response = travelService.endTravel(travelId);
+    public ApiResponse<TravelResponseDto.TripSummaryDto> endTravel(@PathVariable("travelId") Long travelId) {
+        TravelResponseDto.TripSummaryDto response = travelService.endTravel(travelId);
+        return ApiResponse.onSuccess(response);
+    }
+    @GetMapping("/mytravels/{travelId}/continue")
+    @Operation(summary = "여행 이어보기 API", description = "여행을 이어보 날짜별 조각 반환")
+    public ApiResponse<List<TravelResponseDto.DailySummaryDto>> continueTravel(@PathVariable("travelId") Long travelId) {
+        List<TravelResponseDto.DailySummaryDto> response = travelService.continueTravel(travelId);
         return ApiResponse.onSuccess(response);
     }
 
