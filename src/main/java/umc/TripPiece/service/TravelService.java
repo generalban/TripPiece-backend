@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import umc.TripPiece.converter.TravelConverter;
 import umc.TripPiece.converter.TripPieceConverter;
 import umc.TripPiece.domain.*;
-import umc.TripPiece.domain.enums.Category;
+//import umc.TripPiece.domain.enums.Category;
 import umc.TripPiece.repository.*;
 import umc.TripPiece.web.dto.request.TravelRequestDto;
 
@@ -56,7 +56,7 @@ public class TravelService {
 
         TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request);
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
-        newTripPiece.setCategory(Category.EMOJI);
+        //newTripPiece.setCategory(Category.EMOJI);
 
         Emoji newEmoji = TripPieceConverter.toTripPieceEmoji(emoji, newTripPiece);
 
@@ -70,7 +70,7 @@ public class TravelService {
 
         TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request);
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
-        newTripPiece.setCategory(Category.PICTURE);
+        //newTripPiece.setCategory(Category.PICTURE);
 
         String pictureUrl = null;
 
@@ -87,7 +87,7 @@ public class TravelService {
 
         TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request);
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
-        newTripPiece.setCategory(Category.SELFIE);
+        //newTripPiece.setCategory(Category.SELFIE);
 
         String pictureUrl = null;
 
@@ -104,7 +104,7 @@ public class TravelService {
 
         TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request);
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
-        newTripPiece.setCategory(Category.VIDEO);
+        //newTripPiece.setCategory(Category.VIDEO);
 
         String videoUrl = null;
 
@@ -121,7 +121,7 @@ public class TravelService {
 
         TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request);
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
-        newTripPiece.setCategory(Category.WHERE);
+        //newTripPiece.setCategory(Category.WHERE);
 
         String videoUrl = null;
 
