@@ -24,6 +24,16 @@ public class UserConverter {
                 .build();
     }
 
+    public static UserResponseDto.LoginResultDto toLoginResultDto(User user, String accessToken, String refreshToken){
+        return UserResponseDto.LoginResultDto.builder()
+                .email(user.getEmail())
+                .id(user.getId())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+
     public static User toUser(UserRequestDto.SignUpDto request, String hashedPassword) {
 
         Gender gender = null;

@@ -36,6 +36,7 @@ public class UserResponseDto {
         String email;
         String name;
         LocalDateTime createdAt;
-        private final String token;
+        String accessToken;
+        String refreshToken;
     }
 }

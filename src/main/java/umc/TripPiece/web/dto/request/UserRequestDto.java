@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import umc.TripPiece.domain.User;
 import umc.TripPiece.domain.enums.Gender;
 
 public class UserRequestDto {
@@ -42,6 +43,7 @@ public class UserRequestDto {
         private String country;
 
     }
+
 
     /* 로그인 */
     @Getter
