@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class TravelConverter {
@@ -45,10 +46,10 @@ public class TravelConverter {
                 .pictureCount((int) tripPieces.stream().filter(tp -> tp.getCategory().equals(Category.PICTURE) || tp.getCategory().equals(Category.SELFIE)).count())
                 .videoCount((int) tripPieces.stream().filter(tp -> tp.getCategory().equals(Category.VIDEO) || tp.getCategory().equals(Category.WHERE)).count());
 
-        // 최대 9개의 사진 조각을 추가합니다.
         List<TravelResponseDto.TripPieceSummaryDto> pictureSummaries = tripPieces.stream()
                 .filter(tp -> tp.getCategory().equals(Category.PICTURE) || tp.getCategory().equals(Category.SELFIE))
-                .flatMap(tp -> tp.getPictures().stream())
+                .map(tp -> tp.getPictures().stream().findFirst().orElse(null))
+                .filter(Objects::nonNull)
                 .limit(9)
                 .map(pic -> TravelResponseDto.TripPieceSummaryDto.builder()
                         .id(pic.getTripPiece().getId())
