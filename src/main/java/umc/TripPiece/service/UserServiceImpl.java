@@ -51,12 +51,17 @@ public class UserServiceImpl implements UserService{
         // email 계정 조회
         User user = userRepository.findByEmail(email).orElse(null);
 
-        // email 및 password 검증
-        if (user != null && isPasswordMatch(password, user.getPassword())) {
-            return user;
-        } else {
-            return null;
+        // 이메일이 존재하지 않을 경우
+        if (user == null) {
+            throw new IllegalArgumentException("존재하지 않는 계정입니다.");
         }
+
+        // 비밀번호가 일치하지 않을 경우
+        if (!isPasswordMatch(password, user.getPassword())) {
+            throw new IllegalArgumentException("이메일 혹은 비밀번호를 확인해주세요.");
+        }
+
+        return user;
     }
 
     private boolean isPasswordMatch(String rawPassword, String encodedPassword){
