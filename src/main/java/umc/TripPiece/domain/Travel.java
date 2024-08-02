@@ -41,4 +41,8 @@ public class Travel extends BaseEntity {
     @OneToMany(mappedBy = "travel")
     private List<TripPiece> tripPieces = new ArrayList<>();
 
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
 }
