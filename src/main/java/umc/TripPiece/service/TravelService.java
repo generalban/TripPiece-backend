@@ -167,9 +167,14 @@ public class TravelService {
     }
 
     @Transactional
-    public TravelResponseDto.Create createTravel(TravelRequestDto.Create request) {
+    public TravelResponseDto.Create createTravel(TravelRequestDto.Create request, MultipartFile thumbnail) {
         City city = cityRepository.findByNameContainingIgnoreCase(request.getCityName()).stream().findFirst().orElseThrow(() -> new RuntimeException("city not found"));
+
+        String uuid = UUID.randomUUID().toString();
+        String thumbnailUrl = s3Manager.uploadFile("thumbnails/" + uuid, thumbnail);
+
         Travel travel = TravelConverter.toTravel(request, city);
+        travel.setThumbnail(thumbnailUrl);
         Travel savedTravel = travelRepository.save(travel);
         return TravelConverter.toCreateResponseDto(savedTravel);
     }
