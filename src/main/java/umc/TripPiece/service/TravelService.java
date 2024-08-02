@@ -16,6 +16,7 @@ import umc.TripPiece.web.dto.request.TravelRequestDto;
 import umc.TripPiece.web.dto.response.TravelResponseDto;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,6 +55,7 @@ public class TravelService {
 
         TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request);
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
+        newTripPiece.setCategory(Category.MEMO);
 
         return tripPieceRepository.save(newTripPiece);
     }
@@ -174,8 +176,9 @@ public class TravelService {
 
     @Transactional
     public TravelResponseDto.TripSummaryDto endTravel(Long travelId) {
-        //메소드 추후 구현
-        return null;
+        Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new RuntimeException("travel not found"));
+        List<TripPiece> tripPieces = tripPieceRepository.findByTravelId(travelId);
+        return TravelConverter.toTripSummary(travel, tripPieces);
     }
 
     @Transactional

@@ -36,6 +36,7 @@ public class TravelResponseDto {
         private String title;
         private String city;
         private String country;
+        private String countryImage;
         private LocalDateTime startDate;
         private LocalDateTime endDate;
         private int totalPieces;
@@ -62,7 +63,7 @@ public class TravelResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class DailySummaryDto {
-        private LocalDateTime date;
+        //private LocalDateTime date;
         private List<TripPieceSummaryDto> tripPieces;
     }
 
