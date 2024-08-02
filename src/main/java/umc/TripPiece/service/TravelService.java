@@ -55,6 +55,7 @@ public class TravelService {
 
         TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request);
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
+        newTripPiece.setCategory(Category.MEMO);
 
         return tripPieceRepository.save(newTripPiece);
     }
