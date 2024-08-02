@@ -51,8 +51,8 @@ public class TravelController {
 
     @PostMapping(value = "/mytravels/{travelId}/picture", consumes = "multipart/form-data")
     @Operation(summary = "사진 기록 API", description = "특정 여행기에서의 여행조각 추가")
-    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPiecePicture(@RequestPart TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestPart MultipartFile photo){
-        TripPiece tripPiece = travelService.createPicture(travelId, photo, request);
+    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPiecePicture(@RequestPart TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestPart List<MultipartFile> photos){
+        TripPiece tripPiece = travelService.createPicture(travelId, photos, request);
         return ApiResponse.onSuccess(TravelConverter.toCreateTripPieceResultDto(tripPiece));
     }
 
