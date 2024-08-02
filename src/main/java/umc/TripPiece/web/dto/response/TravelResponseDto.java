@@ -62,7 +62,7 @@ public class TravelResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class DailySummaryDto {
-        private LocalDateTime date;
+        //private LocalDateTime date;
         private List<TripPieceSummaryDto> tripPieces;
     }
 
