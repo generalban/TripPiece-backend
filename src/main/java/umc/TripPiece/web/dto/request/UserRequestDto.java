@@ -1,12 +1,8 @@
 package umc.TripPiece.web.dto.request;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import umc.TripPiece.domain.User;
 import umc.TripPiece.domain.enums.Gender;
 
 public class UserRequestDto {
@@ -35,20 +31,30 @@ public class UserRequestDto {
         @Size(min = 2, max = 10, message = "닉네임은 2자에서 10자 사이여야 합니다.")
         private String nickname;
 
+        @NotBlank(message = "성별은 필수 입력 항목입니다.")
+        @Pattern(regexp = "MALE|FEMALE", message = "성별은 MALE 또는 FEMALE이어야 합니다.")
         private Gender gender;
+
+        @NotBlank(message = "생일은 필수 입력 항목입니다.")
+        @Pattern(regexp = "^\\d{4}/\\d{2}/\\d{2}$", message = "생일은 YYYY/MM/DD 형식이어야 합니다.")
         private String birth;
+
         private String profileImg;
 
-        @NotBlank(message = "국가는 필수 입력 항목입니다.")
+        @NotBlank(message = "국적은 필수 입력 항목입니다.")
+        @Pattern(regexp = "^South Korea$", message = "국적은 현재 대한민국만 이용 가능합니다.")
         private String country;
-
     }
 
 
     /* 로그인 */
     @Getter
     public static class LoginDto {
+        @NotBlank(message = "이메일은 필수 입력 항목입니다.")
+        @Email(message = "유효한 이메일 주소여야 합니다.")
         String email;
+
+        @NotBlank(message = "비밀번호는 필수 입력 항목입니다.")
         String password;
     }
 
