@@ -4,9 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import umc.TripPiece.aws.s3.AmazonS3Manager;
 import umc.TripPiece.converter.TravelConverter;
 import umc.TripPiece.converter.TripPieceConverter;
 import umc.TripPiece.domain.*;
+import umc.TripPiece.domain.enums.Category;
+
 import umc.TripPiece.domain.enums.Category;
 import umc.TripPiece.repository.*;
 import umc.TripPiece.web.dto.request.TravelRequestDto;
@@ -15,6 +18,7 @@ import umc.TripPiece.web.dto.response.TravelResponseDto;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
@@ -27,6 +31,8 @@ public class TravelService {
     private final EmojiRepository emojiRepository;
     private final PictureRepository pictureRepository;
     private final VideoRepository videoRepository;
+    private final UuidRepository uuidRepository;
+    private final AmazonS3Manager s3Manager;
 
     public List<Travel> searchByKeyword(String keyword) {
         List<City> cities = cityRepository.findByNameContainingIgnoreCase(keyword);
@@ -68,17 +74,29 @@ public class TravelService {
     }
 
     @Transactional
-    public TripPiece createPicture(Long travelId, MultipartFile picture, TravelRequestDto.MemoDto request) {
+    public TripPiece createPicture(Long travelId, List<MultipartFile> pictures, TravelRequestDto.MemoDto request) {
 
         TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request);
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
         newTripPiece.setCategory(Category.PICTURE);
 
-        String pictureUrl = null;
+        int pictureNum = pictures.size();
 
-        Picture newPicture = TripPieceConverter.toTripPiecePicture(pictureUrl, newTripPiece);
+        List<Uuid> uuids = new ArrayList<>();
 
-        pictureRepository.save(newPicture);
+        for(int i = 0; i < pictureNum; i++) {
+            String uuid = UUID.randomUUID().toString();
+            Uuid savedUuid = uuidRepository.save(Uuid.builder()
+                    .uuid(uuid).build());
+            uuids.add(savedUuid);
+        }
+
+        List<String> pictureUrls = s3Manager.saveFiles(s3Manager.generateTripPieceKeyNames(uuids), pictures);
+
+        for(int i = 0; i < pictureNum; i++) {
+            Picture newPicture = TripPieceConverter.toTripPiecePicture(pictureUrls.get(i), newTripPiece);
+            pictureRepository.save(newPicture);
+        }
 
         return tripPieceRepository.save(newTripPiece);
 
@@ -91,7 +109,11 @@ public class TravelService {
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
         newTripPiece.setCategory(Category.SELFIE);
 
-        String pictureUrl = null;
+        String uuid = UUID.randomUUID().toString();
+        Uuid savedUuid = uuidRepository.save(Uuid.builder()
+                .uuid(uuid).build());
+
+        String pictureUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), picture);
 
         Picture newPicture = TripPieceConverter.toTripPiecePicture(pictureUrl, newTripPiece);
 
@@ -108,7 +130,11 @@ public class TravelService {
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
         newTripPiece.setCategory(Category.VIDEO);
 
-        String videoUrl = null;
+        String uuid = UUID.randomUUID().toString();
+        Uuid savedUuid = uuidRepository.save(Uuid.builder()
+                .uuid(uuid).build());
+
+        String videoUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), video);
 
         Video newVideo = TripPieceConverter.toTripPieceVideo(videoUrl, newTripPiece);
 
@@ -125,7 +151,11 @@ public class TravelService {
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
         newTripPiece.setCategory(Category.WHERE);
 
-        String videoUrl = null;
+        String uuid = UUID.randomUUID().toString();
+        Uuid savedUuid = uuidRepository.save(Uuid.builder()
+                .uuid(uuid).build());
+
+        String videoUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), video);
 
         Video newVideo = TripPieceConverter.toTripPieceVideo(videoUrl, newTripPiece);
 
