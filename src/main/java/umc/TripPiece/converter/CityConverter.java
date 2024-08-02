@@ -9,7 +9,7 @@ public class CityConverter {
                 city.getName(),
                 city.getCountry().getName(),
                 city.getComment(),
-                city.getCityImage(),
+                city.getCountry().getCountryImage(),
                 city.getLogCount()
         );
     }

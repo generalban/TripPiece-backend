@@ -20,7 +20,6 @@ public class City {
 
     private String name;
     private String comment;
-    private String cityImage;
     private Long logCount;
 
     @OneToMany(mappedBy = "city")

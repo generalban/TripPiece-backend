@@ -8,7 +8,8 @@ import umc.TripPiece.aws.s3.AmazonS3Manager;
 import umc.TripPiece.converter.TravelConverter;
 import umc.TripPiece.converter.TripPieceConverter;
 import umc.TripPiece.domain.*;
-//import umc.TripPiece.domain.enums.Category;
+import umc.TripPiece.domain.enums.Category;
+
 import umc.TripPiece.domain.enums.Category;
 import umc.TripPiece.repository.*;
 import umc.TripPiece.web.dto.request.TravelRequestDto;
@@ -169,6 +170,18 @@ public class TravelService {
         Travel travel = TravelConverter.toTravel(request, city);
         Travel savedTravel = travelRepository.save(travel);
         return TravelConverter.toCreateResponseDto(savedTravel);
+    }
+
+    @Transactional
+    public TravelResponseDto.TripSummaryDto endTravel(Long travelId) {
+        //메소드 추후 구현
+        return null;
+    }
+
+    @Transactional
+    public List<TravelResponseDto.DailySummaryDto> continueTravel(Long travelId) {
+        //메소드 추후 구현
+        return null;
     }
 
 
