@@ -36,6 +36,7 @@ public class TravelResponseDto {
         private String title;
         private String city;
         private String country;
+        private String countryImage;
         private LocalDateTime startDate;
         private LocalDateTime endDate;
         private int totalPieces;

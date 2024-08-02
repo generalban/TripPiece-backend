@@ -37,6 +37,7 @@ public class TravelConverter {
                 .title(travel.getTitle())
                 .city(travel.getCity().getName())
                 .country(travel.getCity().getCountry().getName())
+                .countryImage(travel.getCity().getCountry().getCountryImage())
                 .startDate(travel.getStartDate())
                 .endDate(travel.getEndDate())
                 .totalPieces(tripPieces.size())
