@@ -10,7 +10,7 @@ public class CityResponseDto {
         private String cityName;
         private String countryName;
         private String cityDescription;
-        private String cityImage;
+        private String countryImage;
         private Long logCount;
     }
 }
