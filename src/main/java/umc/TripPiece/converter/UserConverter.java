@@ -18,7 +18,7 @@ public class UserConverter {
                 .nickname(user.getNickname())
                 .gender(user.getGender())
                 .birth(user.getBirth())
-                .profile_img(user.getProfile_img())
+                .profileImg(user.getProfileImg())
                 .country(user.getCountry())
                 .createdAt(LocalDateTime.now())
                 .build();

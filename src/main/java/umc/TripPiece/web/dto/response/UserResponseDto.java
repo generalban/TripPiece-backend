@@ -21,7 +21,7 @@ public class UserResponseDto {
         String nickname;
         Gender gender;
         String birth;
-        String profile_img;
+        String profileImg;
         String country;
         LocalDateTime createdAt;
 
