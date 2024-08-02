@@ -18,11 +18,21 @@ public class UserConverter {
                 .nickname(user.getNickname())
                 .gender(user.getGender())
                 .birth(user.getBirth())
-                .profile_img(user.getProfile_img())
+                .profileImg(user.getProfileImg())
                 .country(user.getCountry())
                 .createdAt(LocalDateTime.now())
                 .build();
     }
+
+    public static UserResponseDto.LoginResultDto toLoginResultDto(User user, String accessToken, String refreshToken){
+        return UserResponseDto.LoginResultDto.builder()
+                .email(user.getEmail())
+                .id(user.getId())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
 
     public static User toUser(UserRequestDto.SignUpDto request, String hashedPassword) {
 
@@ -44,11 +54,11 @@ public class UserConverter {
                 .nickname(request.getNickname())
                 .gender(gender)
                 .birth(request.getBirth())
-                .profile_img(request.getProfileImg())
+                .profileImg(request.getProfileImg())
                 .country(request.getCountry())
-                .gps_consent(true) // 고정값 설정
+                .gpsConsent(true) // 고정값 설정
                 .method(UserMethod.GENERAL) // 고정값 설정
-                .is_public(true) // 고정값 설정
+                .isPublic(true) // 고정값 설정
                 .build();
     }
 }

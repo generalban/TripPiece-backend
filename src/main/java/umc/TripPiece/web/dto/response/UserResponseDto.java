@@ -21,7 +21,7 @@ public class UserResponseDto {
         String nickname;
         Gender gender;
         String birth;
-        String profile_img;
+        String profileImg;
         String country;
         LocalDateTime createdAt;
 
@@ -36,6 +36,7 @@ public class UserResponseDto {
         String email;
         String name;
         LocalDateTime createdAt;
-        private final String token;
+        String accessToken;
+        String refreshToken;
     }
 }

@@ -37,18 +37,18 @@ public class User extends BaseEntity {
     private String birth;
     
     @Column
-    private String profile_img;
+    private String profileImg;
 
     @Column(nullable = false, length = 30)
     private String country;
 
     @Column (nullable = false)
-    private Boolean gps_consent;
+    private Boolean gpsConsent;
 
     @Column(nullable = false, length = 10)
     @Enumerated(EnumType.STRING)
     private UserMethod method;
 
     @Column(nullable = false)
-    private Boolean is_public;
+    private Boolean isPublic;
 }
