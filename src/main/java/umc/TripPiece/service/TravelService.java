@@ -61,15 +61,16 @@ public class TravelService {
     }
 
     @Transactional
-    public TripPiece createEmoji(Long travelId, String emoji, TravelRequestDto.MemoDto request) {
+    public TripPiece createEmoji(Long travelId, List<String> emojis, TravelRequestDto.MemoDto request) {
 
         TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request);
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
         newTripPiece.setCategory(Category.EMOJI);
 
-        Emoji newEmoji = TripPieceConverter.toTripPieceEmoji(emoji, newTripPiece);
-
-        emojiRepository.save(newEmoji);
+        for(String emoji : emojis) {
+            Emoji newEmoji = TripPieceConverter.toTripPieceEmoji(emoji, newTripPiece);
+            emojiRepository.save(newEmoji);
+        }
 
         return tripPieceRepository.save(newTripPiece);
     }
