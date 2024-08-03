@@ -43,8 +43,8 @@ public class TravelController {
     }
     @GetMapping("/mytravels/{travelId}/continue")
     @Operation(summary = "여행 이어보기 API", description = "여행을 이어보 날짜별 조각 반환")
-    public ApiResponse<List<TravelResponseDto.DailySummaryDto>> continueTravel(@PathVariable("travelId") Long travelId) {
-        List<TravelResponseDto.DailySummaryDto> response = travelService.continueTravel(travelId);
+    public ApiResponse<List<TravelResponseDto.TripPieceSummaryDto>> continueTravel(@PathVariable("travelId") Long travelId) {
+        List<TravelResponseDto.TripPieceSummaryDto> response = travelService.continueTravel(travelId);
         return ApiResponse.onSuccess(response);
     }
 
