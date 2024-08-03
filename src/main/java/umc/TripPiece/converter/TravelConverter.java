@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class TravelConverter {
@@ -45,23 +46,44 @@ public class TravelConverter {
                 .pictureCount((int) tripPieces.stream().filter(tp -> tp.getCategory().equals(Category.PICTURE) || tp.getCategory().equals(Category.SELFIE)).count())
                 .videoCount((int) tripPieces.stream().filter(tp -> tp.getCategory().equals(Category.VIDEO) || tp.getCategory().equals(Category.WHERE)).count());
 
-        // 최대 9개의 사진 조각을 추가합니다.
         List<TravelResponseDto.TripPieceSummaryDto> pictureSummaries = tripPieces.stream()
                 .filter(tp -> tp.getCategory().equals(Category.PICTURE) || tp.getCategory().equals(Category.SELFIE))
-                .flatMap(tp -> tp.getPictures().stream())
                 .limit(9)
-                .map(pic -> TravelResponseDto.TripPieceSummaryDto.builder()
-                        .id(pic.getTripPiece().getId())
-                        .description(pic.getTripPiece().getDescription())
-                        .category(pic.getTripPiece().getCategory())
-                        .mediaUrl(pic.getPictureUrl())
-                        .createdAt(pic.getTripPiece().getCreatedAt())
+                .map(tp -> TravelResponseDto.TripPieceSummaryDto.builder()
+                        .id(tp.getId())
+                        .description(tp.getDescription())
+                        .category(tp.getCategory())
+                        .mediaUrls(tp.getPictures().stream().map(Picture::getPictureUrl).collect(Collectors.toList()))
+                        .createdAt(tp.getCreatedAt())
                         .build())
                 .collect(Collectors.toList());
 
         summaryBuilder.pictureSummaries(pictureSummaries);
 
         return summaryBuilder.build();
+    }
+
+    public static TravelResponseDto.TripPieceSummaryDto toTripPieceSummary(TripPiece tripPiece){
+        List<String> mediaUrls = null;
+        if (tripPiece.getCategory() == Category.PICTURE || tripPiece.getCategory() == Category.SELFIE) {
+            mediaUrls = tripPiece.getPictures().stream()
+                    .map(picture -> picture.getPictureUrl())
+                    .collect(Collectors.toList());
+        } else if (tripPiece.getCategory() == Category.VIDEO) {
+            mediaUrls = tripPiece.getVideos().stream()
+                    .map(video -> video.getVideoUrl())
+                    .collect(Collectors.toList());
+            
+        }
+
+        return TravelResponseDto.TripPieceSummaryDto.builder()
+                .id(tripPiece.getId())
+                .description(tripPiece.getDescription())
+                .category(tripPiece.getCategory())
+                .mediaUrls(mediaUrls)
+                .createdAt(tripPiece.getCreatedAt())
+                .build();
+
     }
 
 

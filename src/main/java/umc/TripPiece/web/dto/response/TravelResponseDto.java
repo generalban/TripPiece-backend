@@ -54,7 +54,7 @@ public class TravelResponseDto {
         private Long id;
         private String description;
         private Category category;
-        private String mediaUrl;
+        private List<String> mediaUrls;
         private LocalDateTime createdAt;
     }
 
@@ -66,7 +66,6 @@ public class TravelResponseDto {
         //private LocalDateTime date;
         private List<TripPieceSummaryDto> tripPieces;
     }
-
 
 
 }

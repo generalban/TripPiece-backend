@@ -15,10 +15,10 @@ import umc.TripPiece.repository.*;
 import umc.TripPiece.web.dto.request.TravelRequestDto;
 import umc.TripPiece.web.dto.response.TravelResponseDto;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -187,9 +187,18 @@ public class TravelService {
     }
 
     @Transactional
-    public List<TravelResponseDto.DailySummaryDto> continueTravel(Long travelId) {
-        //메소드 추후 구현
-        return null;
+    public List<TravelResponseDto.TripPieceSummaryDto> continueTravel(Long travelId) {
+        //Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new RuntimeException("travel not found"));
+        List<TripPiece> tripPieces = tripPieceRepository.findByTravelId(travelId);
+
+        Map<LocalDate, List<TripPiece>> tripPiecesByDate = tripPieces.stream()
+                .collect(Collectors.groupingBy(tp -> tp.getCreatedAt().toLocalDate()));
+        return tripPiecesByDate.entrySet().stream()
+                .flatMap(entry -> entry.getValue().stream()
+                        .sorted(Comparator.comparing(TripPiece::getCreatedAt))
+                        .limit(2)
+                        .map(TravelConverter::toTripPieceSummary))
+                .collect(Collectors.toList());
     }
 
 
