@@ -15,7 +15,7 @@ public class Emoji extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(unique = true)
+    @Column
     private String emoji;
 
     @ManyToOne(fetch = FetchType.LAZY)
