@@ -2,6 +2,7 @@ package umc.TripPiece.web.controller;
 
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,7 +33,7 @@ public class TravelController {
 
     @PostMapping(value = "/mytravels", consumes = "multipart/form-data")
     @Operation(summary = "여행 생성 API", description = "여행 시작하기")
-    public ApiResponse<TravelResponseDto.Create> createTravel(@RequestPart("data") TravelRequestDto.Create request, @RequestPart("thumbnail") MultipartFile thumbnail){
+    public ApiResponse<TravelResponseDto.Create> createTravel(@Valid @RequestPart("data") TravelRequestDto.Create request, @RequestPart("thumbnail") MultipartFile thumbnail){
         TravelResponseDto.Create response = travelService.createTravel(request, thumbnail);
         return ApiResponse.onSuccess(response);
     }

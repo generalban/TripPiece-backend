@@ -28,7 +28,7 @@ public class TravelConverter {
     }
 
     public static Travel toTravel(TravelRequestDto.Create request, City city){
-        return Travel.builder().city(city).title(request.getTitle()).startDate(request.getStartDate()).endDate(request.getEndDate()).build();
+        return Travel.builder().city(city).title(request.getTitle()).startDate(request.getStartDate().atStartOfDay()).endDate(request.getEndDate().atStartOfDay()).build();
     }
     public static TravelResponseDto.Create toCreateResponseDto(Travel travel){
         return new TravelResponseDto.Create(travel.getId());
