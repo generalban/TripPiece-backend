@@ -83,5 +83,15 @@ public class TravelResponseDto {
         private TravelStatus status;
     }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class getOngoingTravelResultDto {
+        Integer memoNum;
+        Integer pictureNum;
+        Integer videoNum;
+    }
+
 
 }

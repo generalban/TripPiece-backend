@@ -99,5 +99,13 @@ public class TravelConverter {
                 .build();
     }
 
+    public static TravelResponseDto.getOngoingTravelResultDto toOngoingTravelResultDto(Travel travel) {
+        return TravelResponseDto.getOngoingTravelResultDto.builder()
+                .memoNum(travel.getMemoNum())
+                .pictureNum(travel.getPictureNum())
+                .videoNum(travel.getVideoNum())
+                .build();
+    }
+
 
 }
