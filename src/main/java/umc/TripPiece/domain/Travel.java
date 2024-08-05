@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Travel extends BaseEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "travel_id")
     private Long id;
 
