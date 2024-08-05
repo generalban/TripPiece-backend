@@ -89,6 +89,19 @@ public class UserServiceImpl implements UserService{
             throw new IllegalArgumentException("유효하지 않은 refreshToken입니다.");
         };
 
+        user.setRefreshToken(refreshToken);
         return user;
+    }
+
+    /* 로그아웃 */
+    @Override
+    @Transactional
+    public void logout(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 계정입니다.")
+        );
+
+        user.setRefreshToken(null);
+        userRepository.save(user);
     }
 }

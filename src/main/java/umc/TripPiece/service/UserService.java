@@ -14,6 +14,6 @@ public interface UserService {
     User reissue(UserRequestDto.ReissueDto request);
 
     /* 로그아웃 */
-//    User logout(UserRequestDto.LogoutDto request);
+    void logout(Long userId);
 
 }

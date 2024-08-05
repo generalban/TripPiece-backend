@@ -1,6 +1,7 @@
 package umc.TripPiece.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -65,23 +66,32 @@ public class UserController {
 
     @PostMapping("/reissue")
     @Operation(summary = "토큰 재발급 API", description = "refresh token을 통한 access token, refresh token 재발급")
-    public ApiResponse<UserResponseDto.ReissueResultDto> refreshTokens(
+    public ApiResponse<UserResponseDto.ReissueResultDto> refresh(
             @RequestBody @Valid UserRequestDto.ReissueDto request) {
 
         User user = userService.reissue(request);
         String newAccessToken = jwtUtil.createAccessToken(user.getEmail());
         String newRefreshToken = jwtUtil.createRefreshToken(user.getEmail());
 
-        return ApiResponse.onSuccess(UserConverter.toReissueResultDto(user, newAccessToken, newRefreshToken));
+        return ApiResponse.onSuccess(UserConverter.toReissueResultDto(newAccessToken, newRefreshToken));
     }
 
     @PostMapping("/logout")
     @Operation(summary = "로그아웃 API", description = "로그아웃")
-    public ApiResponse<String> logoutMember() {
-//        Long memberId = JWTUtil.getCurrentUserId();
-//        userService.logoutmemberId);
+    public ApiResponse<String> logout(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+        if (header == null || !header.startsWith("Bearer ")) {
+            return ApiResponse.onFailure("400", "토큰이 유효하지 않습니다.", null);
+        }
 
-        return ApiResponse.onSuccess("로그아웃에 성공했습니다");
+        String token = header.substring(7);
+        try {
+            Long userId = jwtUtil.getUserIdFromToken(token);
+            userService.logout(userId);
+            return ApiResponse.onSuccess("로그아웃에 성공했습니다.");
+        } catch (Exception e) {
+            return ApiResponse.onFailure("400", e.getMessage(), null);
+        }
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

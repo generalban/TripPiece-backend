@@ -33,10 +33,10 @@ public class UserConverter {
                 .build();
     }
 
-    public static UserResponseDto.ReissueResultDto toReissueResultDto(User user, String accessToken, String refreshToken){
+    public static UserResponseDto.ReissueResultDto toReissueResultDto(String accessToken, String refreshToken){
         return UserResponseDto.ReissueResultDto.builder()
                 .accessToken(accessToken)
-                .refreshToken(user.getRefreshToken())
+                .refreshToken(refreshToken)
                 .build();
     }
 
