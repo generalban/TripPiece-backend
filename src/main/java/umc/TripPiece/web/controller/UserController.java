@@ -55,12 +55,33 @@ public class UserController {
         if (user != null) {
             // 로그인 성공 시 토큰 생성
             String accessToken = jwtUtil.createAccessToken(request.getEmail());
-            String refreshToken = jwtUtil.createRefreshToken(request.getEmail());
+            String refreshToken = user.getRefreshToken();
 
             return ApiResponse.onSuccess(UserConverter.toLoginResultDto(user, accessToken, refreshToken));
         } else {
             return ApiResponse.onFailure("400", "로그인에 실패했습니다.", null);
         }
+    }
+
+    @PostMapping("/reissue")
+    @Operation(summary = "토큰 재발급 API", description = "refresh token을 통한 access token, refresh token 재발급")
+    public ApiResponse<UserResponseDto.ReissueResultDto> refreshTokens(
+            @RequestBody @Valid UserRequestDto.ReissueDto request) {
+
+        User user = userService.reissue(request);
+        String newAccessToken = jwtUtil.createAccessToken(user.getEmail());
+        String newRefreshToken = jwtUtil.createRefreshToken(user.getEmail());
+
+        return ApiResponse.onSuccess(UserConverter.toReissueResultDto(user, newAccessToken, newRefreshToken));
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "로그아웃 API", description = "로그아웃")
+    public ApiResponse<String> logoutMember() {
+//        Long memberId = JWTUtil.getCurrentUserId();
+//        userService.logoutmemberId);
+
+        return ApiResponse.onSuccess("로그아웃에 성공했습니다");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import umc.TripPiece.converter.UserConverter;
 import umc.TripPiece.domain.User;
+import umc.TripPiece.domain.jwt.JWTUtil;
 import umc.TripPiece.repository.UserRepository;
 import umc.TripPiece.web.dto.request.UserRequestDto;
 
@@ -17,6 +18,7 @@ public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JWTUtil jwtUtil;
 
     /* 회원가입 */
     @Override
@@ -61,11 +63,32 @@ public class UserServiceImpl implements UserService{
             throw new IllegalArgumentException("이메일 혹은 비밀번호를 확인해주세요.");
         }
 
+        // 로그인 성공시 토큰 생성
+        String refreshToken = jwtUtil.createRefreshToken(email);
+
+        user.setRefreshToken(refreshToken);
+        userRepository.save(user);
+
         return user;
     }
 
     private boolean isPasswordMatch(String rawPassword, String encodedPassword){
         // password 일치 여부 확인
         return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
+    /* 토큰 재발급 */
+    @Override
+    @Transactional
+    public User reissue(UserRequestDto.ReissueDto request) {
+        String refreshToken = request.getRefreshToken();
+
+        User user = userRepository.findByRefreshToken(refreshToken).orElseThrow(() -> new IllegalArgumentException("유효하지 않은 refreshToken입니다."));
+
+        if(!refreshToken.equals(user.getRefreshToken())) {
+            throw new IllegalArgumentException("유효하지 않은 refreshToken입니다.");
+        };
+
+        return user;
     }
 }

@@ -10,4 +10,10 @@ public interface UserService {
     /* 로그인 */
     User login(UserRequestDto.LoginDto request);
 
+    /* 토큰 재발급 */
+    User reissue(UserRequestDto.ReissueDto request);
+
+    /* 로그아웃 */
+//    User logout(UserRequestDto.LogoutDto request);
+
 }
