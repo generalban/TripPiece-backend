@@ -3,6 +3,7 @@ package umc.TripPiece.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import umc.TripPiece.domain.common.BaseEntity;
+import umc.TripPiece.domain.enums.TravelStatus;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,6 +36,9 @@ public class Travel extends BaseEntity {
     private Long likeCount;
     private String thumbnail;
 
+    @Enumerated(EnumType.STRING)
+    private TravelStatus status;
+
 //    @OneToMany(mappedBy = "travel")
 //    private List<Like> likes = new ArrayList<>();
 
@@ -43,6 +47,9 @@ public class Travel extends BaseEntity {
 
     public void setThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;
+    }
+    public void setStatus(TravelStatus status) {
+        this.status = status;
     }
 
 }
