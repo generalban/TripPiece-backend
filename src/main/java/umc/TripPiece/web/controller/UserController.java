@@ -1,6 +1,7 @@
 package umc.TripPiece.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,11 +56,43 @@ public class UserController {
         if (user != null) {
             // 로그인 성공 시 토큰 생성
             String accessToken = jwtUtil.createAccessToken(request.getEmail());
-            String refreshToken = jwtUtil.createRefreshToken(request.getEmail());
+            String refreshToken = user.getRefreshToken();
 
             return ApiResponse.onSuccess(UserConverter.toLoginResultDto(user, accessToken, refreshToken));
         } else {
             return ApiResponse.onFailure("400", "로그인에 실패했습니다.", null);
+        }
+    }
+
+    @PostMapping("/reissue")
+    @Operation(summary = "토큰 재발급 API", description = "refresh token을 통한 access token, refresh token 재발급")
+    public ApiResponse<UserResponseDto.ReissueResultDto> refresh(
+            @RequestBody @Valid UserRequestDto.ReissueDto request) {
+
+        User user = userService.reissue(request);
+        String newAccessToken = jwtUtil.createAccessToken(user.getEmail());
+        String newRefreshToken = jwtUtil.createRefreshToken(user.getEmail());
+        user.setRefreshToken(newRefreshToken);
+
+        userService.save(user);
+        return ApiResponse.onSuccess(UserConverter.toReissueResultDto(newAccessToken, newRefreshToken));
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "로그아웃 API", description = "로그아웃")
+    public ApiResponse<String> logout(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+        if (header == null || !header.startsWith("Bearer ")) {
+            return ApiResponse.onFailure("400", "토큰이 유효하지 않습니다.", null);
+        }
+
+        String token = header.substring(7);
+        try {
+            Long userId = jwtUtil.getUserIdFromToken(token);
+            userService.logout(userId);
+            return ApiResponse.onSuccess("로그아웃에 성공했습니다.");
+        } catch (Exception e) {
+            return ApiResponse.onFailure("400", e.getMessage(), null);
         }
     }
 

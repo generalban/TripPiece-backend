@@ -39,4 +39,13 @@ public class UserResponseDto {
         String accessToken;
         String refreshToken;
     }
+
+    /* 토큰 재발급 */
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    public static class ReissueResultDto {
+        String accessToken;
+        String refreshToken;
+    }
 }

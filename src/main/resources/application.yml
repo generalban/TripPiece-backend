@@ -40,5 +40,5 @@ cloud:
 
 jwt:
   secret: ${JWT_KEY}
-  accessTokenValidity: 3600000 # 1 hour
-  refreshTokenValidity: 86400000 # 24 hours
+  accessTokenValidity: 7200000 # 2 hour
+  refreshTokenValidity: 604800000 # 1 week
