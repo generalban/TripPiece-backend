@@ -104,4 +104,9 @@ public class UserServiceImpl implements UserService{
         user.setRefreshToken(null);
         userRepository.save(user);
     }
+
+    @Override
+    public User save(User user) {
+        return userRepository.save(user);
+    }
 }

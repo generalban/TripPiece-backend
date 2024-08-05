@@ -72,7 +72,9 @@ public class UserController {
         User user = userService.reissue(request);
         String newAccessToken = jwtUtil.createAccessToken(user.getEmail());
         String newRefreshToken = jwtUtil.createRefreshToken(user.getEmail());
+        user.setRefreshToken(newRefreshToken);
 
+        userService.save(user);
         return ApiResponse.onSuccess(UserConverter.toReissueResultDto(newAccessToken, newRefreshToken));
     }
 

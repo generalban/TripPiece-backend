@@ -16,4 +16,5 @@ public interface UserService {
     /* 로그아웃 */
     void logout(Long userId);
 
+    User save(User user);
 }
