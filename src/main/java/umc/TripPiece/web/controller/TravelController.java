@@ -93,5 +93,12 @@ public class TravelController {
         return ApiResponse.onSuccess(TravelConverter.toCreateTripPieceResultDto(tripPiece));
     }
 
+    @GetMapping("/travels")
+    @Operation(summary = "생성된 여행기 API", description = "생성된 여행기 리스트 반환")
+    public ApiResponse<List<TravelResponseDto.TravelListDto>> getTravelList(){
+        List<TravelResponseDto.TravelListDto> travels = travelService.getTravelList();
+        return ApiResponse.onSuccess(travels);
+    }
+
 
 }
