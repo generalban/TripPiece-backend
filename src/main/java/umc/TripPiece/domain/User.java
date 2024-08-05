@@ -51,4 +51,8 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     private Boolean isPublic;
+
+    @Setter
+    @Column(name = "refresh_token")
+    private String refreshToken;
 }

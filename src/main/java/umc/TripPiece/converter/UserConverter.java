@@ -20,7 +20,7 @@ public class UserConverter {
                 .birth(user.getBirth())
                 .profileImg(user.getProfileImg())
                 .country(user.getCountry())
-                .createdAt(LocalDateTime.now())
+                .createdAt(user.getCreatedAt() != null ? user.getCreatedAt() : LocalDateTime.now())
                 .build();
     }
 
@@ -33,19 +33,16 @@ public class UserConverter {
                 .build();
     }
 
+    public static UserResponseDto.ReissueResultDto toReissueResultDto(String accessToken, String refreshToken){
+        return UserResponseDto.ReissueResultDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
 
     public static User toUser(UserRequestDto.SignUpDto request, String hashedPassword) {
-
-        Gender gender = null;
-
-        switch (request.getGender()){
-            case MALE:
-                gender = Gender.MALE;
-                break;
-            case FEMALE:
-                gender = Gender.FEMALE;
-                break;
-        }
+        Gender gender = request.getGender();
 
         return User.builder()
                 .name(request.getName())
