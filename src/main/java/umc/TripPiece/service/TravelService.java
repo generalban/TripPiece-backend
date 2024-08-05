@@ -58,6 +58,9 @@ public class TravelService {
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
         newTripPiece.setCategory(Category.MEMO);
 
+        Travel travel = travelRepository.findById(travelId).get();
+        travel.setMemoNum(travel.getMemoNum()+1);
+
         return tripPieceRepository.save(newTripPiece);
     }
 
@@ -67,6 +70,9 @@ public class TravelService {
         TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request);
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
         newTripPiece.setCategory(Category.EMOJI);
+
+        Travel travel = travelRepository.findById(travelId).get();
+        travel.setMemoNum(travel.getMemoNum()+1);
 
         for(String emoji : emojis) {
             Emoji newEmoji = TripPieceConverter.toTripPieceEmoji(emoji, newTripPiece);
@@ -82,6 +88,9 @@ public class TravelService {
         TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request);
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
         newTripPiece.setCategory(Category.PICTURE);
+
+        Travel travel = travelRepository.findById(travelId).get();
+        travel.setPictureNum(travel.getPictureNum()+1);
 
         int pictureNum = pictures.size();
 
@@ -112,6 +121,9 @@ public class TravelService {
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
         newTripPiece.setCategory(Category.SELFIE);
 
+        Travel travel = travelRepository.findById(travelId).get();
+        travel.setPictureNum(travel.getPictureNum()+1);
+
         String uuid = UUID.randomUUID().toString();
         Uuid savedUuid = uuidRepository.save(Uuid.builder()
                 .uuid(uuid).build());
@@ -133,6 +145,9 @@ public class TravelService {
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
         newTripPiece.setCategory(Category.VIDEO);
 
+        Travel travel = travelRepository.findById(travelId).get();
+        travel.setVideoNum(travel.getVideoNum()+1);
+
         String uuid = UUID.randomUUID().toString();
         Uuid savedUuid = uuidRepository.save(Uuid.builder()
                 .uuid(uuid).build());
@@ -153,6 +168,9 @@ public class TravelService {
         TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request);
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
         newTripPiece.setCategory(Category.WHERE);
+
+        Travel travel = travelRepository.findById(travelId).get();
+        travel.setVideoNum(travel.getVideoNum()+1);
 
         String uuid = UUID.randomUUID().toString();
         Uuid savedUuid = uuidRepository.save(Uuid.builder()
@@ -209,6 +227,12 @@ public class TravelService {
     public List<TravelResponseDto.TravelListDto> getTravelList() {
         List<Travel> travels = travelRepository.findAll();
         return travels.stream().map(TravelConverter::toTravelListDto).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public TravelResponseDto.getOngoingTravelResultDto getOngoingTravel() {
+        Travel travel = travelRepository.findByStatus(TravelStatus.ONGOING);
+        return TravelConverter.toOngoingTravelResultDto(travel);
     }
 
 

@@ -100,5 +100,12 @@ public class TravelController {
         return ApiResponse.onSuccess(travels);
     }
 
+    @GetMapping("/mytravels")
+    @Operation(summary = "현재 진행중인 여행기 반환 API", description = "현재 진행중인 여행기 반환")
+    public ApiResponse<TravelResponseDto.getOngoingTravelResultDto> getOngoingTravel(){
+        TravelResponseDto.getOngoingTravelResultDto travel = travelService.getOngoingTravel();
+        return ApiResponse.onSuccess(travel);
+    }
+
 
 }
