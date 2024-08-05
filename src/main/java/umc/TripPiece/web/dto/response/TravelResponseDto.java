@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.TripPiece.domain.enums.Category;
+import umc.TripPiece.domain.enums.TravelStatus;
 //import umc.TripPiece.domain.enums.Category;
 
 import java.time.LocalDate;
@@ -65,6 +66,21 @@ public class TravelResponseDto {
     public static class DailySummaryDto {
         //private LocalDateTime date;
         private List<TripPieceSummaryDto> tripPieces;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TravelListDto {
+        private Long id;
+        private String title;
+        private String thumbnail;
+        private LocalDate startDate;
+        private LocalDate endDate;
+        private String cityName;
+        private String countryName;
+        private TravelStatus status;
     }
 
 

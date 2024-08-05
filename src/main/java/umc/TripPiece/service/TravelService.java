@@ -11,6 +11,7 @@ import umc.TripPiece.domain.*;
 import umc.TripPiece.domain.enums.Category;
 
 import umc.TripPiece.domain.enums.Category;
+import umc.TripPiece.domain.enums.TravelStatus;
 import umc.TripPiece.repository.*;
 import umc.TripPiece.web.dto.request.TravelRequestDto;
 import umc.TripPiece.web.dto.response.TravelResponseDto;
@@ -176,6 +177,7 @@ public class TravelService {
 
         Travel travel = TravelConverter.toTravel(request, city);
         travel.setThumbnail(thumbnailUrl);
+        travel.setStatus(TravelStatus.ONGOING);
         Travel savedTravel = travelRepository.save(travel);
         return TravelConverter.toCreateResponseDto(savedTravel);
     }
@@ -183,6 +185,7 @@ public class TravelService {
     @Transactional
     public TravelResponseDto.TripSummaryDto endTravel(Long travelId) {
         Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new RuntimeException("travel not found"));
+        travel.setStatus(TravelStatus.COMPLETED);
         List<TripPiece> tripPieces = tripPieceRepository.findByTravelId(travelId);
         return TravelConverter.toTripSummary(travel, tripPieces);
     }
@@ -200,6 +203,12 @@ public class TravelService {
                         .limit(2)
                         .map(TravelConverter::toTripPieceSummary))
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<TravelResponseDto.TravelListDto> getTravelList() {
+        List<Travel> travels = travelRepository.findAll();
+        return travels.stream().map(TravelConverter::toTravelListDto).collect(Collectors.toList());
     }
 
 

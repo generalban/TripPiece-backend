@@ -86,5 +86,18 @@ public class TravelConverter {
 
     }
 
+    public static TravelResponseDto.TravelListDto toTravelListDto(Travel travel) {
+        return TravelResponseDto.TravelListDto.builder()
+                .id(travel.getId())
+                .title(travel.getTitle())
+                .thumbnail(travel.getThumbnail())
+                .startDate(travel.getStartDate().toLocalDate())
+                .endDate(travel.getEndDate().toLocalDate())
+                .cityName(travel.getCity().getName())
+                .countryName(travel.getCity().getCountry().getName())
+                .status(travel.getStatus())
+                .build();
+    }
+
 
 }
