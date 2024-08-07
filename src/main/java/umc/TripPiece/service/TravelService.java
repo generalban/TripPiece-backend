@@ -12,6 +12,7 @@ import umc.TripPiece.domain.enums.Category;
 
 import umc.TripPiece.domain.enums.Category;
 import umc.TripPiece.domain.enums.TravelStatus;
+import umc.TripPiece.domain.jwt.JWTUtil;
 import umc.TripPiece.repository.*;
 import umc.TripPiece.web.dto.request.TravelRequestDto;
 import umc.TripPiece.web.dto.response.TravelResponseDto;
@@ -34,6 +35,8 @@ public class TravelService {
     private final VideoRepository videoRepository;
     private final UuidRepository uuidRepository;
     private final AmazonS3Manager s3Manager;
+    private final JWTUtil jwtUtil;
+    private final UserRepository userRepository;
 
     public List<Travel> searchByKeyword(String keyword) {
         List<City> cities = cityRepository.findByNameContainingIgnoreCase(keyword);
@@ -187,15 +190,20 @@ public class TravelService {
     }
 
     @Transactional
-    public TravelResponseDto.Create createTravel(TravelRequestDto.Create request, MultipartFile thumbnail) {
+    public TravelResponseDto.Create createTravel(TravelRequestDto.Create request, MultipartFile thumbnail, String token) {
+        Long userId = jwtUtil.getUserIdFromToken(token);
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("user not found"));
+
         City city = cityRepository.findByNameContainingIgnoreCase(request.getCityName()).stream().findFirst().orElseThrow(() -> new RuntimeException("city not found"));
 
         String uuid = UUID.randomUUID().toString();
         String thumbnailUrl = s3Manager.uploadFile("thumbnails/" + uuid, thumbnail);
 
         Travel travel = TravelConverter.toTravel(request, city);
+        travel.setUser(user);
         travel.setThumbnail(thumbnailUrl);
         travel.setStatus(TravelStatus.ONGOING);
+
         Travel savedTravel = travelRepository.save(travel);
         return TravelConverter.toCreateResponseDto(savedTravel);
     }

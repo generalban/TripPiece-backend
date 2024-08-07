@@ -33,8 +33,9 @@ public class TravelController {
 
     @PostMapping(value = "/mytravels", consumes = "multipart/form-data")
     @Operation(summary = "여행 생성 API", description = "여행 시작하기")
-    public ApiResponse<TravelResponseDto.Create> createTravel(@Valid @RequestPart("data") TravelRequestDto.Create request, @RequestPart("thumbnail") MultipartFile thumbnail){
-        TravelResponseDto.Create response = travelService.createTravel(request, thumbnail);
+    public ApiResponse<TravelResponseDto.Create> createTravel(@Valid @RequestPart("data") TravelRequestDto.Create request, @RequestPart("thumbnail") MultipartFile thumbnail, @RequestHeader("Authorization") String token){
+        String tokenWithoutBearer = token.substring(7);
+        TravelResponseDto.Create response = travelService.createTravel(request, thumbnail, tokenWithoutBearer);
         return ApiResponse.onSuccess(response);
     }
 
