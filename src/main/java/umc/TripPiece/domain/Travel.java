@@ -76,4 +76,8 @@ public class Travel extends BaseEntity {
         this.videoNum = videoNum;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
 }
