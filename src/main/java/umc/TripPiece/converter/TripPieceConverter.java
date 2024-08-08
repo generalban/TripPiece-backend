@@ -1,10 +1,7 @@
 package umc.TripPiece.converter;
 
-import umc.TripPiece.domain.Emoji;
-import umc.TripPiece.domain.Picture;
-import umc.TripPiece.domain.TripPiece;
-import umc.TripPiece.domain.Video;
-import umc.TripPiece.web.dto.request.TravelRequestDto;
+import umc.TripPiece.domain.*;
+import umc.TripPiece.web.dto.response.TripPieceResponseDto;
 
 public class TripPieceConverter {
 
@@ -27,5 +24,13 @@ public class TripPieceConverter {
                 .videoUrl(videoUrl)
                 .tripPiece(tripPiece)
                 .build();
+    }
+
+    public static TripPieceResponseDto.TripPieceListDto toTripPieceList(TripPiece tripPiece) {
+        return TripPieceResponseDto.TripPieceListDto.builder()
+                .createdAt(tripPiece.getCreatedAt())
+                .category(tripPiece.getCategory())
+                .build();
+
     }
 }

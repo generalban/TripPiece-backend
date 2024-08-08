@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface TripPieceRepository extends JpaRepository<TripPiece, Long> {
     List<TripPiece> findByTravelId(Long travelId);
+    List<TripPiece> findByUserIdOrderByCreatedAtDesc(Long userId);
+    List<TripPiece> findByUserIdOrderByCreatedAtAsc(Long userId);
 }

@@ -36,6 +36,10 @@ public class TripPiece extends BaseEntity {
     @JoinColumn(name = "travel_id")
     private Travel travel;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @OneToMany(mappedBy = "tripPiece", cascade = CascadeType.ALL)
     private List<Picture> pictures = new ArrayList<>();
 
