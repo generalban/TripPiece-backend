@@ -34,9 +34,9 @@ public class TravelService {
     private final PictureRepository pictureRepository;
     private final VideoRepository videoRepository;
     private final UuidRepository uuidRepository;
+    private final UserRepository userRepository;
     private final AmazonS3Manager s3Manager;
     private final JWTUtil jwtUtil;
-    private final UserRepository userRepository;
 
     public List<Travel> searchByKeyword(String keyword) {
         List<City> cities = cityRepository.findByNameContainingIgnoreCase(keyword);
@@ -55,9 +55,11 @@ public class TravelService {
 
 
     @Transactional
-    public TripPiece createMemo(Long travelId, TravelRequestDto.MemoDto request) {
+    public TripPiece createMemo(Long travelId, TravelRequestDto.MemoDto request, String token) {
+        Long userId = jwtUtil.getUserIdFromToken(token);
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("user not found"));
 
-        TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request);
+        TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request, user);
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
         newTripPiece.setCategory(Category.MEMO);
 
@@ -68,9 +70,11 @@ public class TravelService {
     }
 
     @Transactional
-    public TripPiece createEmoji(Long travelId, List<String> emojis, TravelRequestDto.MemoDto request) {
+    public TripPiece createEmoji(Long travelId, List<String> emojis, TravelRequestDto.MemoDto request, String token) {
+        Long userId = jwtUtil.getUserIdFromToken(token);
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("user not found"));
 
-        TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request);
+        TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request, user);
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
         newTripPiece.setCategory(Category.EMOJI);
 
@@ -86,9 +90,11 @@ public class TravelService {
     }
 
     @Transactional
-    public TripPiece createPicture(Long travelId, List<MultipartFile> pictures, TravelRequestDto.MemoDto request) {
+    public TripPiece createPicture(Long travelId, List<MultipartFile> pictures, TravelRequestDto.MemoDto request, String token) {
+        Long userId = jwtUtil.getUserIdFromToken(token);
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("user not found"));
 
-        TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request);
+        TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request, user);
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
         newTripPiece.setCategory(Category.PICTURE);
 
@@ -118,9 +124,11 @@ public class TravelService {
     }
 
     @Transactional
-    public TripPiece createSelfie(Long travelId, MultipartFile picture, TravelRequestDto.MemoDto request) {
+    public TripPiece createSelfie(Long travelId, MultipartFile picture, TravelRequestDto.MemoDto request, String token) {
+        Long userId = jwtUtil.getUserIdFromToken(token);
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("user not found"));
 
-        TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request);
+        TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request, user);
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
         newTripPiece.setCategory(Category.SELFIE);
 
@@ -142,9 +150,11 @@ public class TravelService {
     }
 
     @Transactional
-    public TripPiece createVideo(Long travelId, MultipartFile video, TravelRequestDto.MemoDto request) {
+    public TripPiece createVideo(Long travelId, MultipartFile video, TravelRequestDto.MemoDto request, String token) {
+        Long userId = jwtUtil.getUserIdFromToken(token);
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("user not found"));;
 
-        TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request);
+        TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request, user);
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
         newTripPiece.setCategory(Category.VIDEO);
 
@@ -166,9 +176,11 @@ public class TravelService {
     }
 
     @Transactional
-    public TripPiece createWhere(Long travelId, MultipartFile video, TravelRequestDto.MemoDto request) {
+    public TripPiece createWhere(Long travelId, MultipartFile video, TravelRequestDto.MemoDto request, String token) {
+        Long userId = jwtUtil.getUserIdFromToken(token);
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("user not found"));
 
-        TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request);
+        TripPiece newTripPiece = TravelConverter.toTripPieceMemo(request, user);
         newTripPiece.setTravel(travelRepository.findById(travelId).get());
         newTripPiece.setCategory(Category.WHERE);
 
@@ -246,8 +258,9 @@ public class TravelService {
     }
 
     @Transactional
-    public TravelResponseDto.getOngoingTravelResultDto getOngoingTravel() {
-        Travel travel = travelRepository.findByStatus(TravelStatus.ONGOING);
+    public TravelResponseDto.getOngoingTravelResultDto getOngoingTravel(String token) {
+        Long userId = jwtUtil.getUserIdFromToken(token);
+        Travel travel = travelRepository.findByStatusAndUserId(TravelStatus.ONGOING, userId);
         return TravelConverter.toOngoingTravelResultDto(travel);
     }
 

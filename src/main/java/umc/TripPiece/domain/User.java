@@ -6,6 +6,9 @@ import umc.TripPiece.domain.common.BaseEntity;
 import umc.TripPiece.domain.enums.Gender;
 import umc.TripPiece.domain.enums.UserMethod;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -55,4 +58,7 @@ public class User extends BaseEntity {
     @Setter
     @Column(name = "refresh_token")
     private String refreshToken;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<TripPiece> tripPieces = new ArrayList<>();
 }

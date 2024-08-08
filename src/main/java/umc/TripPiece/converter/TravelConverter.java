@@ -14,9 +14,10 @@ import java.util.stream.Collectors;
 
 public class TravelConverter {
 
-    public static TripPiece toTripPieceMemo(TravelRequestDto.MemoDto request) {
+    public static TripPiece toTripPieceMemo(TravelRequestDto.MemoDto request, User user) {
         return TripPiece.builder()
                 .description(request.getDescription())
+                .user(user)
                 .build();
     }
 

@@ -54,43 +54,49 @@ public class TravelController {
 
     @PostMapping("/mytravels/{travelId}/memo")
     @Operation(summary = "메모 기록 API", description = "특정 여행기에서의 여행조각 추가")
-    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceMemo(@RequestBody @TextLength100 TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId){
-        TripPiece tripPiece = travelService.createMemo(travelId, request);
+    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceMemo(@RequestBody @TextLength100 TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token){
+        String tokenWithoutBearer = token.substring(7);
+        TripPiece tripPiece = travelService.createMemo(travelId, request, tokenWithoutBearer);
         return ApiResponse.onSuccess(TravelConverter.toCreateTripPieceResultDto(tripPiece));
     }
 
     @PostMapping("/mytravels/{travelId}/emoji")
     @Operation(summary = "이모지 기록 API", description = "특정 여행기에서의 여행조각 추가")
-    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceEmoji(@RequestBody @TextLength30 TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestParam(name = "emojis") @CheckEmoji @CheckEmojiNum List<String> emojis){
-        TripPiece tripPiece = travelService.createEmoji(travelId, emojis, request);
+    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceEmoji(@RequestBody @TextLength30 TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token, @RequestParam(name = "emojis") @CheckEmoji @CheckEmojiNum List<String> emojis){
+        String tokenWithoutBearer = token.substring(7);
+        TripPiece tripPiece = travelService.createEmoji(travelId, emojis, request, tokenWithoutBearer);
         return ApiResponse.onSuccess(TravelConverter.toCreateTripPieceResultDto(tripPiece));
     }
 
     @PostMapping(value = "/mytravels/{travelId}/picture", consumes = "multipart/form-data")
     @Operation(summary = "사진 기록 API", description = "특정 여행기에서의 여행조각 추가")
-    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPiecePicture(@RequestPart("memo") @TextLength30 TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestPart("photos") List<MultipartFile> photos){
-        TripPiece tripPiece = travelService.createPicture(travelId, photos, request);
+    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPiecePicture(@RequestPart("memo") @TextLength30 TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token, @RequestPart("photos") List<MultipartFile> photos){
+        String tokenWithoutBearer = token.substring(7);
+        TripPiece tripPiece = travelService.createPicture(travelId, photos, request, tokenWithoutBearer);
         return ApiResponse.onSuccess(TravelConverter.toCreateTripPieceResultDto(tripPiece));
     }
 
     @PostMapping(value = "/mytravels/{travelId}/selfie", consumes = "multipart/form-data")
     @Operation(summary = "셀카 기록 API", description = "특정 여행기에서의 여행조각 추가")
-    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceSelfie(@RequestPart("memo") @TextLength30 TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestPart("photo") MultipartFile photo){
-        TripPiece tripPiece = travelService.createSelfie(travelId, photo, request);
+    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceSelfie(@RequestPart("memo") @TextLength30 TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token, @RequestPart("photo") MultipartFile photo){
+        String tokenWithoutBearer = token.substring(7);
+        TripPiece tripPiece = travelService.createSelfie(travelId, photo, request, tokenWithoutBearer);
         return ApiResponse.onSuccess(TravelConverter.toCreateTripPieceResultDto(tripPiece));
     }
 
     @PostMapping(value = "/mytravels/{travelId}/video", consumes = "multipart/form-data")
     @Operation(summary = "비디오 기록 API", description = "특정 여행기에서의 여행조각 추가")
-    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceVideo(@RequestPart("memo") @TextLength30 TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestPart("video") MultipartFile video){
-        TripPiece tripPiece = travelService.createVideo(travelId, video, request);
+    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceVideo(@RequestPart("memo") @TextLength30 TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token, @RequestPart("video") MultipartFile video){
+        String tokenWithoutBearer = token.substring(7);
+        TripPiece tripPiece = travelService.createVideo(travelId, video, request, tokenWithoutBearer);
         return ApiResponse.onSuccess(TravelConverter.toCreateTripPieceResultDto(tripPiece));
     }
 
     @PostMapping(value = "/mytravels/{travelId}/where", consumes = "multipart/form-data")
     @Operation(summary = "'지금 어디에 있나요?' 카테고리 기록 API", description = "특정 여행기에서의 여행조각 추가")
-    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceWhere(@RequestPart("memo") @TextLength30 TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestPart("video") MultipartFile video){
-        TripPiece tripPiece = travelService.createWhere(travelId, video, request);
+    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceWhere(@RequestPart("memo") @TextLength30 TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token, @RequestPart("video") MultipartFile video){
+        String tokenWithoutBearer = token.substring(7);
+        TripPiece tripPiece = travelService.createWhere(travelId, video, request, tokenWithoutBearer);
         return ApiResponse.onSuccess(TravelConverter.toCreateTripPieceResultDto(tripPiece));
     }
 
@@ -111,8 +117,9 @@ public class TravelController {
 
     @GetMapping("/mytravels")
     @Operation(summary = "현재 진행중인 여행기 반환 API", description = "현재 진행중인 여행기 반환")
-    public ApiResponse<TravelResponseDto.getOngoingTravelResultDto> getOngoingTravel(){
-        TravelResponseDto.getOngoingTravelResultDto travel = travelService.getOngoingTravel();
+    public ApiResponse<TravelResponseDto.getOngoingTravelResultDto> getOngoingTravel(@RequestHeader("Authorization") String token){
+        String tokenWithoutBearer = token.substring(7);
+        TravelResponseDto.getOngoingTravelResultDto travel = travelService.getOngoingTravel(tokenWithoutBearer);
         return ApiResponse.onSuccess(travel);
     }
 
