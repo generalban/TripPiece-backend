@@ -3,6 +3,8 @@ package umc.TripPiece.converter;
 import umc.TripPiece.domain.*;
 import umc.TripPiece.web.dto.response.TripPieceResponseDto;
 
+import java.util.List;
+
 public class TripPieceConverter {
 
     public static Emoji toTripPieceEmoji(String emoji, TripPiece tripPiece) {
@@ -32,5 +34,17 @@ public class TripPieceConverter {
                 .category(tripPiece.getCategory())
                 .build();
 
+    }
+
+    public static TripPieceResponseDto.getTripPieceDto toTripPiece(TripPiece tripPiece, String countryName, String cityName, List<String> mediaUrls, String emojis) {
+        return TripPieceResponseDto.getTripPieceDto.builder()
+                .createdAt(tripPiece.getCreatedAt())
+                .countryName(countryName)
+                .cityName(cityName)
+                .category(tripPiece.getCategory())
+                .mediaUrls(mediaUrls)
+                .emojis(emojis)
+                .description(tripPiece.getDescription())
+                .build();
     }
 }

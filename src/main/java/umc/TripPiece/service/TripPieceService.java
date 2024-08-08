@@ -3,6 +3,7 @@ package umc.TripPiece.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.TripPiece.converter.TripPieceConverter;
 import umc.TripPiece.domain.*;
 import umc.TripPiece.domain.enums.Category;
 import umc.TripPiece.domain.jwt.JWTUtil;
@@ -333,6 +334,44 @@ public class TripPieceService {
         return tripPieceList;
     }
 
+    @Transactional
+    public TripPieceResponseDto.getTripPieceDto getTripPiece(Long tripPieceId) {
+        TripPiece tripPiece = tripPieceRepository.getById(tripPieceId);
+        Travel travel = tripPiece.getTravel();
+        City city = travel.getCity();
+        Country country = city.getCountry();
+
+        String countryName = country.getName();
+        String cityName = city.getName();
+
+        List<String> mediaUrls = new ArrayList<>();
+        String emojis = null;
+
+        if (tripPiece.getCategory() == Category.PICTURE || tripPiece.getCategory() == Category.SELFIE)
+        {
+            List<Picture> pictures = tripPiece.getPictures();
+
+            for(Picture picture : pictures)
+            {
+                mediaUrls.add(picture.getPictureUrl());
+            }
+        }
+        else if (tripPiece.getCategory() == Category.VIDEO || tripPiece.getCategory() == Category.WHERE)
+        {
+            List<Video> videos = tripPiece.getVideos();
+
+            mediaUrls.add(videos.get(0).getVideoUrl());
+        }
+        else if (tripPiece.getCategory() == Category.EMOJI)
+        {
+            List<Emoji> emojiList = tripPiece.getEmojis();
+
+            emojis = emojiList.get(0).getEmoji() + emojiList.get(1).getEmoji() + emojiList.get(2).getEmoji() + emojiList.get(3).getEmoji();
+        }
+
+        return TripPieceConverter.toTripPiece(tripPiece, countryName, cityName, mediaUrls, emojis);
+
+    }
 
 
 }
