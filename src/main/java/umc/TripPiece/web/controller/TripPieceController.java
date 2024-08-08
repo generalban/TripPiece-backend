@@ -2,12 +2,10 @@ package umc.TripPiece.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import umc.TripPiece.payload.ApiResponse;
 import umc.TripPiece.service.TripPieceService;
+import umc.TripPiece.web.dto.response.TravelResponseDto;
 import umc.TripPiece.web.dto.response.TripPieceResponseDto;
 
 import java.util.List;
@@ -80,5 +78,12 @@ public class TripPieceController {
         String tokenWithoutBearer = token.substring(7);
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getVideoListEarliest(tokenWithoutBearer);
         return ApiResponse.onSuccess(tripPieceList);
+    }
+
+    @GetMapping("mytrippieces/{tripPieceId}")
+    @Operation(summary = "단일 여행 조각 조회 API", description = "tripPieceId를 입력받아 여행 조각 출력")
+    public ApiResponse<TripPieceResponseDto.getTripPieceDto> getTripPiece(@PathVariable("tripPieceId") Long tripPieceId){
+        TripPieceResponseDto.getTripPieceDto response = tripPieceService.getTripPiece(tripPieceId);
+        return ApiResponse.onSuccess(response);
     }
 }
