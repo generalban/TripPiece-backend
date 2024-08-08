@@ -238,8 +238,9 @@ public class TravelService {
     }
 
     @Transactional
-    public List<TravelResponseDto.TravelListDto> getTravelList() {
-        List<Travel> travels = travelRepository.findAll();
+    public List<TravelResponseDto.TravelListDto> getTravelList(String token) {
+        Long userId = jwtUtil.getUserIdFromToken(token);
+        List<Travel> travels = travelRepository.findByUserId(userId);
         return travels.stream().map(TravelConverter::toTravelListDto).collect(Collectors.toList());
     }
 

@@ -96,8 +96,9 @@ public class TravelController {
 
     @GetMapping("/travels")
     @Operation(summary = "생성된 여행기 API", description = "생성된 여행기 리스트 반환")
-    public ApiResponse<List<TravelResponseDto.TravelListDto>> getTravelList(){
-        List<TravelResponseDto.TravelListDto> travels = travelService.getTravelList();
+    public ApiResponse<List<TravelResponseDto.TravelListDto>> getTravelList(@RequestHeader("Authorization") String token){
+        String tokenWithoutBearer = token.substring(7);
+        List<TravelResponseDto.TravelListDto> travels = travelService.getTravelList(tokenWithoutBearer);
         return ApiResponse.onSuccess(travels);
     }
 
