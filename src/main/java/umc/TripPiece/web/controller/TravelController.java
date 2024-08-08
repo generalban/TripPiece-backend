@@ -101,6 +101,13 @@ public class TravelController {
         return ApiResponse.onSuccess(travels);
     }
 
+    @GetMapping("/travels/{travelId}")
+    @Operation(summary = "여행기 상세 정보 API", description = "특정 여행기의 상세 정보 반환")
+    public ApiResponse<TravelResponseDto.TripSummaryDto> getTravelDetails(@PathVariable("travelId") Long travelId) {
+        TravelResponseDto.TripSummaryDto response = travelService.getTravelDetails(travelId);
+        return ApiResponse.onSuccess(response);
+    }
+
     @GetMapping("/mytravels")
     @Operation(summary = "현재 진행중인 여행기 반환 API", description = "현재 진행중인 여행기 반환")
     public ApiResponse<TravelResponseDto.getOngoingTravelResultDto> getOngoingTravel(){
