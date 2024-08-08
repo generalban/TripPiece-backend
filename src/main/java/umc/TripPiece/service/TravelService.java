@@ -238,6 +238,13 @@ public class TravelService {
     }
 
     @Transactional
+    public TravelResponseDto.TripSummaryDto getTravelDetails(Long travelId) {
+        Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new RuntimeException("travel not found"));
+        List<TripPiece> tripPieces = tripPieceRepository.findByTravelId(travelId);
+        return TravelConverter.toTripSummary(travel, tripPieces);
+    }
+
+    @Transactional
     public TravelResponseDto.getOngoingTravelResultDto getOngoingTravel() {
         Travel travel = travelRepository.findByStatus(TravelStatus.ONGOING);
         return TravelConverter.toOngoingTravelResultDto(travel);
