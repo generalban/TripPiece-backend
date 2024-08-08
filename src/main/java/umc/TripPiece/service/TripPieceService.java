@@ -124,4 +124,196 @@ public class TripPieceService {
 
         return tripPieceList;
     }
+
+    @Transactional
+    public List<TripPieceResponseDto.TripPieceListDto> getMemoListLatest(Long userId) {
+        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
+        List<TripPiece> tripPieces = tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtDesc(userId, Category.MEMO, Category.EMOJI);
+
+        for (TripPiece tripPiece : tripPieces) {
+            Travel travel = tripPiece.getTravel();
+            City city = travel.getCity();
+            Country country = city.getCountry();
+            Category category = tripPiece.getCategory();
+
+            TripPieceResponseDto.TripPieceListDto tripPieceListDto = new TripPieceResponseDto.TripPieceListDto();
+
+            tripPieceListDto.setCategory(Category.MEMO);
+
+            if (category == Category.MEMO)
+            {
+                tripPieceListDto.setMemo(tripPiece.getDescription());
+            }
+            else if (category == Category.EMOJI)
+            {
+                List<Emoji> emojis = tripPiece.getEmojis();
+
+                tripPieceListDto.setMemo(emojis.get(0).getEmoji() + emojis.get(1).getEmoji() + emojis.get(2).getEmoji() + emojis.get(3).getEmoji());
+            }
+
+            tripPieceListDto.setCreatedAt(tripPiece.getCreatedAt());
+            tripPieceListDto.setCountryName(country.getName());
+            tripPieceListDto.setCityName(city.getName());
+
+            tripPieceList.add(tripPieceListDto);
+        }
+
+        return tripPieceList;
+    }
+
+    @Transactional
+    public List<TripPieceResponseDto.TripPieceListDto> getMemoListEarliest(Long userId) {
+        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
+        List<TripPiece> tripPieces = tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtAsc(userId, Category.MEMO, Category.EMOJI);
+
+        for (TripPiece tripPiece : tripPieces) {
+            Travel travel = tripPiece.getTravel();
+            City city = travel.getCity();
+            Country country = city.getCountry();
+            Category category = tripPiece.getCategory();
+
+            TripPieceResponseDto.TripPieceListDto tripPieceListDto = new TripPieceResponseDto.TripPieceListDto();
+
+            tripPieceListDto.setCategory(Category.MEMO);
+
+            if (category == Category.MEMO)
+            {
+                tripPieceListDto.setMemo(tripPiece.getDescription());
+            }
+            else if (category == Category.EMOJI)
+            {
+                List<Emoji> emojis = tripPiece.getEmojis();
+
+                tripPieceListDto.setMemo(emojis.get(0).getEmoji() + emojis.get(1).getEmoji() + emojis.get(2).getEmoji() + emojis.get(3).getEmoji());
+            }
+
+            tripPieceListDto.setCreatedAt(tripPiece.getCreatedAt());
+            tripPieceListDto.setCountryName(country.getName());
+            tripPieceListDto.setCityName(city.getName());
+
+            tripPieceList.add(tripPieceListDto);
+        }
+
+        return tripPieceList;
+    }
+
+    @Transactional
+    public List<TripPieceResponseDto.TripPieceListDto> getPictureListLatest(Long userId) {
+        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
+        List<TripPiece> tripPieces = tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtDesc(userId, Category.PICTURE, Category.SELFIE);
+
+        for (TripPiece tripPiece : tripPieces) {
+            Travel travel = tripPiece.getTravel();
+            City city = travel.getCity();
+            Country country = city.getCountry();
+
+            TripPieceResponseDto.TripPieceListDto tripPieceListDto = new TripPieceResponseDto.TripPieceListDto();
+
+            // 여러개 사진이 있다면, 썸네일 랜덤
+            List<Picture> pictures = tripPiece.getPictures();
+            Random random = new Random();
+            int randomIndex = random.nextInt(pictures.size());
+
+            tripPieceListDto.setCategory(Category.PICTURE);
+            tripPieceListDto.setMediaUrl(pictures.get(randomIndex).getPictureUrl());
+
+            tripPieceListDto.setCreatedAt(tripPiece.getCreatedAt());
+            tripPieceListDto.setCountryName(country.getName());
+            tripPieceListDto.setCityName(city.getName());
+
+            tripPieceList.add(tripPieceListDto);
+        }
+
+        return tripPieceList;
+    }
+
+
+    @Transactional
+    public List<TripPieceResponseDto.TripPieceListDto> getPictureListEarliest(Long userId) {
+        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
+        List<TripPiece> tripPieces = tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtAsc(userId, Category.PICTURE, Category.SELFIE);
+
+        for (TripPiece tripPiece : tripPieces) {
+            Travel travel = tripPiece.getTravel();
+            City city = travel.getCity();
+            Country country = city.getCountry();
+
+            TripPieceResponseDto.TripPieceListDto tripPieceListDto = new TripPieceResponseDto.TripPieceListDto();
+
+            // 여러개 사진이 있다면, 썸네일 랜덤
+            List<Picture> pictures = tripPiece.getPictures();
+            Random random = new Random();
+            int randomIndex = random.nextInt(pictures.size());
+
+            tripPieceListDto.setCategory(Category.PICTURE);
+            tripPieceListDto.setMediaUrl(pictures.get(randomIndex).getPictureUrl());
+
+            tripPieceListDto.setCreatedAt(tripPiece.getCreatedAt());
+            tripPieceListDto.setCountryName(country.getName());
+            tripPieceListDto.setCityName(city.getName());
+
+            tripPieceList.add(tripPieceListDto);
+        }
+
+        return tripPieceList;
+    }
+
+    @Transactional
+    public List<TripPieceResponseDto.TripPieceListDto> getVideoListLatest(Long userId) {
+        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
+        List<TripPiece> tripPieces = tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtDesc(userId, Category.VIDEO, Category.WHERE);
+
+        for (TripPiece tripPiece : tripPieces) {
+            Travel travel = tripPiece.getTravel();
+            City city = travel.getCity();
+            Country country = city.getCountry();
+
+            TripPieceResponseDto.TripPieceListDto tripPieceListDto = new TripPieceResponseDto.TripPieceListDto();
+
+            List<Video> videos = tripPiece.getVideos();
+            Video video = videos.get(0);
+
+            tripPieceListDto.setCategory(Category.VIDEO);
+            tripPieceListDto.setMediaUrl(video.getVideoUrl());
+
+            tripPieceListDto.setCreatedAt(tripPiece.getCreatedAt());
+            tripPieceListDto.setCountryName(country.getName());
+            tripPieceListDto.setCityName(city.getName());
+
+            tripPieceList.add(tripPieceListDto);
+        }
+
+        return tripPieceList;
+    }
+
+    @Transactional
+    public List<TripPieceResponseDto.TripPieceListDto> getVideoListEarliest(Long userId) {
+        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
+        List<TripPiece> tripPieces = tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtAsc(userId, Category.VIDEO, Category.WHERE);
+
+        for (TripPiece tripPiece : tripPieces) {
+            Travel travel = tripPiece.getTravel();
+            City city = travel.getCity();
+            Country country = city.getCountry();
+
+            TripPieceResponseDto.TripPieceListDto tripPieceListDto = new TripPieceResponseDto.TripPieceListDto();
+
+            List<Video> videos = tripPiece.getVideos();
+            Video video = videos.get(0);
+
+            tripPieceListDto.setCategory(Category.VIDEO);
+            tripPieceListDto.setMediaUrl(video.getVideoUrl());
+
+            tripPieceListDto.setCreatedAt(tripPiece.getCreatedAt());
+            tripPieceListDto.setCountryName(country.getName());
+            tripPieceListDto.setCityName(city.getName());
+
+            tripPieceList.add(tripPieceListDto);
+        }
+
+        return tripPieceList;
+    }
+
+
+
 }
