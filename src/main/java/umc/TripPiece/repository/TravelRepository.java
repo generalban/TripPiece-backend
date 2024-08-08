@@ -12,4 +12,6 @@ public interface TravelRepository extends JpaRepository<Travel, Long> {
     List<Travel> findByCity_CountryId(Long countryId);
     Travel findByStatus(TravelStatus travelStatus);
 
+    List<Travel> findByUserId(Long userId);
+
 }
