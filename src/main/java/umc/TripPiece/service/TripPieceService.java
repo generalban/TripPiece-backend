@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.TripPiece.domain.*;
 import umc.TripPiece.domain.enums.Category;
+import umc.TripPiece.domain.jwt.JWTUtil;
 import umc.TripPiece.repository.TripPieceRepository;
+import umc.TripPiece.repository.UserRepository;
 import umc.TripPiece.web.dto.response.TripPieceResponseDto;
 
 import java.util.ArrayList;
@@ -18,9 +20,12 @@ import java.util.Random;
 public class TripPieceService {
 
     private final TripPieceRepository tripPieceRepository;
+    private final JWTUtil jwtUtil;
 
     @Transactional
-    public List<TripPieceResponseDto.TripPieceListDto> getTripPieceListLatest(Long userId) {
+    public List<TripPieceResponseDto.TripPieceListDto> getTripPieceListLatest(String token) {
+        Long userId = jwtUtil.getUserIdFromToken(token);
+
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
         List<TripPiece> tripPieces = tripPieceRepository.findByUserIdOrderByCreatedAtDesc(userId);
         for (TripPiece tripPiece : tripPieces) {
@@ -73,7 +78,9 @@ public class TripPieceService {
     }
 
     @Transactional
-    public List<TripPieceResponseDto.TripPieceListDto> getTripPieceListEarliest(Long userId) {
+    public List<TripPieceResponseDto.TripPieceListDto> getTripPieceListEarliest(String token) {
+        Long userId = jwtUtil.getUserIdFromToken(token);
+
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
         List<TripPiece> tripPieces = tripPieceRepository.findByUserIdOrderByCreatedAtAsc(userId);
         for (TripPiece tripPiece : tripPieces) {
@@ -126,7 +133,9 @@ public class TripPieceService {
     }
 
     @Transactional
-    public List<TripPieceResponseDto.TripPieceListDto> getMemoListLatest(Long userId) {
+    public List<TripPieceResponseDto.TripPieceListDto> getMemoListLatest(String token) {
+        Long userId = jwtUtil.getUserIdFromToken(token);
+
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
         List<TripPiece> tripPieces = tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtDesc(userId, Category.MEMO, Category.EMOJI);
 
@@ -162,7 +171,9 @@ public class TripPieceService {
     }
 
     @Transactional
-    public List<TripPieceResponseDto.TripPieceListDto> getMemoListEarliest(Long userId) {
+    public List<TripPieceResponseDto.TripPieceListDto> getMemoListEarliest(String token) {
+        Long userId = jwtUtil.getUserIdFromToken(token);
+
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
         List<TripPiece> tripPieces = tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtAsc(userId, Category.MEMO, Category.EMOJI);
 
@@ -198,7 +209,9 @@ public class TripPieceService {
     }
 
     @Transactional
-    public List<TripPieceResponseDto.TripPieceListDto> getPictureListLatest(Long userId) {
+    public List<TripPieceResponseDto.TripPieceListDto> getPictureListLatest(String token) {
+        Long userId = jwtUtil.getUserIdFromToken(token);
+
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
         List<TripPiece> tripPieces = tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtDesc(userId, Category.PICTURE, Category.SELFIE);
 
@@ -229,7 +242,9 @@ public class TripPieceService {
 
 
     @Transactional
-    public List<TripPieceResponseDto.TripPieceListDto> getPictureListEarliest(Long userId) {
+    public List<TripPieceResponseDto.TripPieceListDto> getPictureListEarliest(String token) {
+        Long userId = jwtUtil.getUserIdFromToken(token);
+
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
         List<TripPiece> tripPieces = tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtAsc(userId, Category.PICTURE, Category.SELFIE);
 
@@ -259,7 +274,9 @@ public class TripPieceService {
     }
 
     @Transactional
-    public List<TripPieceResponseDto.TripPieceListDto> getVideoListLatest(Long userId) {
+    public List<TripPieceResponseDto.TripPieceListDto> getVideoListLatest(String token) {
+        Long userId = jwtUtil.getUserIdFromToken(token);
+
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
         List<TripPiece> tripPieces = tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtDesc(userId, Category.VIDEO, Category.WHERE);
 
@@ -287,7 +304,9 @@ public class TripPieceService {
     }
 
     @Transactional
-    public List<TripPieceResponseDto.TripPieceListDto> getVideoListEarliest(Long userId) {
+    public List<TripPieceResponseDto.TripPieceListDto> getVideoListEarliest(String token) {
+        Long userId = jwtUtil.getUserIdFromToken(token);
+
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
         List<TripPiece> tripPieces = tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtAsc(userId, Category.VIDEO, Category.WHERE);
 
