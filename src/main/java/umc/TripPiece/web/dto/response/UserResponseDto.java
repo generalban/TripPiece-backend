@@ -34,7 +34,7 @@ public class UserResponseDto {
     public static class LoginResultDto {
         Long id;
         String email;
-        String name;
+        String nickname;
         LocalDateTime createdAt;
         String accessToken;
         String refreshToken;
@@ -48,4 +48,35 @@ public class UserResponseDto {
         String accessToken;
         String refreshToken;
     }
+
+    /* 카카오 회원가입 */
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SignUpKakaoResultDto {
+        private Long providerId;
+        private String name;
+        private String email;
+        private String nickname;
+        private Gender gender;
+        private String birth;
+        private String profileImg;
+        private String country;
+        private LocalDateTime createdAt;
+    }
+
+    /* 카카오 로그인 */
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    public static class LoginKakaoResultDto {
+        private Long providerId;
+        private String email;
+        private String nickname;
+        private LocalDateTime createdAt;
+        private String accessToken;
+        private String refreshToken;
+    }
+
 }

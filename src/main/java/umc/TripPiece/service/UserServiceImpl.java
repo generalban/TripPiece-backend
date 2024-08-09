@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService{
     private final PasswordEncoder passwordEncoder;
     private final JWTUtil jwtUtil;
 
-    /* 회원가입 */
+    /* 일반 회원가입 */
     @Override
     @Transactional
     public User signUp(@Valid UserRequestDto.SignUpDto request) {
@@ -43,7 +43,31 @@ public class UserServiceImpl implements UserService{
         return userRepository.save(newUser);
     }
 
-    /* 로그인 */
+    /* 카카오 회원가입 */
+    @Override
+    @Transactional
+    public User signUpKakao(@Valid UserRequestDto.SignUpKakaoDto request) {
+
+        // providerId 중복 확인
+        userRepository.findByProviderId(request.getProviderId()).ifPresent(user -> {
+            throw new IllegalArgumentException("이미 회원가입된 providerId입니다.");
+        });
+        
+        // 이메일 중복 확인
+        userRepository.findByEmail(request.getEmail()).ifPresent(user -> {
+            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+        });
+
+        // 닉네임 중복 확인
+        userRepository.findByNickname(request.getNickname()).ifPresent(user -> {
+            throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
+        });
+
+        User newUser = UserConverter.toUser(request);
+        return userRepository.save(newUser);
+    }
+
+    /* 일반 로그인 */
     @Override
     @Transactional
     public User login(UserRequestDto.LoginDto request){
@@ -61,6 +85,30 @@ public class UserServiceImpl implements UserService{
         // 비밀번호가 일치하지 않을 경우
         if (!isPasswordMatch(password, user.getPassword())) {
             throw new IllegalArgumentException("이메일 혹은 비밀번호를 확인해주세요.");
+        }
+
+        // 로그인 성공시 토큰 생성
+        String refreshToken = jwtUtil.createRefreshToken(email);
+
+        user.setRefreshToken(refreshToken);
+        userRepository.save(user);
+
+        return user;
+    }
+
+    /* 카카오 로그인 */
+    @Override
+    @Transactional
+    public User loginKakao(UserRequestDto.LoginKakaoDto request) {
+        String email = request.getEmail();
+        Long providerId = request.getProviderId();
+
+        // 카카오 계정 조회
+        User user = userRepository.findByEmailAndProviderId(email, providerId).orElse(null);
+
+        // 계정이 존재하지 않을 경우
+        if (user == null) {
+            throw new IllegalArgumentException("존재하지 않는 카카오 계정입니다.");
         }
 
         // 로그인 성공시 토큰 생성
