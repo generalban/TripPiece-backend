@@ -17,7 +17,7 @@ import java.util.List;
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="user_id", unique = true, nullable = false)
+    @Column(name="user_id", unique = true)
     private Long id;
 
     @Column(nullable = false, length = 20)
@@ -26,7 +26,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
     @Column(nullable = false, length = 20)
@@ -58,6 +58,10 @@ public class User extends BaseEntity {
     @Setter
     @Column(name = "refresh_token")
     private String refreshToken;
+
+    // 일반 가입자와 소셜 로그인 회원 구분을 위한 providerId
+    @Column(name = "provider_id", unique = true)
+    private Long providerId;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<TripPiece> tripPieces = new ArrayList<>();
