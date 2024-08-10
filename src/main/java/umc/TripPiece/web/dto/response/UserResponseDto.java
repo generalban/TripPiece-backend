@@ -55,6 +55,7 @@ public class UserResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SignUpKakaoResultDto {
+        private Long id;
         private Long providerId;
         private String name;
         private String email;
@@ -71,6 +72,7 @@ public class UserResponseDto {
     @Getter
     @AllArgsConstructor
     public static class LoginKakaoResultDto {
+        private Long id;
         private Long providerId;
         private String email;
         private String nickname;

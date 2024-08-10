@@ -26,6 +26,7 @@ public class UserConverter {
 
     public static UserResponseDto.SignUpKakaoResultDto toSignUpKakaoResultDto(User user){
         return UserResponseDto.SignUpKakaoResultDto.builder()
+                .id(user.getId())
                 .providerId(user.getProviderId())
                 .name(user.getName())
                 .email(user.getEmail())
@@ -51,6 +52,7 @@ public class UserConverter {
 
     public static UserResponseDto.LoginKakaoResultDto toLoginKakaoResultDto(User user, String accessToken, String refreshToken){
         return UserResponseDto.LoginKakaoResultDto.builder()
+                .id(user.getId())
                 .providerId(user.getProviderId())
                 .email(user.getEmail())
                 .nickname(user.getNickname())
