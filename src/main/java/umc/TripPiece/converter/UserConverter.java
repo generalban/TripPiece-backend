@@ -79,7 +79,6 @@ public class UserConverter {
                 .nickname(request.getNickname())
                 .gender(gender)
                 .birth(request.getBirth())
-                .profileImg(request.getProfileImg())
                 .country(request.getCountry())
                 .gpsConsent(true) // 고정값 설정
                 .method(UserMethod.GENERAL) // 고정값 설정
@@ -98,12 +97,20 @@ public class UserConverter {
                 .nickname(request.getNickname())
                 .gender(gender)
                 .birth(request.getBirth())
-                .profileImg(request.getProfileImg())
                 .country(request.getCountry())
                 .gpsConsent(true) // 고정값 설정
                 .method(UserMethod.KAKAO) // 고정값 설정
                 .providerId(request.getProviderId()) // 카카오 providerId
                 .isPublic(true) // 고정값 설정
+                .build();
+    }
+
+    public static UserResponseDto.UpdateResultDto toUpdateResultDto(User user){
+        return UserResponseDto.UpdateResultDto.builder()
+                .nickname(user.getNickname())
+                .gender(user.getGender())
+                .birth(user.getBirth())
+                .profileImg(user.getProfileImg())
                 .build();
     }
 }

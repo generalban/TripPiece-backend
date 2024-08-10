@@ -79,27 +79,5 @@ public class AmazonS3Manager{
         return keyNames;
     }
 
-    // 사진 확장자 체크
-    private boolean validatePictureFileExtension(String originalFilename) {
-        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
-        List<String> allowedExtensions = Arrays.asList("jpg", "png", "jpeg");
-
-        if (!allowedExtensions.contains(fileExtension)) {
-            throw new PictureHandler(ErrorStatus.PICTURE_EXTENSION_ERROR);
-        }
-
-        return true;
-    }
-
-    // 영상 확장자 체크
-    private boolean validateVideoFileExtension(String originalFilename) {
-        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
-        List<String> allowedExtensions = Arrays.asList("jpg", "png", "gif", "jpeg");
-
-        if (!allowedExtensions.contains(fileExtension)) {
-            throw new VideoHandler(ErrorStatus.VIDEO_EXTENSION_ERROR);
-        }
-        return true;
-    }
 
 }
