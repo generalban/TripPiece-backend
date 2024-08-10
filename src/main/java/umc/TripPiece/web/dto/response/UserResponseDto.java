@@ -81,4 +81,16 @@ public class UserResponseDto {
         private String refreshToken;
     }
 
+    /* 프로필 수정 */
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    public static class UpdateResultDto {
+        String nickname;
+        Gender gender;
+        String birth;
+        String country;
+        String profileImg;
+    }
+
 }

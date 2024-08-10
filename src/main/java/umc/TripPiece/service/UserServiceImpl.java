@@ -5,11 +5,17 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import umc.TripPiece.aws.s3.AmazonS3Manager;
 import umc.TripPiece.converter.UserConverter;
 import umc.TripPiece.domain.User;
+import umc.TripPiece.domain.Uuid;
 import umc.TripPiece.domain.jwt.JWTUtil;
 import umc.TripPiece.repository.UserRepository;
+import umc.TripPiece.repository.UuidRepository;
 import umc.TripPiece.web.dto.request.UserRequestDto;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -17,14 +23,22 @@ import umc.TripPiece.web.dto.request.UserRequestDto;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
+    private final UuidRepository uuidRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTUtil jwtUtil;
+    private final AmazonS3Manager s3Manager;
 
     /* 일반 회원가입 */
     @Override
     @Transactional
-    public User signUp(@Valid UserRequestDto.SignUpDto request) {
+    public User signUp(@Valid UserRequestDto.SignUpDto request, MultipartFile profileImg) {
 
+        // 프로필 이미지 일련번호 생성
+        String uuid = UUID.randomUUID().toString();
+        Uuid savedUuid = uuidRepository.save(Uuid.builder()
+                .uuid(uuid).build());
+
+        String profileImgUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), profileImg);
 
         // 이메일 중복 확인
         userRepository.findByEmail(request.getEmail()).ifPresent(user -> {
@@ -40,13 +54,25 @@ public class UserServiceImpl implements UserService{
         String hashedPassword = passwordEncoder.encode(request.getPassword());
 
         User newUser = UserConverter.toUser(request, hashedPassword);
+
+        // 프로필 사진 설정
+        newUser.setProfileImg(profileImgUrl);
+
         return userRepository.save(newUser);
     }
 
     /* 카카오 회원가입 */
     @Override
     @Transactional
-    public User signUpKakao(@Valid UserRequestDto.SignUpKakaoDto request) {
+    public User signUpKakao(@Valid UserRequestDto.SignUpKakaoDto request, MultipartFile profileImg) {
+
+        // 프로필 이미지 일련번호 생성
+        String uuid = UUID.randomUUID().toString();
+        Uuid savedUuid = uuidRepository.save(Uuid.builder()
+                .uuid(uuid).build());
+
+        String profileImgUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), profileImg);
+
 
         // providerId 중복 확인
         userRepository.findByProviderId(request.getProviderId()).ifPresent(user -> {
@@ -64,6 +90,10 @@ public class UserServiceImpl implements UserService{
         });
 
         User newUser = UserConverter.toUser(request);
+
+        // 프로필 사진 설정
+        newUser.setProfileImg(profileImgUrl);
+
         return userRepository.save(newUser);
     }
 
@@ -156,5 +186,39 @@ public class UserServiceImpl implements UserService{
     @Override
     public User save(User user) {
         return userRepository.save(user);
+    }
+
+    @Transactional
+    public User update(UserRequestDto.UpdateDto request, String token, MultipartFile profileImg) {
+
+        // 프로필 이미지 일련번호 생성
+        String uuid = UUID.randomUUID().toString();
+        Uuid savedUuid = uuidRepository.save(Uuid.builder()
+                .uuid(uuid).build());
+
+        String profileImgUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), profileImg);
+
+        Long userId = jwtUtil.getUserIdFromToken(token);
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 계정입니다.")
+        );
+
+        if(request.getNickname() != null){
+            user.updatenickname(request.getNickname());
+        }
+        if(request.getGender() != null){
+            user.updategender(request.getGender());
+        }
+        if(request.getBirth() != null){
+            user.updatebirth(request.getBirth());
+        }
+        if(request.getCountry() != null){
+            user.updatecountry(request.getCountry());
+        }
+
+        user.setProfileImg(profileImgUrl);
+
+        return user;
+
     }
 }
