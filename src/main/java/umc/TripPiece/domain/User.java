@@ -40,6 +40,7 @@ public class User extends BaseEntity {
     private String birth;
     
     @Column
+    @Setter
     private String profileImg;
 
     @Column(nullable = false, length = 30)
@@ -54,6 +55,22 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     private Boolean isPublic;
+
+    public void updatenickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updategender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public void updatebirth(String birth) {
+        this.birth = birth;
+    }
+
+    public void updatecountry(String country) {
+        this.country = country;
+    }
 
     @Setter
     @Column(name = "refresh_token")

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import umc.TripPiece.converter.UserConverter;
 import umc.TripPiece.domain.User;
 import umc.TripPiece.domain.jwt.JWTUtil;
@@ -34,11 +35,11 @@ public class KakaoController {
         this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping("/signup")
+    @PostMapping(value = "/signup", consumes = "multipart/form-data")
     @Operation(summary = "카카오 회원가입 API", description = "카카오 로그인 후 진행하는 회원가입")
-    public ApiResponse<UserResponseDto.SignUpKakaoResultDto> signUp(@RequestBody @Valid UserRequestDto.SignUpKakaoDto request) {
+    public ApiResponse<UserResponseDto.SignUpKakaoResultDto> signUp(@RequestPart("info") @Valid UserRequestDto.SignUpKakaoDto request, @RequestPart("profileImg") MultipartFile profileImg) {
         try {
-            User user = userService.signUpKakao(request);
+            User user = userService.signUpKakao(request, profileImg);
             return ApiResponse.onSuccess(UserConverter.toSignUpKakaoResultDto(user));
         } catch (IllegalArgumentException e) {
             return ApiResponse.onFailure("400", e.getMessage(), null);

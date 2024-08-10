@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import umc.TripPiece.converter.UserConverter;
 import umc.TripPiece.domain.User;
 import umc.TripPiece.domain.jwt.JWTUtil;
@@ -35,12 +36,12 @@ public class UserController {
         this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping("/signup")
+    @PostMapping(value = "/signup", consumes = "multipart/form-data")
     @Operation(summary = "회원가입 API",
     description = "회원가입")
-    public ApiResponse<UserResponseDto.SignUpResultDto> signUp(@RequestBody @Valid UserRequestDto.SignUpDto request) {
+    public ApiResponse<UserResponseDto.SignUpResultDto> signUp(@RequestPart("info") @Valid UserRequestDto.SignUpDto request, @RequestPart("profileImg") MultipartFile profileImg) {
         try {
-            User user = userService.signUp(request);
+            User user = userService.signUp(request, profileImg);
             return ApiResponse.onSuccess(UserConverter.toSignUpResultDto(user));
         } catch (IllegalArgumentException e) {
             return ApiResponse.onFailure("400", e.getMessage(), null);
@@ -93,6 +94,20 @@ public class UserController {
             return ApiResponse.onSuccess("로그아웃에 성공했습니다.");
         } catch (Exception e) {
             return ApiResponse.onFailure("400", e.getMessage(), null);
+        }
+    }
+
+    @PostMapping(value = "/update", consumes = "multipart/form-data")
+    @Operation(summary = "프로필 수정하기 API",
+            description = "프로필 수정하기")
+    public ApiResponse<UserResponseDto.UpdateResultDto> update(@RequestPart("info") @Valid UserRequestDto.UpdateDto request, @RequestHeader("Authorization") String token, @RequestPart("profileImg") MultipartFile profileImg) {
+        String tokenWithoutBearer = token.substring(7);
+        User user = userService.update(request, tokenWithoutBearer, profileImg);
+
+        if (user != null) {
+            return ApiResponse.onSuccess(UserConverter.toUpdateResultDto(user));
+        } else {
+            return ApiResponse.onFailure("400", "프로필 수정에 실패했습니다.", null);
         }
     }
 
