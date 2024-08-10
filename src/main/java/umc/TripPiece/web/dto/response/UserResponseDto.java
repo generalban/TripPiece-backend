@@ -88,6 +88,7 @@ public class UserResponseDto {
         Gender gender;
         String birth;
         String country;
+        String profileImg;
     }
 
 }

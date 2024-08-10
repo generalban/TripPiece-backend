@@ -110,6 +110,7 @@ public class UserConverter {
                 .nickname(user.getNickname())
                 .gender(user.getGender())
                 .birth(user.getBirth())
+                .profileImg(user.getProfileImg())
                 .build();
     }
 }
