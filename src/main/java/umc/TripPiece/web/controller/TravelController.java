@@ -11,14 +11,12 @@ import umc.TripPiece.domain.Travel;
 import umc.TripPiece.domain.TripPiece;
 import umc.TripPiece.payload.ApiResponse;
 import umc.TripPiece.service.TravelService;
-import umc.TripPiece.validation.annotation.CheckEmoji;
-import umc.TripPiece.validation.annotation.CheckEmojiNum;
-import umc.TripPiece.validation.annotation.TextLength100;
-import umc.TripPiece.validation.annotation.TextLength30;
 import umc.TripPiece.web.dto.request.TravelRequestDto;
 import umc.TripPiece.web.dto.response.TravelResponseDto;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 @RequiredArgsConstructor
@@ -54,7 +52,11 @@ public class TravelController {
 
     @PostMapping("/mytravels/{travelId}/memo")
     @Operation(summary = "메모 기록 API", description = "특정 여행기에서의 여행조각 추가")
-    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceMemo(@RequestBody @TextLength100 TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token){
+    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceMemo(@RequestBody TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token){
+
+        if(request.getDescription().length() > 100)
+            return ApiResponse.onFailure("400", "글자수 100자 초과 입니다.", null);
+
         String tokenWithoutBearer = token.substring(7);
         TripPiece tripPiece = travelService.createMemo(travelId, request, tokenWithoutBearer);
         return ApiResponse.onSuccess(TravelConverter.toCreateTripPieceResultDto(tripPiece));
@@ -62,7 +64,23 @@ public class TravelController {
 
     @PostMapping("/mytravels/{travelId}/emoji")
     @Operation(summary = "이모지 기록 API", description = "특정 여행기에서의 여행조각 추가")
-    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceEmoji(@RequestBody @TextLength30 TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token, @RequestParam(name = "emojis") @CheckEmoji @CheckEmojiNum List<String> emojis){
+    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceEmoji(@RequestBody TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token, @RequestParam(name = "emojis") List<String> emojis){
+
+        if(request.getDescription().length() > 30)
+            return ApiResponse.onFailure("400", "글자수 30자 초과 입니다.", null);
+
+        if(emojis.size() != 4)
+            return ApiResponse.onFailure("400", "이모지의 갯수는 4개여야 합니다.", null);
+
+        for(String emoji : emojis) {
+            Pattern rex = Pattern.compile("[\\x{10000}-\\x{10ffff}\ud800-\udfff]");
+            Matcher rexMatcher = rex.matcher(emoji);
+
+            if(!rexMatcher.find())
+                return ApiResponse.onFailure("400", "올바른 이모지 형식이 아닙니다.", null);
+
+        }
+
         String tokenWithoutBearer = token.substring(7);
         TripPiece tripPiece = travelService.createEmoji(travelId, emojis, request, tokenWithoutBearer);
         return ApiResponse.onSuccess(TravelConverter.toCreateTripPieceResultDto(tripPiece));
@@ -70,7 +88,11 @@ public class TravelController {
 
     @PostMapping(value = "/mytravels/{travelId}/picture", consumes = "multipart/form-data")
     @Operation(summary = "사진 기록 API", description = "특정 여행기에서의 여행조각 추가")
-    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPiecePicture(@RequestPart("memo") @TextLength30 TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token, @RequestPart("photos") List<MultipartFile> photos){
+    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPiecePicture(@RequestPart("memo") TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token, @RequestPart("photos") List<MultipartFile> photos){
+
+        if(request.getDescription().length() > 30)
+            return ApiResponse.onFailure("400", "글자수 30자 초과 입니다.", null);
+
         String tokenWithoutBearer = token.substring(7);
         TripPiece tripPiece = travelService.createPicture(travelId, photos, request, tokenWithoutBearer);
         return ApiResponse.onSuccess(TravelConverter.toCreateTripPieceResultDto(tripPiece));
@@ -78,7 +100,11 @@ public class TravelController {
 
     @PostMapping(value = "/mytravels/{travelId}/selfie", consumes = "multipart/form-data")
     @Operation(summary = "셀카 기록 API", description = "특정 여행기에서의 여행조각 추가")
-    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceSelfie(@RequestPart("memo") @TextLength30 TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token, @RequestPart("photo") MultipartFile photo){
+    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceSelfie(@Valid @RequestPart("memo") TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token, @RequestPart("photo") MultipartFile photo){
+
+        if(request.getDescription().length() > 30)
+            return ApiResponse.onFailure("400", "글자수 30자 초과 입니다.", null);
+
         String tokenWithoutBearer = token.substring(7);
         TripPiece tripPiece = travelService.createSelfie(travelId, photo, request, tokenWithoutBearer);
         return ApiResponse.onSuccess(TravelConverter.toCreateTripPieceResultDto(tripPiece));
@@ -86,7 +112,11 @@ public class TravelController {
 
     @PostMapping(value = "/mytravels/{travelId}/video", consumes = "multipart/form-data")
     @Operation(summary = "비디오 기록 API", description = "특정 여행기에서의 여행조각 추가")
-    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceVideo(@RequestPart("memo") @TextLength30 TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token, @RequestPart("video") MultipartFile video){
+    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceVideo(@Valid @RequestPart("memo") TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token, @RequestPart("video") MultipartFile video){
+
+        if(request.getDescription().length() > 30)
+            return ApiResponse.onFailure("400", "글자수 30자 초과 입니다.", null);
+
         String tokenWithoutBearer = token.substring(7);
         TripPiece tripPiece = travelService.createVideo(travelId, video, request, tokenWithoutBearer);
         return ApiResponse.onSuccess(TravelConverter.toCreateTripPieceResultDto(tripPiece));
@@ -94,7 +124,11 @@ public class TravelController {
 
     @PostMapping(value = "/mytravels/{travelId}/where", consumes = "multipart/form-data")
     @Operation(summary = "'지금 어디에 있나요?' 카테고리 기록 API", description = "특정 여행기에서의 여행조각 추가")
-    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceWhere(@RequestPart("memo") @TextLength30 TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token, @RequestPart("video") MultipartFile video){
+    public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceWhere(@Valid @RequestPart("memo") TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token, @RequestPart("video") MultipartFile video){
+
+        if(request.getDescription().length() > 30)
+            return ApiResponse.onFailure("400", "글자수 30자 초과 입니다.", null);
+
         String tokenWithoutBearer = token.substring(7);
         TripPiece tripPiece = travelService.createWhere(travelId, video, request, tokenWithoutBearer);
         return ApiResponse.onSuccess(TravelConverter.toCreateTripPieceResultDto(tripPiece));
