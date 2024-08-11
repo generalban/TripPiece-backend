@@ -207,9 +207,13 @@ public class TravelService {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("user not found"));
 
         City city = cityRepository.findByNameContainingIgnoreCase(request.getCityName()).stream().findFirst().orElseThrow(() -> new RuntimeException("city not found"));
+        city.setLogCount(city.getLogCount() + 1);
 
         String uuid = UUID.randomUUID().toString();
         String thumbnailUrl = s3Manager.uploadFile("thumbnails/" + uuid, thumbnail);
+
+        Travel OngoingTravel = travelRepository.findByStatusAndUserId(TravelStatus.ONGOING, userId);
+        if(OngoingTravel != null) return null;
 
         Travel travel = TravelConverter.toTravel(request, city);
         travel.setUser(user);

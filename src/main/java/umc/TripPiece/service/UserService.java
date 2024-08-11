@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.multipart.MultipartFile;
 import umc.TripPiece.domain.User;
 import umc.TripPiece.web.dto.request.UserRequestDto;
+import umc.TripPiece.web.dto.response.UserResponseDto;
 
 public interface UserService {
     /* 회원가입 */
@@ -28,4 +29,8 @@ public interface UserService {
 
     /* 수정하기 */
     User update(UserRequestDto.@Valid UpdateDto request, String token, MultipartFile profileImg);
+
+    /* 프로필 조회 */
+    UserResponseDto.ProfileDto getProfile(String token);
+
 }

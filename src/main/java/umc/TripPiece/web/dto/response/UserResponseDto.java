@@ -93,4 +93,15 @@ public class UserResponseDto {
         String profileImg;
     }
 
+    /* 프로필 조회 */
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    public static class ProfileDto {
+        String nickname;
+        String profileImg;
+        Integer travelNum;
+        Boolean isPublic;
+    }
+
 }

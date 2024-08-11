@@ -111,6 +111,14 @@ public class UserController {
         }
     }
 
+    @GetMapping("/myprofile")
+    @Operation(summary = "프로필 조회 API",
+            description = "마이페이지 프로필 조회")
+    public ApiResponse<UserResponseDto.ProfileDto> getProfile(@RequestHeader("Authorization") String token) {
+        String tokenWithoutBearer = token.substring(7);
+        return ApiResponse.onSuccess(userService.getProfile(tokenWithoutBearer));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();

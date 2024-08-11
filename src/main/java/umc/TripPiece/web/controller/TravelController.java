@@ -34,6 +34,9 @@ public class TravelController {
     public ApiResponse<TravelResponseDto.Create> createTravel(@Valid @RequestPart("data") TravelRequestDto.Create request, @RequestPart("thumbnail") MultipartFile thumbnail, @RequestHeader("Authorization") String token){
         String tokenWithoutBearer = token.substring(7);
         TravelResponseDto.Create response = travelService.createTravel(request, thumbnail, tokenWithoutBearer);
+
+        if(response == null) return ApiResponse.onFailure("400", "현재 진행 중인 여행기가 있습니다.", null);
+
         return ApiResponse.onSuccess(response);
     }
 
@@ -44,7 +47,7 @@ public class TravelController {
         return ApiResponse.onSuccess(response);
     }
     @GetMapping("/mytravels/{travelId}/continue")
-    @Operation(summary = "여행 이어보기 API", description = "여행을 이어보 날짜별 조각 반환")
+    @Operation(summary = "여행 이어보기 API", description = "여행을 이어볼 날짜별 조각 반환")
     public ApiResponse<List<TravelResponseDto.TripPieceSummaryDto>> continueTravel(@PathVariable("travelId") Long travelId) {
         List<TravelResponseDto.TripPieceSummaryDto> response = travelService.continueTravel(travelId);
         return ApiResponse.onSuccess(response);
