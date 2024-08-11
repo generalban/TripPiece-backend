@@ -233,7 +233,7 @@ public class TravelService {
         //Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new RuntimeException("travel not found"));
         List<TripPiece> tripPieces = tripPieceRepository.findByTravelId(travelId);
 
-        Map<LocalDate, List<TripPiece>> tripPiecesByDate = tripPieces.stream()
+        java.util.Map<LocalDate, List<TripPiece>> tripPiecesByDate = tripPieces.stream()
                 .collect(Collectors.groupingBy(tp -> tp.getCreatedAt().toLocalDate()));
         return tripPiecesByDate.entrySet().stream()
                 .flatMap(entry -> entry.getValue().stream()
