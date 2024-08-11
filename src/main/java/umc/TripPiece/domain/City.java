@@ -2,6 +2,7 @@ package umc.TripPiece.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class City {
 
     private String name;
     private String comment;
+    @Setter
     private Long logCount;
 
     @OneToMany(mappedBy = "city")

@@ -59,7 +59,7 @@ public class User extends BaseEntity {
     private UserMethod method;
 
     @Column(nullable = false)
-    @ColumnDefault("true")
+    @ColumnDefault("false")
     private Boolean isPublic;
 
     public void updatenickname(String nickname) {
