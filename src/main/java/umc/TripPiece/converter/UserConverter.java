@@ -69,6 +69,15 @@ public class UserConverter {
                 .build();
     }
 
+    public static UserResponseDto.ProfileDto toProfileDto(User user, Integer travelNum) {
+        return UserResponseDto.ProfileDto.builder()
+                .nickname(user.getNickname())
+                .profileImg(user.getProfileImg())
+                .travelNum(travelNum)
+                .isPublic(user.getIsPublic())
+                .build();
+    }
+
 
     /* 일반 회원가입용 */
     public static User toUser(UserRequestDto.SignUpDto request, String hashedPassword) {

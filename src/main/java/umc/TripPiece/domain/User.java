@@ -2,6 +2,9 @@ package umc.TripPiece.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import umc.TripPiece.domain.common.BaseEntity;
 import umc.TripPiece.domain.enums.Gender;
 import umc.TripPiece.domain.enums.UserMethod;
@@ -12,6 +15,8 @@ import java.util.List;
 @Entity
 @Getter
 @Builder
+@DynamicUpdate
+@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class User extends BaseEntity {
@@ -54,6 +59,7 @@ public class User extends BaseEntity {
     private UserMethod method;
 
     @Column(nullable = false)
+    @ColumnDefault("true")
     private Boolean isPublic;
 
     public void updatenickname(String nickname) {

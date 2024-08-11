@@ -8,13 +8,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import umc.TripPiece.aws.s3.AmazonS3Manager;
 import umc.TripPiece.converter.UserConverter;
+import umc.TripPiece.domain.Travel;
 import umc.TripPiece.domain.User;
 import umc.TripPiece.domain.Uuid;
 import umc.TripPiece.domain.jwt.JWTUtil;
+import umc.TripPiece.repository.TravelRepository;
 import umc.TripPiece.repository.UserRepository;
 import umc.TripPiece.repository.UuidRepository;
 import umc.TripPiece.web.dto.request.UserRequestDto;
+import umc.TripPiece.web.dto.response.UserResponseDto;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -24,6 +28,7 @@ public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
     private final UuidRepository uuidRepository;
+    private final TravelRepository travelRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTUtil jwtUtil;
     private final AmazonS3Manager s3Manager;
@@ -220,5 +225,17 @@ public class UserServiceImpl implements UserService{
 
         return user;
 
+    }
+
+    @Override
+    public UserResponseDto.ProfileDto getProfile(String token) {
+        Long userId = jwtUtil.getUserIdFromToken(token);
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 계정입니다.")
+        );
+        List<Travel> travels =  travelRepository.findByUserId(userId);
+        Integer travelNum = travels.size();
+
+        return UserConverter.toProfileDto(user, travelNum);
     }
 }
