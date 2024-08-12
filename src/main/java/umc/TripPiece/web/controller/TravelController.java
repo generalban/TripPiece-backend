@@ -142,6 +142,10 @@ public class TravelController {
     public ApiResponse<List<TravelResponseDto.TravelListDto>> getTravelList(@RequestHeader("Authorization") String token){
         String tokenWithoutBearer = token.substring(7);
         List<TravelResponseDto.TravelListDto> travels = travelService.getTravelList(tokenWithoutBearer);
+
+        if (travels.isEmpty()) {
+            return ApiResponse.onFailure("400", "생성된 여행기 없음.", null);
+        }
         return ApiResponse.onSuccess(travels);
     }
 
