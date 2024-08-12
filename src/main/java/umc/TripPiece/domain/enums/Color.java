@@ -27,6 +27,10 @@ public enum Color {
     }
 
     public static Color fromString(String code) {
-        return BY_CODE.get(code);
+        Color color = BY_CODE.get(code);
+        if (color == null) {
+            throw new IllegalArgumentException("Unknown color code: " + code);
+        }
+        return color;
     }
 }
