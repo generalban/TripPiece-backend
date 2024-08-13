@@ -102,6 +102,9 @@ public class UserResponseDto {
         String profileImg;
         Integer travelNum;
         Boolean isPublic;
+        Gender gender;
+        String country;
+        String birth;
     }
 
 }

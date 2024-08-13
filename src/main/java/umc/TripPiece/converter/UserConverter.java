@@ -75,6 +75,9 @@ public class UserConverter {
                 .profileImg(user.getProfileImg())
                 .travelNum(travelNum)
                 .isPublic(user.getIsPublic())
+                .gender(user.getGender())
+                .country(user.getCountry())
+                .birth(user.getBirth())
                 .build();
     }
 
