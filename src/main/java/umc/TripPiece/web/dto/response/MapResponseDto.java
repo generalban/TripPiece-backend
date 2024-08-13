@@ -21,4 +21,8 @@ public class MapResponseDto {
         this.countryCode = map.getCountryCode();
         this.color = map.getColor();
     }
+
+    public static class getMarkerResponse {
+
+    }
 }

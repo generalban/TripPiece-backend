@@ -21,6 +21,8 @@ public class TripPieceController {
     public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getTripPieceListLatest(@RequestHeader("Authorization") String token){
         String tokenWithoutBearer = token.substring(7);
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getTripPieceListLatest(tokenWithoutBearer);
+        if (tripPieceList == null || tripPieceList.isEmpty())
+            return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
         return ApiResponse.onSuccess(tripPieceList);
     }
 
@@ -29,6 +31,8 @@ public class TripPieceController {
     public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getTripPieceListEarliest(@RequestHeader("Authorization") String token){
         String tokenWithoutBearer = token.substring(7);
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getTripPieceListEarliest(tokenWithoutBearer);
+        if (tripPieceList == null || tripPieceList.isEmpty())
+            return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
         return ApiResponse.onSuccess(tripPieceList);
     }
 
@@ -37,6 +41,8 @@ public class TripPieceController {
     public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getMemoListLatest(@RequestHeader("Authorization") String token){
         String tokenWithoutBearer = token.substring(7);
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getMemoListLatest(tokenWithoutBearer);
+        if (tripPieceList == null || tripPieceList.isEmpty())
+            return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
         return ApiResponse.onSuccess(tripPieceList);
     }
 
@@ -53,6 +59,8 @@ public class TripPieceController {
     public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getPictureListLatest(@RequestHeader("Authorization") String token){
         String tokenWithoutBearer = token.substring(7);
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getPictureListLatest(tokenWithoutBearer);
+        if (tripPieceList == null || tripPieceList.isEmpty())
+            return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
         return ApiResponse.onSuccess(tripPieceList);
     }
 
@@ -61,6 +69,8 @@ public class TripPieceController {
     public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getPictureListEarliest(@RequestHeader("Authorization") String token){
         String tokenWithoutBearer = token.substring(7);
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getPictureListEarliest(tokenWithoutBearer);
+        if (tripPieceList == null || tripPieceList.isEmpty())
+            return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
         return ApiResponse.onSuccess(tripPieceList);
     }
 
@@ -69,6 +79,8 @@ public class TripPieceController {
     public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getVideoListLatest(@RequestHeader("Authorization") String token){
         String tokenWithoutBearer = token.substring(7);
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getVideoListLatest(tokenWithoutBearer);
+        if (tripPieceList == null || tripPieceList.isEmpty())
+            return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
         return ApiResponse.onSuccess(tripPieceList);
     }
 
@@ -77,6 +89,8 @@ public class TripPieceController {
     public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getVideoListEarliest(@RequestHeader("Authorization") String token){
         String tokenWithoutBearer = token.substring(7);
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getVideoListEarliest(tokenWithoutBearer);
+        if (tripPieceList == null || tripPieceList.isEmpty())
+            return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
         return ApiResponse.onSuccess(tripPieceList);
     }
 
@@ -84,6 +98,8 @@ public class TripPieceController {
     @Operation(summary = "단일 여행 조각 조회 API", description = "tripPieceId를 입력받아 여행 조각 출력")
     public ApiResponse<TripPieceResponseDto.getTripPieceDto> getTripPiece(@PathVariable("tripPieceId") Long tripPieceId){
         TripPieceResponseDto.getTripPieceDto response = tripPieceService.getTripPiece(tripPieceId);
+        if (response == null)
+            return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
         return ApiResponse.onSuccess(response);
     }
 }
