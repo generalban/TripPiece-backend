@@ -23,4 +23,14 @@ public class MapConverter {
                 map.getColor()
         );
     }
+
+    public static MapResponseDto.getMarkerResponse toMarkerResponseDto(Map map, String markerImg, String countryName, String cityName) {
+        return MapResponseDto.getMarkerResponse.builder()
+                .color(map.getColor())
+                .markerImg(markerImg)
+                .countryCode(map.getCountryCode())
+                .countryName(countryName)
+                .cityName(cityName)
+                .build();
+    }
 }
