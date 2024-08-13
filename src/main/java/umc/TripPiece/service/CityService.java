@@ -6,12 +6,15 @@ import org.springframework.transaction.annotation.Transactional;
 import umc.TripPiece.converter.CityConverter;
 import umc.TripPiece.domain.City;
 import umc.TripPiece.domain.Country;
+import umc.TripPiece.payload.ApiResponse;
+import umc.TripPiece.payload.code.status.ErrorStatus;
 import umc.TripPiece.repository.CityRepository;
 import umc.TripPiece.repository.CountryRepository;
 import umc.TripPiece.web.dto.request.CityRequestDto;
 import umc.TripPiece.web.dto.response.CityResponseDto;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -23,6 +26,11 @@ public class CityService {
 
     public List<CityResponseDto.searchDto> searchCity(CityRequestDto.searchDto request){
         String keyword = request.getKeyword();
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return Collections.emptyList(); // 빈 리스트를 반환
+        }
+
         List<City> cities = cityRepository.findByNameContainingIgnoreCase(keyword);
         List<Country> countries = countryRepository.findByNameContainingIgnoreCase(keyword);
 
@@ -38,6 +46,7 @@ public class CityService {
                 searched.addAll(citiesInCountry.stream().map(CityConverter::toSearchDto).toList());
             });
         }
+
 
         return searched;
     }
