@@ -237,7 +237,7 @@ public class TravelService {
 
     @Transactional
     public TravelResponseDto.TripSummaryDto endTravel(Long travelId) {
-        Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new RuntimeException("travel not found"));
+        Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new IllegalArgumentException("travel not found"));
         travel.setStatus(TravelStatus.COMPLETED);
         List<TripPiece> tripPieces = tripPieceRepository.findByTravelId(travelId);
         return TravelConverter.toTripSummary(travel, tripPieces);
@@ -245,7 +245,7 @@ public class TravelService {
 
     @Transactional
     public List<TravelResponseDto.TripPieceSummaryDto> continueTravel(Long travelId) {
-        //Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new RuntimeException("travel not found"));
+        Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new IllegalArgumentException("travel not found"));
         List<TripPiece> tripPieces = tripPieceRepository.findByTravelId(travelId);
 
         java.util.Map<LocalDate, List<TripPiece>> tripPiecesByDate = tripPieces.stream()
@@ -267,7 +267,7 @@ public class TravelService {
 
     @Transactional
     public TravelResponseDto.TripSummaryDto getTravelDetails(Long travelId) {
-        Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new RuntimeException("travel not found"));
+        Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new IllegalArgumentException("travel not found"));
         List<TripPiece> tripPieces = tripPieceRepository.findByTravelId(travelId);
         return TravelConverter.toTripSummary(travel, tripPieces);
     }
