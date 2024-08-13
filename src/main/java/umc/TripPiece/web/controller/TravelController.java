@@ -147,14 +147,14 @@ public class TravelController {
 
     @GetMapping("/travels")
     @Operation(summary = "생성된 여행기 API", description = "생성된 여행기 리스트 반환")
-    public ApiResponse<List<TravelResponseDto.TravelListDto>> getTravelList(@RequestHeader("Authorization") String token){
+    public ResponseEntity<ApiResponse<List<TravelResponseDto.TravelListDto>>> getTravelList(@RequestHeader("Authorization") String token){
         String tokenWithoutBearer = token.substring(7);
         List<TravelResponseDto.TravelListDto> travels = travelService.getTravelList(tokenWithoutBearer);
 
         if (travels.isEmpty()) {
-            return ApiResponse.onFailure("400", "생성된 여행기 없음.", null);
+            return new ResponseEntity<>(ApiResponse.onFailure("400", "생성된 여행기 없음.", null), HttpStatus.BAD_REQUEST);
         }
-        return ApiResponse.onSuccess(travels);
+        return new ResponseEntity<>(ApiResponse.onSuccess(travels), HttpStatus.OK);
     }
 
     @GetMapping("/travels/{travelId}")
