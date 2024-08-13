@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,12 +30,14 @@ public class CityController {
             description = "도시, 국가 검색"
 
     )
-    public ApiResponse<List<CityResponseDto.searchDto>> searchCities(@RequestBody @Valid CityRequestDto.searchDto request){
+    public ResponseEntity<ApiResponse<List<CityResponseDto.searchDto>>> searchCities(@RequestBody @Valid CityRequestDto.searchDto request){
         List<CityResponseDto.searchDto> result = cityService.searchCity(request);
 
         if (result.isEmpty()) {
-            return ApiResponse.onFailure("400", "No matching cities or countries found.", null);
+            return new ResponseEntity<>(ApiResponse.onFailure("400", "No matching cities or countries found.", null), HttpStatus.BAD_REQUEST);
         }
-        return ApiResponse.onSuccess(result);
+        else {
+            return new ResponseEntity<>(ApiResponse.onSuccess(result), HttpStatus.OK);
+        }
     }
 }
