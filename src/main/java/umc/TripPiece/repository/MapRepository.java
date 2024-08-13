@@ -11,4 +11,6 @@ public interface MapRepository extends JpaRepository<Map, Long> {
 
     @Query("SELECT COUNT(DISTINCT t.city) FROM Travel t WHERE t.user.id = :userId")
     long countDistinctCityByUserId(Long userId);
+
+    Map findByCountryCodeAndUserId(String countryCode, Long userId);
 }

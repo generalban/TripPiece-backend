@@ -1,8 +1,6 @@
 package umc.TripPiece.web.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import umc.TripPiece.domain.enums.Color;
 import umc.TripPiece.domain.Map;
 
@@ -20,5 +18,16 @@ public class MapResponseDto {
         this.userId = map.getUserId();
         this.countryCode = map.getCountryCode();
         this.color = map.getColor();
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class getMarkerResponse {
+        private Color color;
+        private String markerImg;
+        private String countryCode;
+        private String countryName;
+        private String cityName;
     }
 }

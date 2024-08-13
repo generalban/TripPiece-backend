@@ -12,7 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 import umc.TripPiece.converter.TravelConverter;
 import umc.TripPiece.domain.Travel;
 import umc.TripPiece.domain.TripPiece;
+import umc.TripPiece.domain.enums.TravelStatus;
 import umc.TripPiece.payload.ApiResponse;
+import umc.TripPiece.repository.TravelRepository;
 import umc.TripPiece.service.TravelService;
 import umc.TripPiece.web.dto.request.TravelRequestDto;
 import umc.TripPiece.web.dto.response.TravelResponseDto;
@@ -26,6 +28,7 @@ import java.util.regex.Pattern;
 public class TravelController {
 
     private final TravelService travelService;
+    private final TravelRepository travelRepository;
 
     @GetMapping("/explore/search")
     public List<Travel> searchByKeyword(@RequestParam String keyword) {
@@ -65,6 +68,10 @@ public class TravelController {
     @Operation(summary = "메모 기록 API", description = "특정 여행기에서의 여행조각 추가")
     public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceMemo(@RequestBody TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token){
 
+        Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new IllegalArgumentException("travel not found"));
+        if(travel == null) return ApiResponse.onFailure("400", "존재하지 않는 여행기 입니다.", null);
+        if(travel.getStatus() == TravelStatus.COMPLETED) return ApiResponse.onFailure("400", "이미 완료된 여행기 입니다.", null);
+
         if(request.getDescription().length() > 100)
             return ApiResponse.onFailure("400", "글자수 100자 초과 입니다.", null);
 
@@ -76,6 +83,10 @@ public class TravelController {
     @PostMapping("/mytravels/{travelId}/emoji")
     @Operation(summary = "이모지 기록 API", description = "특정 여행기에서의 여행조각 추가")
     public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceEmoji(@RequestBody TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token, @RequestParam(name = "emojis") List<String> emojis){
+
+        Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new IllegalArgumentException("travel not found"));
+        if(travel == null) return ApiResponse.onFailure("400", "존재하지 않는 여행기 입니다.", null);
+        if(travel.getStatus() == TravelStatus.COMPLETED) return ApiResponse.onFailure("400", "이미 완료된 여행기 입니다.", null);
 
         if(request.getDescription().length() > 30)
             return ApiResponse.onFailure("400", "글자수 30자 초과 입니다.", null);
@@ -101,6 +112,10 @@ public class TravelController {
     @Operation(summary = "사진 기록 API", description = "특정 여행기에서의 여행조각 추가")
     public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPiecePicture(@RequestPart("memo") TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token, @RequestPart("photos") List<MultipartFile> photos){
 
+        Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new IllegalArgumentException("travel not found"));
+        if(travel == null) return ApiResponse.onFailure("400", "존재하지 않는 여행기 입니다.", null);
+        if(travel.getStatus() == TravelStatus.COMPLETED) return ApiResponse.onFailure("400", "이미 완료된 여행기 입니다.", null);
+
         if(request.getDescription().length() > 30)
             return ApiResponse.onFailure("400", "글자수 30자 초과 입니다.", null);
 
@@ -112,6 +127,10 @@ public class TravelController {
     @PostMapping(value = "/mytravels/{travelId}/selfie", consumes = "multipart/form-data")
     @Operation(summary = "셀카 기록 API", description = "특정 여행기에서의 여행조각 추가")
     public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceSelfie(@Valid @RequestPart("memo") TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token, @RequestPart("photo") MultipartFile photo){
+
+        Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new IllegalArgumentException("travel not found"));
+        if(travel == null) return ApiResponse.onFailure("400", "존재하지 않는 여행기 입니다.", null);
+        if(travel.getStatus() == TravelStatus.COMPLETED) return ApiResponse.onFailure("400", "이미 완료된 여행기 입니다.", null);
 
         if(request.getDescription().length() > 30)
             return ApiResponse.onFailure("400", "글자수 30자 초과 입니다.", null);
@@ -125,6 +144,10 @@ public class TravelController {
     @Operation(summary = "비디오 기록 API", description = "특정 여행기에서의 여행조각 추가")
     public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceVideo(@Valid @RequestPart("memo") TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token, @RequestPart("video") MultipartFile video){
 
+        Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new IllegalArgumentException("travel not found"));
+        if(travel == null) return ApiResponse.onFailure("400", "존재하지 않는 여행기 입니다.", null);
+        if(travel.getStatus() == TravelStatus.COMPLETED) return ApiResponse.onFailure("400", "이미 완료된 여행기 입니다.", null);
+
         if(request.getDescription().length() > 30)
             return ApiResponse.onFailure("400", "글자수 30자 초과 입니다.", null);
 
@@ -136,6 +159,10 @@ public class TravelController {
     @PostMapping(value = "/mytravels/{travelId}/where", consumes = "multipart/form-data")
     @Operation(summary = "'지금 어디에 있나요?' 카테고리 기록 API", description = "특정 여행기에서의 여행조각 추가")
     public ApiResponse<TravelResponseDto.CreateTripPieceResultDto> createTripPieceWhere(@Valid @RequestPart("memo") TravelRequestDto.MemoDto request, @PathVariable("travelId") Long travelId, @RequestHeader("Authorization") String token, @RequestPart("video") MultipartFile video){
+
+        Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new IllegalArgumentException("travel not found"));
+        if(travel == null) return ApiResponse.onFailure("400", "존재하지 않는 여행기 입니다.", null);
+        if(travel.getStatus() == TravelStatus.COMPLETED) return ApiResponse.onFailure("400", "이미 완료된 여행기 입니다.", null);
 
         if(request.getDescription().length() > 30)
             return ApiResponse.onFailure("400", "글자수 30자 초과 입니다.", null);
