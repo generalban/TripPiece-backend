@@ -4,6 +4,9 @@ package umc.TripPiece.web.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.TripPiece.converter.TravelConverter;
@@ -31,13 +34,18 @@ public class TravelController {
 
     @PostMapping(value = "/mytravels", consumes = "multipart/form-data")
     @Operation(summary = "여행 생성 API", description = "여행 시작하기")
-    public ApiResponse<TravelResponseDto.Create> createTravel(@Valid @RequestPart("data") TravelRequestDto.Create request, @RequestPart("thumbnail") MultipartFile thumbnail, @RequestHeader("Authorization") String token){
+    public ResponseEntity<ApiResponse<TravelResponseDto.Create>> createTravel(@Valid @RequestPart("data") TravelRequestDto.Create request, @RequestPart("thumbnail") MultipartFile thumbnail, @RequestHeader("Authorization") String token){
         String tokenWithoutBearer = token.substring(7);
         TravelResponseDto.Create response = travelService.createTravel(request, thumbnail, tokenWithoutBearer);
 
-        if(response == null) return ApiResponse.onFailure("400", "현재 진행 중인 여행기가 있습니다.", null);
+        if(response == null) {return new ResponseEntity<>(ApiResponse.onFailure("400", "현재 진행 중인 여행기가 있습니다.", null), HttpStatus.BAD_REQUEST);}
 
-        return ApiResponse.onSuccess(response);
+        return new ResponseEntity<>(ApiResponse.onSuccess(response), HttpStatus.OK);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<Object>> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return new ResponseEntity<>(ApiResponse.onFailure("400", ex.getMessage(), null), HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/mytravels/{travelId}/end")

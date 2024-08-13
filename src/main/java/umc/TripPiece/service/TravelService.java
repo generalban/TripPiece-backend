@@ -203,11 +203,22 @@ public class TravelService {
 
     @Transactional
     public TravelResponseDto.Create createTravel(TravelRequestDto.Create request, MultipartFile thumbnail, String token) {
+        if (thumbnail == null || thumbnail.isEmpty()) {
+            throw new IllegalArgumentException("Thumbnail is required.");
+        }
         Long userId = jwtUtil.getUserIdFromToken(token);
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("user not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("user not found"));
 
-        City city = cityRepository.findByNameContainingIgnoreCase(request.getCityName()).stream().findFirst().orElseThrow(() -> new RuntimeException("city not found"));
+        City city = cityRepository.findByNameContainingIgnoreCase(request.getCityName()).stream().findFirst().orElseThrow(() -> new IllegalArgumentException("city not found"));
         city.setLogCount(city.getLogCount() + 1);
+
+        if (request.getStartDate().isAfter(request.getEndDate())) {
+            throw new IllegalArgumentException("Start date cannot be after end date.");
+        }
+
+        if (request.getTitle().isEmpty()) {
+            throw new IllegalArgumentException("title cannot be null");
+        }
 
         String uuid = UUID.randomUUID().toString();
         String thumbnailUrl = s3Manager.uploadFile("thumbnails/" + uuid, thumbnail);
