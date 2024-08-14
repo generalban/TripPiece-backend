@@ -201,12 +201,18 @@ public class UserServiceImpl implements UserService{
         Uuid savedUuid = uuidRepository.save(Uuid.builder()
                 .uuid(uuid).build());
 
-        String profileImgUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), profileImg);
-
         Long userId = jwtUtil.getUserIdFromToken(token);
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new IllegalArgumentException("존재하지 않는 계정입니다.")
         );
+
+        String profileImgUrl;
+
+        if(profileImg == null) {
+            profileImgUrl = user.getProfileImg();
+        } else {
+            profileImgUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), profileImg);
+        }
 
         if(request.getNickname() != null){
             user.updatenickname(request.getNickname());
