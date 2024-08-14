@@ -100,7 +100,7 @@ public class UserController {
     @PostMapping(value = "/update", consumes = "multipart/form-data")
     @Operation(summary = "프로필 수정하기 API",
             description = "프로필 수정하기")
-    public ApiResponse<UserResponseDto.UpdateResultDto> update(@RequestPart("info") @Valid UserRequestDto.UpdateDto request, @RequestHeader("Authorization") String token, @RequestPart("profileImg") MultipartFile profileImg) {
+    public ApiResponse<UserResponseDto.UpdateResultDto> update(@RequestPart("info") @Valid UserRequestDto.UpdateDto request, @RequestHeader("Authorization") String token, @RequestPart(value = "profileImg", required = false) MultipartFile profileImg) {
         String tokenWithoutBearer = token.substring(7);
         User user = userService.update(request, tokenWithoutBearer, profileImg);
 

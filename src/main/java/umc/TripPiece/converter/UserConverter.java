@@ -124,6 +124,7 @@ public class UserConverter {
                 .nickname(user.getNickname())
                 .gender(user.getGender())
                 .birth(user.getBirth())
+                .country(user.getCountry())
                 .profileImg(user.getProfileImg())
                 .build();
     }
