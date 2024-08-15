@@ -81,6 +81,7 @@ public class UserServiceImpl implements UserService{
         Uuid savedUuid = uuidRepository.save(Uuid.builder()
                 .uuid(uuid).build());
 
+        String profileImgUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), profileImg);
 
         // providerId 중복 확인
         userRepository.findByProviderId(request.getProviderId()).ifPresent(user -> {
@@ -100,13 +101,6 @@ public class UserServiceImpl implements UserService{
         User newUser = UserConverter.toUser(request);
 
         // 프로필 사진 설정
-        String profileImgUrl;
-
-        if(profileImg == null) {
-            profileImgUrl = null;
-        } else {
-            profileImgUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), profileImg);
-        }
         newUser.setProfileImg(profileImgUrl);
 
         return userRepository.save(newUser);
@@ -219,7 +213,7 @@ public class UserServiceImpl implements UserService{
         String profileImgUrl;
 
         if(profileImg == null) {
-            profileImgUrl = null;
+            profileImgUrl = user.getProfileImg();
         } else {
             profileImgUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), profileImg);
         }
