@@ -105,7 +105,7 @@ public class UserConverter {
         Gender gender = request.getGender();
 
         return User.builder()
-                .name(request.getName())
+                .name("")
                 .email(request.getEmail())
                 .password("")
                 .nickname(request.getNickname())
