@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import umc.TripPiece.aws.s3.AmazonS3Manager;
 import umc.TripPiece.converter.UserConverter;
@@ -61,7 +62,10 @@ public class UserServiceImpl implements UserService{
         User newUser = UserConverter.toUser(request, hashedPassword);
 
         // 프로필 사진 설정
-        newUser.setProfileImg(profileImgUrl);
+        if(profileImg != null) {
+            profileImgUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), profileImg);
+            newUser.setProfileImg(profileImgUrl);
+        }
 
         return userRepository.save(newUser);
     }
@@ -97,7 +101,11 @@ public class UserServiceImpl implements UserService{
         User newUser = UserConverter.toUser(request);
 
         // 프로필 사진 설정
-        newUser.setProfileImg(profileImgUrl);
+        if(profileImg != null) {
+            profileImgUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), profileImg);
+            newUser.setProfileImg(profileImgUrl);
+        }
+
 
         return userRepository.save(newUser);
     }
@@ -209,7 +217,7 @@ public class UserServiceImpl implements UserService{
         String profileImgUrl;
 
         if(profileImg == null) {
-            profileImgUrl = user.getProfileImg();
+            profileImgUrl = null;
         } else {
             profileImgUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), profileImg);
         }
