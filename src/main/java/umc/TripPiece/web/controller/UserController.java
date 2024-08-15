@@ -39,7 +39,7 @@ public class UserController {
     @PostMapping(value = "/signup", consumes = "multipart/form-data")
     @Operation(summary = "회원가입 API",
     description = "회원가입")
-    public ApiResponse<UserResponseDto.SignUpResultDto> signUp(@RequestPart("info") @Valid UserRequestDto.SignUpDto request, @RequestPart("profileImg") MultipartFile profileImg) {
+    public ApiResponse<UserResponseDto.SignUpResultDto> signUp(@RequestPart("info") @Valid UserRequestDto.SignUpDto request, @RequestPart(value = "profileImg", required = false) MultipartFile profileImg) {
         try {
             User user = userService.signUp(request, profileImg);
             return ApiResponse.onSuccess(UserConverter.toSignUpResultDto(user));
