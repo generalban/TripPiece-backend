@@ -43,8 +43,6 @@ public class UserServiceImpl implements UserService{
         Uuid savedUuid = uuidRepository.save(Uuid.builder()
                 .uuid(uuid).build());
 
-        String profileImgUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), profileImg);
-
         // 이메일 중복 확인
         userRepository.findByEmail(request.getEmail()).ifPresent(user -> {
             throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
@@ -61,6 +59,13 @@ public class UserServiceImpl implements UserService{
         User newUser = UserConverter.toUser(request, hashedPassword);
 
         // 프로필 사진 설정
+        String profileImgUrl;
+
+        if(profileImg == null) {
+            profileImgUrl = null;
+        } else {
+            profileImgUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), profileImg);
+        }
         newUser.setProfileImg(profileImgUrl);
 
         return userRepository.save(newUser);
@@ -77,7 +82,6 @@ public class UserServiceImpl implements UserService{
                 .uuid(uuid).build());
 
         String profileImgUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), profileImg);
-
 
         // providerId 중복 확인
         userRepository.findByProviderId(request.getProviderId()).ifPresent(user -> {
