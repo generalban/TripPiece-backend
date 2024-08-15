@@ -5,7 +5,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import umc.TripPiece.aws.s3.AmazonS3Manager;
 import umc.TripPiece.converter.UserConverter;
@@ -44,8 +43,6 @@ public class UserServiceImpl implements UserService{
         Uuid savedUuid = uuidRepository.save(Uuid.builder()
                 .uuid(uuid).build());
 
-        String profileImgUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), profileImg);
-
         // 이메일 중복 확인
         userRepository.findByEmail(request.getEmail()).ifPresent(user -> {
             throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
@@ -62,10 +59,14 @@ public class UserServiceImpl implements UserService{
         User newUser = UserConverter.toUser(request, hashedPassword);
 
         // 프로필 사진 설정
-        if(profileImg != null) {
+        String profileImgUrl;
+
+        if(profileImg == null) {
+            profileImgUrl = null;
+        } else {
             profileImgUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), profileImg);
-            newUser.setProfileImg(profileImgUrl);
         }
+        newUser.setProfileImg(profileImgUrl);
 
         return userRepository.save(newUser);
     }
@@ -79,8 +80,6 @@ public class UserServiceImpl implements UserService{
         String uuid = UUID.randomUUID().toString();
         Uuid savedUuid = uuidRepository.save(Uuid.builder()
                 .uuid(uuid).build());
-
-        String profileImgUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), profileImg);
 
 
         // providerId 중복 확인
@@ -101,11 +100,14 @@ public class UserServiceImpl implements UserService{
         User newUser = UserConverter.toUser(request);
 
         // 프로필 사진 설정
-        if(profileImg != null) {
-            profileImgUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), profileImg);
-            newUser.setProfileImg(profileImgUrl);
-        }
+        String profileImgUrl;
 
+        if(profileImg == null) {
+            profileImgUrl = null;
+        } else {
+            profileImgUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), profileImg);
+        }
+        newUser.setProfileImg(profileImgUrl);
 
         return userRepository.save(newUser);
     }
