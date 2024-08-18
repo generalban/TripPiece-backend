@@ -281,6 +281,7 @@ public class TravelService {
         City city = travel.getCity();
         Country country = city.getCountry();
 
+        String nickname = user.getNickname();
         String profileImg = user.getProfileImg();
         String countryName = country.getName();
 
@@ -289,7 +290,7 @@ public class TravelService {
         Long dayCount = ChronoUnit.DAYS.between(startDate, today);
 
 
-        return TravelConverter.toOngoingTravelResultDto(travel, profileImg, countryName, dayCount);
+        return TravelConverter.toOngoingTravelResultDto(travel, nickname, profileImg, countryName, dayCount);
     }
 
 
