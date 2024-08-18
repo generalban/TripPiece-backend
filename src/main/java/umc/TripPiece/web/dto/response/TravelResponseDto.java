@@ -88,6 +88,11 @@ public class TravelResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class getOngoingTravelResultDto {
+        String profileImg;
+        String title;
+        String cityName;
+        String countryName;
+        Long dayCount;
         Integer memoNum;
         Integer pictureNum;
         Integer videoNum;
