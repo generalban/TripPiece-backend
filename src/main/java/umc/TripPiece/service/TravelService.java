@@ -19,6 +19,7 @@ import umc.TripPiece.web.dto.response.TravelResponseDto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -275,8 +276,20 @@ public class TravelService {
     @Transactional
     public TravelResponseDto.getOngoingTravelResultDto getOngoingTravel(String token) {
         Long userId = jwtUtil.getUserIdFromToken(token);
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("user not found"));
         Travel travel = travelRepository.findByStatusAndUserId(TravelStatus.ONGOING, userId);
-        return TravelConverter.toOngoingTravelResultDto(travel);
+        City city = travel.getCity();
+        Country country = city.getCountry();
+
+        String profileImg = user.getProfileImg();
+        String countryName = country.getName();
+
+        LocalDateTime startDate = travel.getStartDate();
+        LocalDateTime today = LocalDateTime.now();
+        Long dayCount = ChronoUnit.DAYS.between(startDate, today);
+
+
+        return TravelConverter.toOngoingTravelResultDto(travel, profileImg, countryName, dayCount);
     }
 
 
