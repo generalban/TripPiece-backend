@@ -100,12 +100,15 @@ public class TravelConverter {
                 .build();
     }
 
-    public static TravelResponseDto.getOngoingTravelResultDto toOngoingTravelResultDto(Travel travel, String profileImg, String countryName, Long dayCount) {
+    public static TravelResponseDto.getOngoingTravelResultDto toOngoingTravelResultDto(Travel travel, String nickname, String profileImg, String countryName, Long dayCount) {
         return TravelResponseDto.getOngoingTravelResultDto.builder()
                 .profileImg(profileImg)
+                .nickname(nickname)
                 .title(travel.getTitle())
                 .cityName(travel.getCity().getName())
                 .countryName(countryName)
+                .startDate(travel.getStartDate().toLocalDate())
+                .endDate(travel.getEndDate().toLocalDate())
                 .dayCount(dayCount)
                 .memoNum(travel.getMemoNum())
                 .pictureNum(travel.getPictureNum())
