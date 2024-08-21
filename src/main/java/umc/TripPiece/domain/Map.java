@@ -26,4 +26,9 @@ public class Map {
     @Enumerated(EnumType.STRING)
     @Column(name = "color", nullable = false)
     private Color color;
+
+    // City와 연관 관계 추가
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "city_id", nullable = false)
+    private City city;  // 도시를 통해 국가 정보를 접근
 }

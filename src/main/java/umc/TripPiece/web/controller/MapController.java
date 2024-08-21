@@ -20,37 +20,42 @@ public class MapController {
     @Autowired
     private MapService mapService;
 
-    @GetMapping
-    @Operation(summary = "맵 불러오기 API", description = "맵 리스트 반환")
-    public ApiResponse<List<MapResponseDto>> getAllMaps() {
-        List<MapResponseDto> maps = mapService.getAllMaps();
-        return new ApiResponse<>(true, maps, "All maps retrieved successfully");
+    // 유저별로 맵 리스트를 반환하도록 수정
+    @GetMapping("/{userId}")
+    @Operation(summary = "유저별 맵 불러오기 API", description = "유저별 맵 리스트 반환")
+    public ApiResponse<List<MapResponseDto>> getMapsByUserId(@PathVariable Long userId) {
+        List<MapResponseDto> maps = mapService.getMapsByUserId(userId);
+        return new ApiResponse<>(true, maps, "Maps for user " + userId + " retrieved successfully");
     }
 
+    // 맵 생성 시 선택한 도시 정보도 함께 처리하도록 수정
     @PostMapping
-    @Operation(summary = "맵 생성 API", description = "맵 색깔 지정")
+    @Operation(summary = "맵 생성 API", description = "맵과 도시 정보 생성")
     public ApiResponse<MapResponseDto> createMap(@RequestBody MapRequestDto requestDto) {
-        MapResponseDto mapResponseDto = mapService.createMap(requestDto);
-        return new ApiResponse<>(true, mapResponseDto, "Map created successfully");
+        MapResponseDto mapResponseDto = mapService.createMapWithCity(requestDto);
+        return new ApiResponse<>(true, mapResponseDto, "Map created successfully with city information");
     }
 
-    @GetMapping("/stats")
-    @Operation(summary = "방문 나라 수/도시 수 반환 API", description = "현재까지 방문한 나라/도시 갯수")
-    public ApiResponse<MapStatsResponseDto> getMapStats(@RequestHeader("Authorization") String token) {
-        String tokenWithoutBearer = token.substring(7);
-        MapStatsResponseDto stats = mapService.getMapStats(tokenWithoutBearer);
-        return new ApiResponse<>(true, stats, "Map stats retrieved successfully");
+    // 유저별 나라, 도시 통계 반환
+    @GetMapping("/stats/{userId}")
+    @Operation(summary = "유저별 맵 통계 API", description = "유저별 방문한 나라와 도시 수 반환")
+    public ApiResponse<MapStatsResponseDto> getMapStatsByUserId(@PathVariable Long userId) {
+        MapStatsResponseDto stats = mapService.getMapStatsByUserId(userId);
+        return new ApiResponse<>(true, stats, "Map stats for user " + userId + " retrieved successfully");
     }
 
+
+    // 마커 반환 기능 그대로 유지
     @GetMapping("/markers")
     @Operation(summary = "구글 지도 위 마커 반환 API", description = "나의 기록탭의 마커 반환")
     public ApiResponse<List<MapResponseDto.getMarkerResponse>> getMarkers(@RequestHeader("Authorization") String token) {
         String tokenWithoutBearer = token.substring(7);
         List<MapResponseDto.getMarkerResponse> markers = mapService.getMarkers(tokenWithoutBearer);
 
-        if(markers == null || markers.isEmpty()) return new ApiResponse<>(false, null, "No markers found");
+        if (markers == null || markers.isEmpty()) {
+            return new ApiResponse<>(false, null, "No markers found");
+        }
         return new ApiResponse<>(true, markers, "Markers retrieved successfully");
-
     }
 
 }

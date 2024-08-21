@@ -30,42 +30,44 @@ public class MapService {
     private final JWTUtil jwtUtil;
     private final TravelRepository travelRepository;
 
-    public List<MapResponseDto> getAllMaps() {
-        return mapRepository.findAll().stream()
+    // 유저별 맵 리스트를 조회하는 메소드
+    public List<MapResponseDto> getMapsByUserId(Long userId) {
+        return mapRepository.findByUserId(userId).stream()
                 .map(MapConverter::toMapResponseDto)
                 .collect(Collectors.toList());
     }
 
+    // 맵 생성 시 선택한 도시 정보도 함께 저장하는 메소드
     @Transactional
-    public MapResponseDto createMap(MapRequestDto requestDto) {
-        Map map = MapConverter.toMap(requestDto);
+    public MapResponseDto createMapWithCity(MapRequestDto requestDto) {
+        City city = cityRepository.findById(requestDto.getCityId()).orElseThrow(() ->
+                new IllegalArgumentException("City not found with id: " + requestDto.getCityId()));
+        Map map = MapConverter.toMap(requestDto, city);  // City 정보를 함께 전달
         Map savedMap = mapRepository.save(map);
         return MapConverter.toMapResponseDto(savedMap);
     }
 
-    public long countCountriesByUserId(Long userId) {
-        return mapRepository.countDistinctCountryCodeByUserId(userId);
+    // 유저별 방문한 나라와 도시 통계를 반환하는 메소드
+    public MapStatsResponseDto getMapStatsByUserId(Long userId) {
+        // 방문한 나라와 도시의 수 계산
+        long countryCount = mapRepository.countDistinctCountryCodeByUserId(userId);
+        long cityCount = mapRepository.countDistinctCityByUserId(userId);
+
+        // 방문한 나라의 countryCode 리스트 및 cityId 리스트 조회
+        List<String> countryCodes = mapRepository.findDistinctCountryCodesByUserId(userId);
+        List<Long> cityIds = mapRepository.findDistinctCityIdsByUserId(userId);
+
+        return new MapStatsResponseDto(countryCount, cityCount, countryCodes, cityIds);
     }
 
-    public long countCitiesByUserId(Long userId) {
-        return cityRepository.countDistinctCityByUserId(userId);
-    }
-
-    public MapStatsResponseDto getMapStats(String token) {
-        Long userId = jwtUtil.getUserIdFromToken(token);
-
-        long countryCount = countCountriesByUserId(userId);
-        long cityCount = countCitiesByUserId(userId);
-        return new MapStatsResponseDto(countryCount, cityCount);
-    }
-
+    // 마커 반환 기능 (기존 유지)
     @Transactional
     public List<MapResponseDto.getMarkerResponse> getMarkers(String token) {
         Long userId = jwtUtil.getUserIdFromToken(token);
         List<Travel> travels = travelRepository.findByUserId(userId);
         List<MapResponseDto.getMarkerResponse> markers = new ArrayList<>();
 
-        for(Travel travel : travels) {
+        for (Travel travel : travels) {
             City city = travel.getCity();
             Country country = city.getCountry();
             Map map = mapRepository.findByCountryCodeAndUserId(country.getCode(), userId);
@@ -74,8 +76,5 @@ public class MapService {
         }
 
         return markers;
-
     }
-
-
 }
