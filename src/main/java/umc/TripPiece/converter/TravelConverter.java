@@ -6,6 +6,7 @@ import umc.TripPiece.web.dto.request.TravelRequestDto;
 import umc.TripPiece.web.dto.response.TravelResponseDto;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -95,6 +96,7 @@ public class TravelConverter {
                 .startDate(travel.getStartDate().toLocalDate())
                 .endDate(travel.getEndDate().toLocalDate())
                 .cityName(travel.getCity().getName())
+                .countryImage(travel.getCity().getCountry().getName())
                 .countryName(travel.getCity().getCountry().getName())
                 .status(travel.getStatus())
                 .build();
