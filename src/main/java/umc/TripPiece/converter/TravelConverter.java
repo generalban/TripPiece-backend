@@ -96,7 +96,7 @@ public class TravelConverter {
                 .startDate(travel.getStartDate().toLocalDate())
                 .endDate(travel.getEndDate().toLocalDate())
                 .cityName(travel.getCity().getName())
-                .countryImage(travel.getCity().getCountry().getName())
+                .countryImage(travel.getCity().getCountry().getCountryImage())
                 .countryName(travel.getCity().getCountry().getName())
                 .status(travel.getStatus())
                 .build();
