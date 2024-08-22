@@ -1,5 +1,6 @@
 package umc.TripPiece.web.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -76,11 +77,14 @@ public class TravelResponseDto {
         private Long id;
         private String title;
         private String thumbnail;
+        @JsonFormat(pattern = "yyyy/MM/dd")
         private LocalDate startDate;
+        @JsonFormat(pattern = "yyyy/MM/dd")
         private LocalDate endDate;
         private String cityName;
         private String countryName;
         private TravelStatus status;
+        private String countryImage;
     }
 
     @Builder
