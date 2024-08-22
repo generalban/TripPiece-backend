@@ -8,10 +8,12 @@ import umc.TripPiece.domain.City;
 import umc.TripPiece.domain.Country;
 import umc.TripPiece.domain.Map;
 import umc.TripPiece.domain.Travel;
+import umc.TripPiece.domain.User;
 import umc.TripPiece.domain.jwt.JWTUtil;
 import umc.TripPiece.repository.MapRepository;
 import umc.TripPiece.repository.CityRepository;
 import umc.TripPiece.repository.TravelRepository;
+import umc.TripPiece.repository.UserRepository;
 import umc.TripPiece.web.dto.request.MapRequestDto;
 import umc.TripPiece.web.dto.response.MapResponseDto;
 import umc.TripPiece.web.dto.response.MapStatsResponseDto;
@@ -29,6 +31,7 @@ public class MapService {
     private final CityRepository cityRepository;
     private final JWTUtil jwtUtil;
     private final TravelRepository travelRepository;
+    private final UserRepository userRepository;  // UserRepository 추가
 
     // 유저별 맵 리스트를 조회하는 메소드
     public List<MapResponseDto> getMapsByUserId(Long userId) {
@@ -57,7 +60,13 @@ public class MapService {
         List<String> countryCodes = mapRepository.findDistinctCountryCodesByUserId(userId);
         List<Long> cityIds = mapRepository.findDistinctCityIdsByUserId(userId);
 
-        return new MapStatsResponseDto(countryCount, cityCount, countryCodes, cityIds);
+        // 유저 정보 (프로필 이미지, 닉네임)
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        String profileImg = user.getProfileImg();
+        String nickname = user.getNickname();
+
+        // DTO 반환
+        return new MapStatsResponseDto(countryCount, cityCount, countryCodes, cityIds, profileImg, nickname);
     }
 
     // 마커 반환 기능 (기존 유지)
