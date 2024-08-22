@@ -72,8 +72,8 @@ public class TravelController {
         if(travel == null) return ApiResponse.onFailure("400", "존재하지 않는 여행기 입니다.", null);
         if(travel.getStatus() == TravelStatus.COMPLETED) return ApiResponse.onFailure("400", "이미 완료된 여행기 입니다.", null);
 
-        if(request.getDescription().length() > 100)
-            return ApiResponse.onFailure("400", "글자수 100자 초과 입니다.", null);
+        if(request.getDescription().length() > 150)
+            return ApiResponse.onFailure("400", "글자수 150자 초과 입니다.", null);
 
         String tokenWithoutBearer = token.substring(7);
         TripPiece tripPiece = travelService.createMemo(travelId, request, tokenWithoutBearer);
@@ -88,8 +88,8 @@ public class TravelController {
         if(travel == null) return ApiResponse.onFailure("400", "존재하지 않는 여행기 입니다.", null);
         if(travel.getStatus() == TravelStatus.COMPLETED) return ApiResponse.onFailure("400", "이미 완료된 여행기 입니다.", null);
 
-        if(request.getDescription().length() > 30)
-            return ApiResponse.onFailure("400", "글자수 30자 초과 입니다.", null);
+        if(request.getDescription().length() > 100)
+            return ApiResponse.onFailure("400", "글자수 100자 초과 입니다.", null);
 
         if(emojis.size() != 4)
             return ApiResponse.onFailure("400", "이모지의 갯수는 4개여야 합니다.", null);
@@ -116,8 +116,8 @@ public class TravelController {
         if(travel == null) return ApiResponse.onFailure("400", "존재하지 않는 여행기 입니다.", null);
         if(travel.getStatus() == TravelStatus.COMPLETED) return ApiResponse.onFailure("400", "이미 완료된 여행기 입니다.", null);
 
-        if(request.getDescription().length() > 30)
-            return ApiResponse.onFailure("400", "글자수 30자 초과 입니다.", null);
+        if(request.getDescription().length() > 100)
+            return ApiResponse.onFailure("400", "글자수 100자 초과 입니다.", null);
 
         String tokenWithoutBearer = token.substring(7);
         TripPiece tripPiece = travelService.createPicture(travelId, photos, request, tokenWithoutBearer);
@@ -132,8 +132,8 @@ public class TravelController {
         if(travel == null) return ApiResponse.onFailure("400", "존재하지 않는 여행기 입니다.", null);
         if(travel.getStatus() == TravelStatus.COMPLETED) return ApiResponse.onFailure("400", "이미 완료된 여행기 입니다.", null);
 
-        if(request.getDescription().length() > 30)
-            return ApiResponse.onFailure("400", "글자수 30자 초과 입니다.", null);
+        if(request.getDescription().length() > 100)
+            return ApiResponse.onFailure("400", "글자수 100자 초과 입니다.", null);
 
         String tokenWithoutBearer = token.substring(7);
         TripPiece tripPiece = travelService.createSelfie(travelId, photo, request, tokenWithoutBearer);
@@ -148,8 +148,8 @@ public class TravelController {
         if(travel == null) return ApiResponse.onFailure("400", "존재하지 않는 여행기 입니다.", null);
         if(travel.getStatus() == TravelStatus.COMPLETED) return ApiResponse.onFailure("400", "이미 완료된 여행기 입니다.", null);
 
-        if(request.getDescription().length() > 30)
-            return ApiResponse.onFailure("400", "글자수 30자 초과 입니다.", null);
+        if(request.getDescription().length() > 100)
+            return ApiResponse.onFailure("400", "글자수 100자 초과 입니다.", null);
 
         String tokenWithoutBearer = token.substring(7);
         TripPiece tripPiece = travelService.createVideo(travelId, video, request, tokenWithoutBearer);
@@ -164,8 +164,8 @@ public class TravelController {
         if(travel == null) return ApiResponse.onFailure("400", "존재하지 않는 여행기 입니다.", null);
         if(travel.getStatus() == TravelStatus.COMPLETED) return ApiResponse.onFailure("400", "이미 완료된 여행기 입니다.", null);
 
-        if(request.getDescription().length() > 30)
-            return ApiResponse.onFailure("400", "글자수 30자 초과 입니다.", null);
+        if(request.getDescription().length() > 100)
+            return ApiResponse.onFailure("400", "글자수 100자 초과 입니다.", null);
 
         String tokenWithoutBearer = token.substring(7);
         TripPiece tripPiece = travelService.createWhere(travelId, video, request, tokenWithoutBearer);
