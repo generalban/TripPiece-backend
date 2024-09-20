@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${secrets.DB_URL}
-    username: ${secrets.DB_USER}
-    password: ${secrets.DB_PASSWORD}
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
@@ -35,10 +35,10 @@ cloud:
     stack:
       auto: false
     credentials:
-      accessKey: ${secrets.AWS_ACCESS_KEY_ID}
-      secretKey: ${secrets.AWS_SECRET_ACCESS_KEY}
+      accessKey: ${AWS_ACCESS_KEY_ID}
+      secretKey: ${AWS_SECRET_ACCESS_KEY}
 
 jwt:
-  secret: ${secrets.JWT_KEY}
+  secret: ${JWT_KEY}
   accessTokenValidity: 7200000 # 2 hour
   refreshTokenValidity: 604800000 # 1 week
