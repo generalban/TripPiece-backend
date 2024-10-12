@@ -7,8 +7,11 @@ import umc.TripPiece.converter.TripPieceConverter;
 import umc.TripPiece.domain.*;
 import umc.TripPiece.domain.enums.Category;
 import umc.TripPiece.domain.jwt.JWTUtil;
+import umc.TripPiece.repository.EmojiRepository;
+import umc.TripPiece.repository.PictureRepository;
 import umc.TripPiece.repository.TripPieceRepository;
 import umc.TripPiece.repository.UserRepository;
+import umc.TripPiece.repository.VideoRepository;
 import umc.TripPiece.web.dto.response.TripPieceResponseDto;
 
 import java.util.ArrayList;
@@ -21,6 +24,9 @@ import java.util.Random;
 public class TripPieceService {
 
     private final TripPieceRepository tripPieceRepository;
+    private final EmojiRepository emojiRepository;
+    private final PictureRepository pictureRepository;
+    private final VideoRepository videoRepository;
     private final JWTUtil jwtUtil;
 
     @Transactional
@@ -373,5 +379,23 @@ public class TripPieceService {
 
     }
 
+    @Transactional
+    public void delete(Long id) {
+        // 이모지 삭제
+        List<Emoji> emojis = emojiRepository.findByTripPieceId(id);
+        emojiRepository.deleteAll(emojis);
+
+        // 사진 삭제
+        List<Picture> pictures = pictureRepository.findByTripPieceId(id);
+        pictureRepository.deleteAll(pictures);
+
+        // 영상 삭제
+        List<Video> videos = videoRepository.findByTripPieceId(id);
+        videoRepository.deleteAll(videos);
+
+        // 여행 조각 삭제
+        TripPiece tripPiece = tripPieceRepository.getById(id);
+        tripPieceRepository.delete(tripPiece);
+    }
 
 }

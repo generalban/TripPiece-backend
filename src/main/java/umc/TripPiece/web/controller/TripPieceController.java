@@ -4,8 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import umc.TripPiece.payload.ApiResponse;
+import umc.TripPiece.repository.TripPieceRepository;
 import umc.TripPiece.service.TripPieceService;
-import umc.TripPiece.web.dto.response.TravelResponseDto;
 import umc.TripPiece.web.dto.response.TripPieceResponseDto;
 
 import java.util.List;
@@ -15,6 +15,7 @@ import java.util.List;
 public class TripPieceController {
 
     private final TripPieceService tripPieceService;
+    private final TripPieceRepository tripPieceRepository;
 
     @GetMapping("/mytrippieces/all/latest")
     @Operation(summary = "지난 여행 조각(전체, 최신순) API", description = "유저의 여행조각(전체)을 최신순으로 반환")
@@ -94,12 +95,23 @@ public class TripPieceController {
         return ApiResponse.onSuccess(tripPieceList);
     }
 
-    @GetMapping("mytrippieces/{tripPieceId}")
+    @GetMapping("/mytrippieces/{tripPieceId}")
     @Operation(summary = "단일 여행 조각 조회 API", description = "tripPieceId를 입력받아 여행 조각 출력")
     public ApiResponse<TripPieceResponseDto.getTripPieceDto> getTripPiece(@PathVariable("tripPieceId") Long tripPieceId){
         TripPieceResponseDto.getTripPieceDto response = tripPieceService.getTripPiece(tripPieceId);
         if (response == null)
             return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
         return ApiResponse.onSuccess(response);
+    }
+
+    @DeleteMapping("/mytrippieces/{tripPieceId}")
+    @Operation(summary = "여행 조각 삭제 API", description = "tripPieceId를 입력 받아 해당 여행 조각을 삭제")
+    public ApiResponse<Object> deleteTripPiece(@PathVariable("tripPieceId") Long tripPieceId){
+        if (!tripPieceRepository.existsById(tripPieceId))
+            return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
+        else {
+            tripPieceService.delete(tripPieceId);
+            return ApiResponse.onSuccess(null);
+        }
     }
 }
