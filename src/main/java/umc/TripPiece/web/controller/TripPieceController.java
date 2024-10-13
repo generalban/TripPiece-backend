@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import umc.TripPiece.payload.ApiResponse;
 import umc.TripPiece.repository.TripPieceRepository;
 import umc.TripPiece.service.TripPieceService;
+import umc.TripPiece.web.dto.request.TripPieceRequestDto;
 import umc.TripPiece.web.dto.response.TripPieceResponseDto;
 
 import java.util.List;
@@ -113,5 +114,11 @@ public class TripPieceController {
             tripPieceService.delete(tripPieceId);
             return ApiResponse.onSuccess(null);
         }
+    }
+
+    @PatchMapping("/mytrippieces/memo/{tripPieceId}/update")
+    @Operation(summary = "여행 조각(메모) 수정 API", description = "memo 타입의 tripPiece 수정")
+    public ApiResponse<Long> updateMemo(@PathVariable("tripPieceId") Long tripPieceId, @RequestBody TripPieceRequestDto.MemoUpdateDto request){
+        return ApiResponse.onSuccess(tripPieceService.memoUpdate(tripPieceId, request));
     }
 }

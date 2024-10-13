@@ -12,6 +12,7 @@ import umc.TripPiece.repository.PictureRepository;
 import umc.TripPiece.repository.TripPieceRepository;
 import umc.TripPiece.repository.UserRepository;
 import umc.TripPiece.repository.VideoRepository;
+import umc.TripPiece.web.dto.request.TripPieceRequestDto;
 import umc.TripPiece.web.dto.response.TripPieceResponseDto;
 
 import java.util.ArrayList;
@@ -396,6 +397,47 @@ public class TripPieceService {
         // 여행 조각 삭제
         TripPiece tripPiece = tripPieceRepository.getById(id);
         tripPieceRepository.delete(tripPiece);
+    }
+
+    /* 여행 조각 수정 */
+    @Transactional
+    public Long memoUpdate(Long id, TripPieceRequestDto.MemoUpdateDto memoUpdateDto) {
+        TripPiece tripPiece = tripPieceRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("TripPiece not found"));
+
+        tripPiece.updateMemo(memoUpdateDto.getDescription());
+
+        return id;
+    }
+
+    @Transactional
+    public Long pictureUpdate(Long id, TripPieceRequestDto.PictureUpdateDto pictureUpdateDto) {
+        TripPiece tripPiece = tripPieceRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("TripPiece not found"));
+
+        tripPiece.updatePicture(pictureUpdateDto.getDescription(), pictureUpdateDto.getPictures());
+
+        return id;
+    }
+
+    @Transactional
+    public Long videoUpdate(Long id, TripPieceRequestDto.VideoUpdateDto videoUpdateDto) {
+        TripPiece tripPiece = tripPieceRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("TripPiece not found"));
+
+        tripPiece.updateVideo(videoUpdateDto.getDescription(), videoUpdateDto.getVideos());
+
+        return id;
+    }
+
+    @Transactional
+    public Long emojiUpdate(Long id, TripPieceRequestDto.EmojiUpdateDto emojiUpdateDto) {
+        TripPiece tripPiece = tripPieceRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("TripPiece not found"));
+
+        tripPiece.updateEmoji(emojiUpdateDto.getDescription(), emojiUpdateDto.getEmojis());
+
+        return id;
     }
 
 }

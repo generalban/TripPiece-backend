@@ -21,6 +21,7 @@ public class TripPiece extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'MEMO'")
     private Category category;
@@ -32,6 +33,7 @@ public class TripPiece extends BaseEntity {
     @ColumnDefault("true")
     private Boolean travel_contain;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "travel_id")
     private Travel travel;
@@ -49,11 +51,23 @@ public class TripPiece extends BaseEntity {
     @OneToMany(mappedBy = "tripPiece", cascade = CascadeType.ALL)
     private List<Emoji> emojis = new ArrayList<>();
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void updateMemo(String description) {
+        this.description = description;
     }
 
-    public void setTravel(Travel travel) {
-        this.travel = travel;
+    public void updatePicture(String description, List<Picture> pictures) {
+        this.description = description;
+        this.pictures = pictures;
     }
+
+    public void updateVideo(String description, List<Video> videos) {
+        this.description = description;
+        this.videos = videos;
+    }
+
+    public void updateEmoji(String description, List<Emoji> emojis) {
+        this.description = description;
+        this.emojis = emojis;
+    }
+
 }
