@@ -104,7 +104,7 @@ public class TripPieceController {
         return ApiResponse.onSuccess(response);
     }
 
-    @DeleteMapping("/mytrippieces/{tripPieceId}")
+    @DeleteMapping("/mytrippieces/{tripPieceId}/delete")
     @Operation(summary = "여행 조각 삭제 API", description = "tripPieceId를 입력 받아 해당 여행 조각을 삭제")
     public ApiResponse<Object> deleteTripPiece(@PathVariable("tripPieceId") Long tripPieceId){
         if (!tripPieceRepository.existsById(tripPieceId))
