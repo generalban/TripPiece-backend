@@ -1,8 +1,11 @@
 package umc.TripPiece.service;
 
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import umc.TripPiece.aws.s3.AmazonS3Manager;
 import umc.TripPiece.converter.TripPieceConverter;
 import umc.TripPiece.domain.*;
 import umc.TripPiece.domain.enums.Category;
@@ -11,6 +14,7 @@ import umc.TripPiece.repository.EmojiRepository;
 import umc.TripPiece.repository.PictureRepository;
 import umc.TripPiece.repository.TripPieceRepository;
 import umc.TripPiece.repository.UserRepository;
+import umc.TripPiece.repository.UuidRepository;
 import umc.TripPiece.repository.VideoRepository;
 import umc.TripPiece.web.dto.request.TripPieceRequestDto;
 import umc.TripPiece.web.dto.response.TripPieceResponseDto;
@@ -28,6 +32,8 @@ public class TripPieceService {
     private final EmojiRepository emojiRepository;
     private final PictureRepository pictureRepository;
     private final VideoRepository videoRepository;
+    private final UuidRepository uuidRepository;
+    private final AmazonS3Manager s3Manager;
     private final JWTUtil jwtUtil;
 
     @Transactional
@@ -401,41 +407,109 @@ public class TripPieceService {
 
     /* 여행 조각 수정 */
     @Transactional
-    public Long memoUpdate(Long id, TripPieceRequestDto.MemoUpdateDto memoUpdateDto) {
+    public Long memoUpdate(Long id, TripPieceRequestDto.update request) {
         TripPiece tripPiece = tripPieceRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("TripPiece not found"));
 
-        tripPiece.updateMemo(memoUpdateDto.getDescription());
+        if(tripPiece.getCategory() != Category.MEMO) throw new IllegalArgumentException("Invalid category");
+
+        tripPiece.updateMemo(request.getDescription());
 
         return id;
     }
 
     @Transactional
-    public Long pictureUpdate(Long id, TripPieceRequestDto.PictureUpdateDto pictureUpdateDto) {
+    public Long pictureUpdate(Long id, TripPieceRequestDto.update request, List<MultipartFile> files) {
         TripPiece tripPiece = tripPieceRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("TripPiece not found"));
 
-        tripPiece.updatePicture(pictureUpdateDto.getDescription(), pictureUpdateDto.getPictures());
+        // 원래 여행조각의 타입이 PICTURE 또는 SELFIE 인지 검사
+        if (tripPiece.getCategory() != Category.PICTURE
+            && tripPiece.getCategory() != Category.SELFIE) throw new IllegalArgumentException("Invalid category");
+
+        // 기존에 저장되어있던  사진들은 모두 삭제
+        List<Picture> pictures = pictureRepository.findByTripPieceId(id);
+        pictureRepository.deleteAll(pictures);
+
+        // 사진 s3 업로드
+        int pictureNum = files.size();
+
+        List<Uuid> uuids = new ArrayList<>();
+
+        for(int i = 0; i < pictureNum; i++) {
+            String uuid = UUID.randomUUID().toString();
+            Uuid savedUuid = uuidRepository.save(Uuid.builder()
+                .uuid(uuid).build());
+            uuids.add(savedUuid);
+        }
+
+        List<String> pictureUrls = s3Manager.saveFiles(s3Manager.generateTripPieceKeyNames(uuids), files);
+        List<Picture> newPictures = new ArrayList<>();
+
+        for(int i = 0; i < pictureNum; i++) {
+            Picture newPicture = TripPieceConverter.toTripPiecePicture(pictureUrls.get(i), tripPiece);
+            pictureRepository.save(newPicture);
+            newPictures.add(newPicture);
+        }
+
+        // 업데이트
+        tripPiece.updatePicture(request.getDescription(), newPictures);
 
         return id;
     }
 
     @Transactional
-    public Long videoUpdate(Long id, TripPieceRequestDto.VideoUpdateDto videoUpdateDto) {
+    public Long videoUpdate(Long id, TripPieceRequestDto.update request, MultipartFile file) {
         TripPiece tripPiece = tripPieceRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("TripPiece not found"));
 
-        tripPiece.updateVideo(videoUpdateDto.getDescription(), videoUpdateDto.getVideos());
+        // 원래 여행조각의 타입이 VIDEO 또는 WHERE 인지 검사
+        if (tripPiece.getCategory() != Category.VIDEO
+            && tripPiece.getCategory() != Category.WHERE) throw new IllegalArgumentException("Invalid category");
+
+        // 기존에 저장되어있던 비디오들은 모두 삭제
+        List<Video> videos = videoRepository.findByTripPieceId(id);
+        videoRepository.deleteAll(videos);
+
+        // 동영상 s3 업로드
+        List<Video> newVideos = new ArrayList<>();
+
+        String uuid = UUID.randomUUID().toString();
+        Uuid savedUuid = uuidRepository.save(Uuid.builder()
+            .uuid(uuid).build());
+
+        String videoUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), file);
+
+        Video newVideo = TripPieceConverter.toTripPieceVideo(videoUrl, tripPiece);
+
+        videoRepository.save(newVideo);
+        newVideos.add(newVideo);
+
+        tripPiece.updateVideo(request.getDescription(), newVideos);
 
         return id;
     }
 
     @Transactional
-    public Long emojiUpdate(Long id, TripPieceRequestDto.EmojiUpdateDto emojiUpdateDto) {
+    public Long emojiUpdate(Long id, TripPieceRequestDto.update request, List<String> emojis) {
         TripPiece tripPiece = tripPieceRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("TripPiece not found"));
 
-        tripPiece.updateEmoji(emojiUpdateDto.getDescription(), emojiUpdateDto.getEmojis());
+        if (tripPiece.getCategory() != Category.EMOJI) throw new IllegalArgumentException("Invalid category");
+
+        // 기존의 저장되어있던 이모지들은 삭제
+        List<Emoji> existingEmojis = emojiRepository.findByTripPieceId(id);
+        emojiRepository.deleteAll(existingEmojis);
+
+        List<Emoji> newEmojis = new ArrayList<>();
+
+        for(String emoji : emojis) {
+            Emoji newEmoji = TripPieceConverter.toTripPieceEmoji(emoji, tripPiece);
+            emojiRepository.save(newEmoji);
+            newEmojis.add(newEmoji);
+        }
+
+        tripPiece.updateEmoji(request.getDescription(), newEmojis);
 
         return id;
     }
