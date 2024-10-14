@@ -3,9 +3,11 @@ package umc.TripPiece.web.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import umc.TripPiece.payload.ApiResponse;
 import umc.TripPiece.repository.TripPieceRepository;
 import umc.TripPiece.service.TripPieceService;
+import umc.TripPiece.web.dto.request.TripPieceRequestDto;
 import umc.TripPiece.web.dto.response.TripPieceResponseDto;
 
 import java.util.List;
@@ -104,7 +106,7 @@ public class TripPieceController {
         return ApiResponse.onSuccess(response);
     }
 
-    @DeleteMapping("/mytrippieces/{tripPieceId}")
+    @DeleteMapping("/mytrippieces/{tripPieceId}/delete")
     @Operation(summary = "여행 조각 삭제 API", description = "tripPieceId를 입력 받아 해당 여행 조각을 삭제")
     public ApiResponse<Object> deleteTripPiece(@PathVariable("tripPieceId") Long tripPieceId){
         if (!tripPieceRepository.existsById(tripPieceId))
@@ -113,5 +115,29 @@ public class TripPieceController {
             tripPieceService.delete(tripPieceId);
             return ApiResponse.onSuccess(null);
         }
+    }
+
+    @PatchMapping("/mytrippieces/memo/{tripPieceId}/update")
+    @Operation(summary = "여행 조각(메모) 수정 API", description = "memo 타입의 tripPiece 수정")
+    public ApiResponse<Long> updateMemo(@PathVariable("tripPieceId") Long tripPieceId, @RequestBody TripPieceRequestDto.update request){
+        return ApiResponse.onSuccess(tripPieceService.memoUpdate(tripPieceId, request));
+    }
+
+    @PatchMapping(value = "/mytrippieces/picture/{tripPieceId}/update", consumes = "multipart/form-data")
+    @Operation(summary = "여행 조각(사진) 수정 API", description = "picture 타입의 tripPiece 수정")
+    public ApiResponse<Long> updatePicture(@PathVariable("tripPieceId") Long tripPieceId, @RequestPart TripPieceRequestDto.update request, @RequestPart("picture") List<MultipartFile> pictures){
+        return ApiResponse.onSuccess(tripPieceService.pictureUpdate(tripPieceId, request, pictures));
+    }
+
+    @PatchMapping(value = "/mytrippieces/video/{tripPieceId}/update", consumes = "multipart/form-data")
+    @Operation(summary = "여행 조각(영상) 수정 API", description = "video 타입의 tripPiece 수정")
+    public ApiResponse<Long> updateVideo(@PathVariable("tripPieceId") Long tripPieceId, @RequestPart TripPieceRequestDto.update request, @RequestPart("video") MultipartFile video){
+        return ApiResponse.onSuccess(tripPieceService.videoUpdate(tripPieceId, request, video));
+    }
+
+    @PatchMapping("/mytrippieces/emoji/{tripPieceId}/update")
+    @Operation(summary = "여행 조각(이모지) 수정 API", description = "emoji 타입의 tripPiece 수정")
+    public ApiResponse<Long> updateEmoji(@PathVariable("tripPieceId") Long tripPieceId, @RequestBody TripPieceRequestDto.update request, @RequestPart("emoji") List<String> emojis){
+        return ApiResponse.onSuccess(tripPieceService.emojiUpdate(tripPieceId, request, emojis));
     }
 }
