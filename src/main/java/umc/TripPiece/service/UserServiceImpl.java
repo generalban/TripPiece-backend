@@ -192,6 +192,37 @@ public class UserServiceImpl implements UserService{
         userRepository.save(user);
     }
 
+    /* 회원탈퇴 */
+    @Override
+    @Transactional
+    public void withdrawal(Long userId) {
+        // 유저 정보 조회
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 계정입니다.")
+        );
+
+        // 유저와 관련된 여행 정보 삭제
+        List<Travel> travels = travelRepository.findByUserId(userId);
+        travelRepository.deleteAll(travels);
+
+        // 유저의 UUID(프로필 이미지 관련) 삭제
+        Uuid uuid = user.getUuid();
+        if (uuid != null) {
+            uuidRepository.delete(uuid);
+        }
+
+        // 유저의 프로필 이미지 삭제 (S3에서 파일 삭제)
+        if (user.getProfileImg() != null) {
+            s3Manager.deleteFile(user.getProfileImg());
+        }
+
+        user.setRefreshToken(null);
+        userRepository.save(user);
+
+        // 유저 삭제
+        userRepository.delete(user);
+    }
+
     @Override
     public User save(User user) {
         return userRepository.save(user);

@@ -25,6 +25,9 @@ public interface UserService {
     /* 로그아웃 */
     void logout(Long userId);
 
+    /* 회원탈퇴 */
+    void withdrawal(Long userId);
+
     User save(User user);
 
     /* 수정하기 */

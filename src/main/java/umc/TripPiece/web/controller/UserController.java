@@ -90,8 +90,29 @@ public class UserController {
         String token = header.substring(7);
         try {
             Long userId = jwtUtil.getUserIdFromToken(token);
+            if (userId==null) return ApiResponse.onFailure("400", "존재하지 않거나 만료된 토큰입니다.", null);
             userService.logout(userId);
             return ApiResponse.onSuccess("로그아웃에 성공했습니다.");
+        } catch (Exception e) {
+            return ApiResponse.onFailure("400", e.getMessage(), null);
+        }
+    }
+
+    @DeleteMapping("/withdrawal")
+    @Operation(summary = "회원탈퇴 API", description = "회원탈퇴")
+    public ApiResponse<String> withdrawal(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+        if (header == null || !header.startsWith("Bearer ")) {
+            return ApiResponse.onFailure("400", "토큰이 유효하지 않습니다.", null);
+        }
+
+        String token = header.substring(7);
+
+        try {
+            Long userId = jwtUtil.getUserIdFromToken(token);
+            if (userId==null) return ApiResponse.onFailure("400", "존재하지 않거나 만료된 토큰입니다.", null);
+            userService.withdrawal(userId);
+            return ApiResponse.onSuccess("회원탈퇴에 성공했습니다.");
         } catch (Exception e) {
             return ApiResponse.onFailure("400", e.getMessage(), null);
         }
