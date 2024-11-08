@@ -62,6 +62,10 @@ public class User extends BaseEntity {
     @ColumnDefault("false")
     private Boolean isPublic;
 
+    @OneToOne
+    @JoinColumn(name = "uuid_id")
+    private Uuid uuid;
+
     public void updatenickname(String nickname) {
         this.nickname = nickname;
     }
@@ -89,4 +93,7 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<TripPiece> tripPieces = new ArrayList<>();
 
+    public Uuid getUuid() {
+        return this.uuid;
+    }
 }

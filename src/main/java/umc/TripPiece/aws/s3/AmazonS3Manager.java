@@ -1,6 +1,7 @@
 package umc.TripPiece.aws.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
@@ -64,6 +65,17 @@ public class AmazonS3Manager{
 
         return amazonS3.getUrl(amazonConfig.getBucket(), keyName).toString();
     }
+
+    public void deleteFile(String keyName) {
+        try {
+            amazonS3.deleteObject(new DeleteObjectRequest(amazonConfig.getBucket(), keyName));
+            log.info("Successfully deleted file: {}", keyName);
+        } catch (Exception e) {
+            log.error("Error deleting file from S3: {}", keyName, e);
+            throw new IllegalStateException("Failed to delete file from S3", e);
+        }
+    }
+
 
     public String generateTripPieceKeyName(Uuid uuid) {
         return amazonConfig.getTripPiecePath() + '/' + uuid.getUuid();
