@@ -2,8 +2,11 @@ package umc.TripPiece.converter;
 
 import umc.TripPiece.domain.Map;
 import umc.TripPiece.domain.City;
+import umc.TripPiece.domain.enums.Color;
 import umc.TripPiece.web.dto.request.MapRequestDto;
 import umc.TripPiece.web.dto.response.MapResponseDto;
+
+import java.util.Collections;
 
 public class MapConverter {
 
@@ -14,6 +17,7 @@ public class MapConverter {
                 requestDto.getUserId(),
                 requestDto.getCountryCode(),
                 requestDto.getColor(),
+                Collections.emptyList(),  // 초기 colors 리스트를 빈 리스트로 설정
                 city  // City 필드 추가
         );
     }
