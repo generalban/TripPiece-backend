@@ -9,6 +9,7 @@ import umc.TripPiece.domain.Country;
 import umc.TripPiece.domain.Map;
 import umc.TripPiece.domain.Travel;
 import umc.TripPiece.domain.User;
+import umc.TripPiece.domain.enums.Color;
 import umc.TripPiece.domain.jwt.JWTUtil;
 import umc.TripPiece.repository.MapRepository;
 import umc.TripPiece.repository.CityRepository;
@@ -31,7 +32,7 @@ public class MapService {
     private final CityRepository cityRepository;
     private final JWTUtil jwtUtil;
     private final TravelRepository travelRepository;
-    private final UserRepository userRepository;  // UserRepository 추가
+    private final UserRepository userRepository;
 
     // 유저별 맵 리스트를 조회하는 메소드
     public List<MapResponseDto> getMapsByUserId(Long userId) {
@@ -45,31 +46,27 @@ public class MapService {
     public MapResponseDto createMapWithCity(MapRequestDto requestDto) {
         City city = cityRepository.findById(requestDto.getCityId()).orElseThrow(() ->
                 new IllegalArgumentException("City not found with id: " + requestDto.getCityId()));
-        Map map = MapConverter.toMap(requestDto, city);  // City 정보를 함께 전달
+        Map map = MapConverter.toMap(requestDto, city);
         Map savedMap = mapRepository.save(map);
         return MapConverter.toMapResponseDto(savedMap);
     }
 
     // 유저별 방문한 나라와 도시 통계를 반환하는 메소드
     public MapStatsResponseDto getMapStatsByUserId(Long userId) {
-        // 방문한 나라와 도시의 수 계산
         long countryCount = mapRepository.countDistinctCountryCodeByUserId(userId);
         long cityCount = mapRepository.countDistinctCityByUserId(userId);
 
-        // 방문한 나라의 countryCode 리스트 및 cityId 리스트 조회
         List<String> countryCodes = mapRepository.findDistinctCountryCodesByUserId(userId);
         List<Long> cityIds = mapRepository.findDistinctCityIdsByUserId(userId);
 
-        // 유저 정보 (프로필 이미지, 닉네임)
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         String profileImg = user.getProfileImg();
         String nickname = user.getNickname();
 
-        // DTO 반환
         return new MapStatsResponseDto(countryCount, cityCount, countryCodes, cityIds, profileImg, nickname);
     }
 
-    // 마커 반환 기능 (기존 유지)
+    // 마커 반환 기능
     @Transactional
     public List<MapResponseDto.getMarkerResponse> getMarkers(String token) {
         Long userId = jwtUtil.getUserIdFromToken(token);
@@ -85,5 +82,38 @@ public class MapService {
         }
 
         return markers;
+    }
+
+    // 맵 색상 수정 메서드
+    @Transactional
+    public MapResponseDto updateMapColor(Long mapId, String newColor) {
+        Map map = mapRepository.findById(mapId)
+                .orElseThrow(() -> new IllegalArgumentException("Map not found with id: " + mapId));
+        Color color = Color.valueOf(newColor);  // 문자열을 Color 객체로 변환
+        map.setColor(color);  // Color 객체 설정
+        Map updatedMap = mapRepository.save(map);
+        return MapConverter.toMapResponseDto(updatedMap);
+    }
+
+    // 맵 색상 삭제 메서드
+    @Transactional
+    public void deleteMapColor(Long mapId) {
+        Map map = mapRepository.findById(mapId)
+                .orElseThrow(() -> new IllegalArgumentException("Map not found with id: " + mapId));
+        map.setColor(null); // 색상 삭제
+        mapRepository.save(map);
+    }
+
+    // 여러 색상 선택 메서드
+    @Transactional
+    public MapResponseDto updateMultipleMapColors(Long mapId, List<String> colorStrings) {
+        Map map = mapRepository.findById(mapId)
+                .orElseThrow(() -> new IllegalArgumentException("Map not found with id: " + mapId));
+        List<Color> colors = colorStrings.stream()
+                .map(Color::valueOf)  // 각 문자열을 Color로 변환
+                .collect(Collectors.toList());
+        map.setColors(colors);  // 다중 색상 설정
+        Map updatedMap = mapRepository.save(map);
+        return MapConverter.toMapResponseDto(updatedMap);
     }
 }

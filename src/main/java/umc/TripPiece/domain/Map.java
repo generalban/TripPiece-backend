@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import umc.TripPiece.domain.enums.Color;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -24,11 +27,36 @@ public class Map {
     private String countryCode;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "color", nullable = false)
-    private Color color;
+    @Column(name = "color")
+    private Color color;  // 단일 색상
+
+    // 여러 색상을 위한 필드 추가
+    @ElementCollection(targetClass = Color.class)
+    @CollectionTable(name = "map_colors", joinColumns = @JoinColumn(name = "map_id"))
+    @Column(name = "color")
+    @Enumerated(EnumType.STRING)
+    private List<Color> colors = new ArrayList<>();  // 다중 색상
 
     // City와 연관 관계 추가
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id", nullable = false)
-    private City city;  // 도시를 통해 국가 정보를 접근
+    private City city;
+
+    // 단일 색상 설정 메서드
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    // 여러 색상 설정 메서드
+    public void setColors(List<Color> colors) {
+        this.colors = colors;
+    }
+
+    public List<Color> getColors() {
+        return colors;
+    }
 }
