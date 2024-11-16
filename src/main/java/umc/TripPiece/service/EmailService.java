@@ -9,6 +9,9 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Random;
 
 @Slf4j
@@ -25,11 +28,29 @@ public class EmailService {
         return String.valueOf(code);
     }
 
-    public void sendVerificationCode(String toEmail, String code) throws MessagingException {
-        String subject = "이메일 인증 코드";
-        String content = "<p>아래의 인증 코드를 입력하세요:</p>" +
-                "<h3>" + code + "</h3>";
+    public void sendVerificationCode(String toEmail, String code) throws MessagingException, IOException {
+        String subject = "[여행조각(TripPiece)] 회원가입 시 이메일 인증번호 안내드립니다.";
+
+        // HTML 파일을 읽고 코드 삽입
+        String content;
+        try {
+            content = getEmailHtmlContent(code);
+        } catch (IOException e) {
+            log.error("Failed to read email template", e);
+            throw new MessagingException("이메일 템플릿을 읽는 중 오류가 발생했습니다.");
+        }
+
         sendEmail(toEmail, subject, content);
+    }
+
+    private String getEmailHtmlContent(String code) throws IOException {
+        String htmlTemplatePath = "src/main/resources/templates/email.html";
+        String content = new String(Files.readAllBytes(Paths.get(htmlTemplatePath)));
+
+        // 인증 코드 삽입
+        content = content.replace("{code}", code);
+
+        return content;
     }
 
     public void sendEmail(String toEmail, String title, String content) throws MessagingException {
@@ -37,12 +58,11 @@ public class EmailService {
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setTo(toEmail);
         helper.setSubject(title);
-        helper.setText(content, true); // HTML 사용 가능
+        helper.setText(content, true);
         try {
             emailSender.send(message);
         } catch (RuntimeException e) {
-            log.error("Failed to send email", e);
-            throw new RuntimeException("Unable to send email", e);
+            throw new RuntimeException("이메일 전송 불가", e);
         }
     }
 }

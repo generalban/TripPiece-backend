@@ -15,6 +15,7 @@ import umc.TripPiece.repository.VerificationCodeRepository;
 import umc.TripPiece.service.EmailService;
 import umc.TripPiece.web.dto.request.EmailRequestDto;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Tag(name = "Email", description = "이메일 인증 관련 API")
@@ -46,6 +47,8 @@ public class EmailController {
             emailService.sendVerificationCode(email, code);
         } catch (MessagingException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.onFailure("500", "이메일 전송에 실패했습니다.", null));
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.onFailure("500", "이메일 템플릿을 읽는 중 오류가 발생했습니다.", null));
         }
 
         return ResponseEntity.ok(ApiResponse.onSuccess("해당 이메일로 인증번호를 전송했습니다."));
