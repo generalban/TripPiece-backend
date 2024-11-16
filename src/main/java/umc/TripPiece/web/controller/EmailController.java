@@ -3,9 +3,11 @@ package umc.TripPiece.web.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import umc.TripPiece.domain.VerificationCode;
 import umc.TripPiece.payload.ApiResponse;
@@ -52,14 +54,21 @@ public class EmailController {
     @PostMapping("/verify")
     @Operation(summary = "이메일 인증번호 검증 API",
             description = "이메일로 발송된 인증번호의 일치 여부 검증")
-    public ResponseEntity<ApiResponse<String>> verifyCode(@RequestBody EmailRequestDto.VerifyCodeDto request) {
-        Optional<VerificationCode> optionalCode = verificationCodeRepository.findByEmail(request.getEmail());
+    public ResponseEntity<ApiResponse<String>> verifyCode(@Valid @RequestBody EmailRequestDto.VerifyCodeDto request, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            // 오류 메시지 추출
+            String errorMessage = bindingResult.getFieldError().getDefaultMessage();
+            return ResponseEntity.badRequest().body(ApiResponse.onFailure("400", errorMessage, null));
+        }
+
+        Optional<VerificationCode> optionalCode = verificationCodeRepository.findTopByEmailOrderByExpirationTimeDesc(request.getEmail());
 
         if (optionalCode.isEmpty()) {
             return ResponseEntity.badRequest().body(ApiResponse.onFailure("400", "인증코드가 발송되지 않은 이메일입니다.", null));
         }
 
         VerificationCode verificationCode = optionalCode.get();
+
 
         if (verificationCode.isExpired()) {
             return ResponseEntity.badRequest().body(ApiResponse.onFailure("400", "이메일 인증 시간인 3분을 초과했습니다.", null));
