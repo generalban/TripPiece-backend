@@ -1,6 +1,7 @@
 package umc.TripPiece.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +13,7 @@ import umc.TripPiece.web.dto.response.TripPieceResponseDto;
 
 import java.util.List;
 
+@Tag(name = "TripPiece", description = "여행 조각 관련 API")
 @RestController
 @RequiredArgsConstructor
 public class TripPieceController {

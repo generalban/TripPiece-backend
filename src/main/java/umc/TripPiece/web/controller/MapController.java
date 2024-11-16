@@ -1,18 +1,18 @@
 package umc.TripPiece.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import umc.TripPiece.service.TripPieceService;
 import umc.TripPiece.web.dto.request.MapRequestDto;
 import umc.TripPiece.web.dto.response.ApiResponse;
 import umc.TripPiece.web.dto.response.MapResponseDto;
 import umc.TripPiece.service.MapService;
 import umc.TripPiece.web.dto.response.MapStatsResponseDto;
-import umc.TripPiece.web.dto.response.TripPieceResponseDto;
 
 import java.util.List;
 
+@Tag(name = "Map", description = "지도 관련 API")
 @RestController
 @RequestMapping("/api/maps")
 public class MapController {

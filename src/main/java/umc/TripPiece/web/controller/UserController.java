@@ -1,6 +1,7 @@
 package umc.TripPiece.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,8 @@ import umc.TripPiece.web.dto.response.UserResponseDto;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+@Tag(name = "User", description = "유저 관련 API")
 @RestController
 @RequestMapping("/user")
 public class UserController {

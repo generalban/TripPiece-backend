@@ -1,7 +1,7 @@
 package umc.TripPiece.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.servlet.http.HttpServletRequest;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +21,7 @@ import umc.TripPiece.web.dto.response.UserResponseDto;
 import java.util.HashMap;
 import java.util.Map;
 
+@Tag(name = "Kakao", description = "카카오 유저 관련 API")
 @RestController
 @RequestMapping("/user/kakao")
 public class KakaoController {
