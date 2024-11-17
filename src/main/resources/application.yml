@@ -17,6 +17,22 @@ spring:
         jdbc:
           time_zone: Asia/Seoul
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          timeout: 5000
+          connectiontimeout: 5000
+          writetimeout: 5000
+
 springdoc:
   swagger-ui:
     path: /swagger
