@@ -45,7 +45,6 @@ public class CityService {
             });
         }
 
-
         return searched;
     }
 }
