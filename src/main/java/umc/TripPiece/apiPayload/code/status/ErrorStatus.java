@@ -17,6 +17,11 @@ public enum ErrorStatus implements BaseErrorCode {
     _UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"COMMON401","인증이 필요합니다."),
     _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
 
+    // Not Found
+    NOT_FOUND_MAP(HttpStatus.NOT_FOUND, "MAP400", "해당 맵을 찾을 수 없습니다."),
+    NOT_FOUND_USER(HttpStatus.NOT_FOUND, "USER400", "해당 유저를 찾을 수 없습니다."),
+    NOT_FOUND_CITY(HttpStatus.NOT_FOUND, "CITY400", "해당 도시를 찾을 수 없습니다."),
+
     // s3 관련 오류
     PICTURE_EXTENSION_ERROR(HttpStatus.BAD_REQUEST, "PICTURE400", "이미지의 확장자가 잘못되었습니다."),
     VIDEO_EXTENSION_ERROR(HttpStatus.BAD_REQUEST, "VIDEO400", "동영상의 확장자가 잘못되었습니다."),
