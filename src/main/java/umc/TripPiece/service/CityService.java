@@ -6,8 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import umc.TripPiece.converter.CityConverter;
 import umc.TripPiece.domain.City;
 import umc.TripPiece.domain.Country;
-import umc.TripPiece.payload.ApiResponse;
-import umc.TripPiece.payload.code.status.ErrorStatus;
 import umc.TripPiece.repository.CityRepository;
 import umc.TripPiece.repository.CountryRepository;
 import umc.TripPiece.web.dto.request.CityRequestDto;

@@ -10,9 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import umc.TripPiece.config.AmazonConfig;
 import umc.TripPiece.domain.Uuid;
-import umc.TripPiece.payload.code.status.ErrorStatus;
-import umc.TripPiece.payload.exception.handler.PictureHandler;
-import umc.TripPiece.payload.exception.handler.VideoHandler;
 
 import java.io.IOException;
 import java.util.*;

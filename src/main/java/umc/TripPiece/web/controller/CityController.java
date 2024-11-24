@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import umc.TripPiece.payload.ApiResponse;
+import umc.TripPiece.apiPayload.ApiResponse;
 import umc.TripPiece.service.CityService;
 import umc.TripPiece.web.dto.request.CityRequestDto;
 import umc.TripPiece.web.dto.response.CityResponseDto;

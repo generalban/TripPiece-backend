@@ -34,13 +34,16 @@ public class User extends BaseEntity {
     @Column
     private String password;
 
+    @Setter
     @Column(nullable = false, length = 20)
     private String nickname;
 
+    @Setter
     @Column(nullable = false, length = 10)
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    @Setter
     @Column(nullable = false, length = 20)
     private String birth;
     
@@ -48,6 +51,7 @@ public class User extends BaseEntity {
     @Setter
     private String profileImg;
 
+    @Setter
     @Column(nullable = false, length = 30)
     private String country;
 
@@ -65,22 +69,6 @@ public class User extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "uuid_id")
     private Uuid uuid;
-
-    public void updatenickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public void updategender(Gender gender) {
-        this.gender = gender;
-    }
-
-    public void updatebirth(String birth) {
-        this.birth = birth;
-    }
-
-    public void updatecountry(String country) {
-        this.country = country;
-    }
 
     @Setter
     @Column(name = "refresh_token")

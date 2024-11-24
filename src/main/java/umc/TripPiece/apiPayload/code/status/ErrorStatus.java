@@ -1,10 +1,10 @@
-package umc.TripPiece.payload.code.status;
+package umc.TripPiece.apiPayload.code.status;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import umc.TripPiece.payload.code.BaseErrorCode;
-import umc.TripPiece.payload.code.ErrorReasonDTO;
+import umc.TripPiece.apiPayload.code.BaseErrorCode;
+import umc.TripPiece.apiPayload.code.ErrorReasonDTO;
 
 
 @Getter

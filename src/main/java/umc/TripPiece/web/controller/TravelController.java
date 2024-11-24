@@ -12,7 +12,7 @@ import umc.TripPiece.converter.TravelConverter;
 import umc.TripPiece.domain.Travel;
 import umc.TripPiece.domain.TripPiece;
 import umc.TripPiece.domain.enums.TravelStatus;
-import umc.TripPiece.payload.ApiResponse;
+import umc.TripPiece.apiPayload.ApiResponse;
 import umc.TripPiece.repository.TravelRepository;
 import umc.TripPiece.service.TravelService;
 import umc.TripPiece.web.dto.request.TravelRequestDto;

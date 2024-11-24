@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import umc.TripPiece.domain.VerificationCode;
-import umc.TripPiece.payload.ApiResponse;
+import umc.TripPiece.apiPayload.ApiResponse;
 import umc.TripPiece.repository.VerificationCodeRepository;
 import umc.TripPiece.service.EmailService;
 import umc.TripPiece.web.dto.request.EmailRequestDto;
