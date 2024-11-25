@@ -14,4 +14,6 @@ public interface TravelRepository extends JpaRepository<Travel, Long> {
 
     List<Travel> findByUserId(Long userId);
 
+    List<Travel> findByCityIdIn(List<Long> cityIds);
+
 }
