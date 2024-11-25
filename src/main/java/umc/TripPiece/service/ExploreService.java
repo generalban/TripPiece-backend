@@ -13,7 +13,9 @@ import umc.TripPiece.repository.TravelRepository;
 import umc.TripPiece.web.dto.response.TravelResponseDto;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
@@ -25,24 +27,29 @@ public class ExploreService {
 
     @Transactional
     public List<TravelResponseDto.TravelListDto> searchTravels(String query){
-    List<City> cities = cityRepository.findByNameContainingIgnoreCase(query);
-    List<Country> countries = countryRepository.findByNameContainingIgnoreCase(query);
+    List<City> cities = cityRepository.findAll();
+    List<Country> countries = countryRepository.findAll();
 
-    List<Travel> travels = new ArrayList<>();
+    Set<Long> cityIds = new HashSet<>();
 
-    if(!cities.isEmpty()){
-        List<Long> cityIds = cities.stream().map(City::getId).toList();
-        travels.addAll(travelRepository.findByCityIdIn(cityIds));
-    }
+    cities.forEach(city -> {
+        if(query.contains(city.getName())) {
+            cityIds.add(city.getId());
+        }
+    });
 
-    if(!countries.isEmpty()){
-        countries.forEach(country -> {
+    countries.forEach(country -> {
+        if(query.contains(country.getName())) {
             List<City> citiesInCountry = cityRepository.findByCountryId(country.getId());
-            List<Long> cityIdsInCountry = citiesInCountry.stream().map(City::getId).toList();
-            travels.addAll(travelRepository.findByCityIdIn(cityIdsInCountry));
-        });
-    }
+            citiesInCountry.forEach(city -> cityIds.add(city.getId()));
+        }
+    });
 
-    return travels.stream().map(TravelConverter::toTravelListDto).toList();
+    List<Travel> travels = travelRepository.findByCityIdIn(new ArrayList<>(cityIds));
+
+    return travels.stream().distinct().map(TravelConverter::toTravelListDto).toList();
+
+//
+//    return travels.stream().map(TravelConverter::toTravelListDto).toList();
     }
 }
