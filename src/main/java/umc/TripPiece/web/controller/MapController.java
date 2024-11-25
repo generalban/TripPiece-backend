@@ -2,12 +2,19 @@ package umc.TripPiece.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import umc.TripPiece.service.CityService;
 import umc.TripPiece.service.MapService;
+import umc.TripPiece.web.dto.request.CityRequestDto;
 import umc.TripPiece.web.dto.request.MapRequestDto;
 import umc.TripPiece.web.dto.response.ApiResponse;
+import umc.TripPiece.web.dto.response.CityResponseDto;
 import umc.TripPiece.web.dto.response.MapResponseDto;
 import umc.TripPiece.web.dto.response.MapStatsResponseDto;
 import umc.TripPiece.web.dto.request.MapColorDto;
@@ -17,9 +24,11 @@ import java.util.List;
 
 @Tag(name = "Map", description = "지도 관련 API")
 @RestController
-@RequestMapping("/api/maps")
+@RequiredArgsConstructor
+@RequestMapping("/maps")
 public class MapController {
 
+    private final CityService cityService;
     @Autowired
     private MapService mapService;
 
@@ -78,5 +87,18 @@ public class MapController {
     public ApiResponse<MapResponseDto> updateMultipleMapColors(@PathVariable Long mapId, @RequestBody MapColorsDto colorsDto) {
         MapResponseDto updatedMap = mapService.updateMultipleMapColors(mapId, colorsDto.getColors());
         return new ApiResponse<>(true, updatedMap, "Map colors updated successfully");
+    }
+
+    @PostMapping("/search")
+    @Operation(summary = "도시, 국가 검색 API", description = "도시, 국가 검색")
+    public ResponseEntity<umc.TripPiece.payload.ApiResponse<List<CityResponseDto.searchDto>>> searchCities(@RequestBody @Valid CityRequestDto.searchDto request){
+        List<CityResponseDto.searchDto> result = cityService.searchCity(request);
+
+        if (result.isEmpty()) {
+            return new ResponseEntity<>(umc.TripPiece.payload.ApiResponse.onFailure("400", "No matching cities or countries found.", null), HttpStatus.BAD_REQUEST);
+        }
+        else {
+            return new ResponseEntity<>(umc.TripPiece.payload.ApiResponse.onSuccess(result), HttpStatus.OK);
+        }
     }
 }
