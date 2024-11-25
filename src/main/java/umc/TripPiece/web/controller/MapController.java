@@ -89,10 +89,10 @@ public class MapController {
         return new ApiResponse<>(true, updatedMap, "Map colors updated successfully");
     }
 
-    @PostMapping("/search")
+    @GetMapping("/search")
     @Operation(summary = "도시, 국가 검색 API", description = "도시, 국가 검색")
-    public ResponseEntity<umc.TripPiece.payload.ApiResponse<List<CityResponseDto.searchDto>>> searchCities(@RequestBody @Valid CityRequestDto.searchDto request){
-        List<CityResponseDto.searchDto> result = cityService.searchCity(request);
+    public ResponseEntity<umc.TripPiece.payload.ApiResponse<List<CityResponseDto.searchDto>>> searchCities(@RequestParam String keyword){
+        List<CityResponseDto.searchDto> result = cityService.searchCity(keyword);
 
         if (result.isEmpty()) {
             return new ResponseEntity<>(umc.TripPiece.payload.ApiResponse.onFailure("400", "No matching cities or countries found.", null), HttpStatus.BAD_REQUEST);
