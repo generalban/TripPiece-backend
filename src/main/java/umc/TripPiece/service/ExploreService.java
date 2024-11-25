@@ -45,11 +45,9 @@ public class ExploreService {
         }
     });
 
-    List<Travel> travels = travelRepository.findByCityIdIn(new ArrayList<>(cityIds));
+    List<Travel> travels = travelRepository.findByCityIdInAndTravelOpenTrue(new ArrayList<>(cityIds));
 
     return travels.stream().distinct().map(TravelConverter::toTravelListDto).toList();
 
-//
-//    return travels.stream().map(TravelConverter::toTravelListDto).toList();
     }
 }
