@@ -1,9 +1,9 @@
-package umc.TripPiece.payload.exception;
+package umc.TripPiece.apiPayload.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import umc.TripPiece.payload.code.BaseErrorCode;
-import umc.TripPiece.payload.code.ErrorReasonDTO;
+import umc.TripPiece.apiPayload.code.BaseErrorCode;
+import umc.TripPiece.apiPayload.code.ErrorReasonDTO;
 
 @Getter
 @AllArgsConstructor

@@ -1,4 +1,4 @@
-package umc.TripPiece.payload.code.status;
+package umc.TripPiece.apiPayload.code.status;
 
 import lombok.Getter;
 

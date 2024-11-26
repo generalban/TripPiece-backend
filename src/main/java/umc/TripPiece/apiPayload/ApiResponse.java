@@ -1,12 +1,12 @@
-package umc.TripPiece.payload;
+package umc.TripPiece.apiPayload;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import umc.TripPiece.payload.code.BaseCode;
-import umc.TripPiece.payload.code.status.SuccessStatus;
+import umc.TripPiece.apiPayload.code.BaseCode;
+import umc.TripPiece.apiPayload.code.status.SuccessStatus;
 
 @Getter
 @AllArgsConstructor

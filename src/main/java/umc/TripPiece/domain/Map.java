@@ -3,7 +3,9 @@ package umc.TripPiece.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import umc.TripPiece.domain.enums.Color;
 
 import java.util.ArrayList;
@@ -11,6 +13,8 @@ import java.util.List;
 
 @Entity
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Map {
@@ -41,22 +45,4 @@ public class Map {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id", nullable = false)
     private City city;
-
-    // 단일 색상 설정 메서드
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    // 여러 색상 설정 메서드
-    public void setColors(List<Color> colors) {
-        this.colors = colors;
-    }
-
-    public List<Color> getColors() {
-        return colors;
-    }
 }
