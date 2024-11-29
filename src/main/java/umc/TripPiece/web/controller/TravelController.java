@@ -30,10 +30,10 @@ public class TravelController {
     private final TravelService travelService;
     private final TravelRepository travelRepository;
 
-    @GetMapping("/explore/search")
-    public List<Travel> searchByKeyword(@RequestParam String keyword) {
-        return travelService.searchByKeyword(keyword);
-    }
+//    @GetMapping(value = "/explore/search")
+//    public List<Travel> searchByKeyword(@RequestParam String keyword) {
+//        return travelService.searchByKeyword(keyword);
+//    }
 
     @PostMapping(value = "/mytravels", consumes = "multipart/form-data")
     @Operation(summary = "여행 생성 API", description = "여행 시작하기")

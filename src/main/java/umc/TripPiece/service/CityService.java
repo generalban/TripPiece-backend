@@ -22,8 +22,7 @@ public class CityService {
     private final CityRepository cityRepository;
     private final CountryRepository countryRepository;
 
-    public List<CityResponseDto.searchDto> searchCity(CityRequestDto.searchDto request){
-        String keyword = request.getKeyword();
+    public List<CityResponseDto.searchDto> searchCity(String keyword){
 
         if (keyword == null || keyword.trim().isEmpty()) {
             return Collections.emptyList(); // 빈 리스트를 반환
