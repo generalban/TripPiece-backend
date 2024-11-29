@@ -1,4 +1,4 @@
-package umc.TripPiece.payload.code;
+package umc.TripPiece.apiPayload.code;
 
 public interface BaseErrorCode {
 

@@ -1,4 +1,4 @@
-package umc.TripPiece.payload.code;
+package umc.TripPiece.apiPayload.code;
 
 public class ReasonDTO {
     private final String code;

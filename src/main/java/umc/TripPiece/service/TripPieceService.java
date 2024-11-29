@@ -413,7 +413,7 @@ public class TripPieceService {
 
         if(tripPiece.getCategory() != Category.MEMO) throw new IllegalArgumentException("Invalid category");
 
-        tripPiece.updateMemo(request.getDescription());
+        tripPiece.setDescription(request.getDescription());
 
         return id;
     }
@@ -453,7 +453,8 @@ public class TripPieceService {
         }
 
         // 업데이트
-        tripPiece.updatePicture(request.getDescription(), newPictures);
+        tripPiece.setDescription(request.getDescription());
+        tripPiece.setPictures(newPictures);
 
         return id;
     }
@@ -485,7 +486,8 @@ public class TripPieceService {
         videoRepository.save(newVideo);
         newVideos.add(newVideo);
 
-        tripPiece.updateVideo(request.getDescription(), newVideos);
+        tripPiece.setDescription(request.getDescription());
+        tripPiece.setVideos(newVideos);
 
         return id;
     }
@@ -509,7 +511,8 @@ public class TripPieceService {
             newEmojis.add(newEmoji);
         }
 
-        tripPiece.updateEmoji(request.getDescription(), newEmojis);
+        tripPiece.setDescription(request.getDescription());
+        tripPiece.setEmojis(newEmojis);
 
         return id;
     }
