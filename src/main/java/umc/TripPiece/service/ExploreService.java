@@ -3,6 +3,7 @@ package umc.TripPiece.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.TripPiece.converter.ExploreConverter;
 import umc.TripPiece.converter.TravelConverter;
 import umc.TripPiece.domain.City;
 import umc.TripPiece.domain.Country;
@@ -10,6 +11,7 @@ import umc.TripPiece.domain.Travel;
 import umc.TripPiece.repository.CityRepository;
 import umc.TripPiece.repository.CountryRepository;
 import umc.TripPiece.repository.TravelRepository;
+import umc.TripPiece.web.dto.response.ExploreResponseDto;
 import umc.TripPiece.web.dto.response.TravelResponseDto;
 
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ public class ExploreService {
     private final TravelRepository travelRepository;
 
     @Transactional
-    public List<TravelResponseDto.TravelListDto> searchTravels(String query){
+    public List<ExploreResponseDto.ExploreListDto> searchTravels(String query){
     List<City> cities = cityRepository.findAll();
     List<Country> countries = countryRepository.findAll();
 
@@ -47,7 +49,7 @@ public class ExploreService {
 
     List<Travel> travels = travelRepository.findByCityIdInAndTravelOpenTrue(new ArrayList<>(cityIds));
 
-    return travels.stream().distinct().map(TravelConverter::toTravelListDto).toList();
+    return travels.stream().distinct().map(ExploreConverter::toExploreListDto).toList();
 
     }
 }

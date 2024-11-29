@@ -6,8 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import umc.TripPiece.payload.ApiResponse;
+import umc.TripPiece.apiPayload.ApiResponse;
 import umc.TripPiece.service.ExploreService;
+import umc.TripPiece.web.dto.response.ExploreResponseDto;
 import umc.TripPiece.web.dto.response.TravelResponseDto;
 
 import java.util.List;
@@ -21,12 +22,12 @@ public class ExploreController {
     private final ExploreService exploreService;
     @GetMapping("/search")
     @Operation(summary = "도시, 국가 검색 API", description = "도시, 국가 검색")
-    public ResponseEntity<ApiResponse<List<TravelResponseDto.TravelListDto>>> getSearchedTravelList(@RequestParam String query) {
-     List<TravelResponseDto.TravelListDto> travels = exploreService.searchTravels(query);
+    public ApiResponse<List<ExploreResponseDto.ExploreListDto>> getSearchedTravelList(@RequestParam String query) {
+     List<ExploreResponseDto.ExploreListDto> travels = exploreService.searchTravels(query);
 
      if(travels.isEmpty()){
-         return new ResponseEntity<>(ApiResponse.onFailure("400", "생성된 여행기 없음.", null), HttpStatus.BAD_REQUEST);
+         return ApiResponse.onFailure("400", "생성된 여행기 없음.", null);
      }
-        return new ResponseEntity<>(ApiResponse.onSuccess(travels), HttpStatus.OK);
+        return ApiResponse.onSuccess(travels);
     }
 }
