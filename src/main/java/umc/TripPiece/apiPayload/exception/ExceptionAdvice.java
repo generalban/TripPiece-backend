@@ -1,4 +1,4 @@
-package umc.TripPiece.payload.exception;
+package umc.TripPiece.apiPayload.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import umc.TripPiece.payload.ApiResponse;
-import umc.TripPiece.payload.code.ErrorReasonDTO;
-import umc.TripPiece.payload.code.status.ErrorStatus;
+import umc.TripPiece.apiPayload.ApiResponse;
+import umc.TripPiece.apiPayload.code.ErrorReasonDTO;
+import umc.TripPiece.apiPayload.code.status.ErrorStatus;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

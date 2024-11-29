@@ -1,16 +1,11 @@
 package umc.TripPiece.web.dto.request;
 
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 public class MapColorsDto {
+    @Getter
+    @Setter
     private List<String> colors;
-
-    // Getters and Setters
-    public List<String> getColors() {
-        return colors;
-    }
-
-    public void setColors(List<String> colors) {
-        this.colors = colors;
-    }
 }

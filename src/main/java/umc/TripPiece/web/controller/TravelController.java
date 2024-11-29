@@ -12,7 +12,7 @@ import umc.TripPiece.converter.TravelConverter;
 import umc.TripPiece.domain.Travel;
 import umc.TripPiece.domain.TripPiece;
 import umc.TripPiece.domain.enums.TravelStatus;
-import umc.TripPiece.payload.ApiResponse;
+import umc.TripPiece.apiPayload.ApiResponse;
 import umc.TripPiece.repository.TravelRepository;
 import umc.TripPiece.service.TravelService;
 import umc.TripPiece.web.dto.request.TravelRequestDto;
@@ -30,10 +30,6 @@ public class TravelController {
     private final TravelService travelService;
     private final TravelRepository travelRepository;
 
-//    @GetMapping("/explore/search")
-//    public List<Travel> searchByKeyword(@RequestParam String keyword) {
-//        return travelService.searchByKeyword(keyword);
-//    }
 
     @PostMapping(value = "/mytravels", consumes = "multipart/form-data")
     @Operation(summary = "여행 생성 API", description = "여행 시작하기")

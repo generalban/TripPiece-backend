@@ -3,6 +3,7 @@ package umc.TripPiece.web.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import umc.TripPiece.converter.UserConverter;
 import umc.TripPiece.domain.User;
 import umc.TripPiece.domain.jwt.JWTUtil;
-import umc.TripPiece.payload.ApiResponse;
+import umc.TripPiece.apiPayload.ApiResponse;
 import umc.TripPiece.service.UserService;
 import umc.TripPiece.web.dto.request.UserRequestDto;
 import umc.TripPiece.web.dto.response.UserResponseDto;
@@ -23,18 +24,12 @@ import java.util.Map;
 
 @Tag(name = "Kakao", description = "카카오 유저 관련 API")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/user/kakao")
 public class KakaoController {
 
     private final UserService userService;
     private final JWTUtil jwtUtil;
-
-
-    @Autowired
-    public KakaoController(UserService userService, JWTUtil jwtUtil) {
-        this.userService = userService;
-        this.jwtUtil = jwtUtil;
-    }
 
     @PostMapping(value = "/signup", consumes = "multipart/form-data")
     @Operation(summary = "카카오 회원가입 API", description = "카카오 로그인 후 진행하는 회원가입")

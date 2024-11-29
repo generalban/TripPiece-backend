@@ -1,10 +1,10 @@
-package umc.TripPiece.payload.code.status;
+package umc.TripPiece.apiPayload.code.status;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import umc.TripPiece.payload.code.BaseErrorCode;
-import umc.TripPiece.payload.code.ErrorReasonDTO;
+import umc.TripPiece.apiPayload.code.BaseErrorCode;
+import umc.TripPiece.apiPayload.code.ErrorReasonDTO;
 
 
 @Getter
@@ -16,6 +16,11 @@ public enum ErrorStatus implements BaseErrorCode {
     _BAD_REQUEST(HttpStatus.BAD_REQUEST,"COMMON400","잘못된 요청입니다."),
     _UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"COMMON401","인증이 필요합니다."),
     _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
+
+    // Not Found
+    NOT_FOUND_MAP(HttpStatus.NOT_FOUND, "MAP400", "해당 맵을 찾을 수 없습니다."),
+    NOT_FOUND_USER(HttpStatus.NOT_FOUND, "USER400", "해당 유저를 찾을 수 없습니다."),
+    NOT_FOUND_CITY(HttpStatus.NOT_FOUND, "CITY400", "해당 도시를 찾을 수 없습니다."),
 
     // s3 관련 오류
     PICTURE_EXTENSION_ERROR(HttpStatus.BAD_REQUEST, "PICTURE400", "이미지의 확장자가 잘못되었습니다."),

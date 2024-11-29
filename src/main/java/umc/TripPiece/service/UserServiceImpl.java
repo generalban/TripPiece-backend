@@ -250,16 +250,16 @@ public class UserServiceImpl implements UserService{
         }
 
         if(request.getNickname() != null){
-            user.updatenickname(request.getNickname());
+            user.setNickname(request.getNickname());
         }
         if(request.getGender() != null){
-            user.updategender(request.getGender());
+            user.setGender(request.getGender());
         }
         if(request.getBirth() != null){
-            user.updatebirth(request.getBirth());
+            user.setBirth(request.getBirth());
         }
         if(request.getCountry() != null){
-            user.updatecountry(request.getCountry());
+            user.setCountry(request.getCountry());
         }
 
         user.setProfileImg(profileImgUrl);

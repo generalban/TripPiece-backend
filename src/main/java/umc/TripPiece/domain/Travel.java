@@ -26,6 +26,7 @@ public class Travel extends BaseEntity {
     @Column(name = "travel_id")
     private Long id;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -40,17 +41,22 @@ public class Travel extends BaseEntity {
     private String description;
     private boolean travelOpen;
     private Long likeCount;
+    @Setter
     private String thumbnail;
 
+    @Setter
     @ColumnDefault("0")
     private Integer memoNum;
 
+    @Setter
     @ColumnDefault("0")
     private Integer pictureNum;
 
+    @Setter
     @ColumnDefault("0")
     private Integer videoNum;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     private TravelStatus status;
 
@@ -59,25 +65,4 @@ public class Travel extends BaseEntity {
 
     @OneToMany(mappedBy = "travel")
     private List<TripPiece> tripPieces = new ArrayList<>();
-
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
-    }
-    public void setStatus(TravelStatus status) {
-        this.status = status;
-    }
-    public void setMemoNum(Integer memoNum) {
-        this.memoNum = memoNum;
-    }
-    public void setPictureNum(Integer pictureNum) {
-        this.pictureNum = pictureNum;
-    }
-    public void setVideoNum(Integer videoNum) {
-        this.videoNum = videoNum;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
 }

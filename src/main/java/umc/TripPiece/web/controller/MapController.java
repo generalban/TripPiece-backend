@@ -2,12 +2,28 @@ package umc.TripPiece.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.web.bind.annotation.*;
 
+import umc.TripPiece.service.CityService;
 import umc.TripPiece.service.MapService;
+import umc.TripPiece.web.dto.request.CityRequestDto;
 import umc.TripPiece.web.dto.request.MapRequestDto;
-import umc.TripPiece.web.dto.response.ApiResponse;
+
+import umc.TripPiece.web.dto.response.CityResponseDto;
+
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import umc.TripPiece.apiPayload.ApiResponse;
+import umc.TripPiece.converter.MapConverter;
+import umc.TripPiece.service.MapService;
+import umc.TripPiece.validation.annotation.ExistMap;
+import umc.TripPiece.validation.annotation.ExistUser;
+import umc.TripPiece.web.dto.request.MapRequestDto;
+
 import umc.TripPiece.web.dto.response.MapResponseDto;
 import umc.TripPiece.web.dto.response.MapStatsResponseDto;
 import umc.TripPiece.web.dto.request.MapColorDto;
@@ -17,31 +33,33 @@ import java.util.List;
 
 @Tag(name = "Map", description = "지도 관련 API")
 @RestController
-@RequestMapping("/api/maps")
+@Validated
+@RequiredArgsConstructor
+@RequestMapping("/maps")
 public class MapController {
 
-    @Autowired
-    private MapService mapService;
+    private final MapService mapService;
+    private final CityService cityService;
 
     @GetMapping("/{userId}")
     @Operation(summary = "유저별 맵 불러오기 API", description = "유저별 맵 리스트 반환")
-    public ApiResponse<List<MapResponseDto>> getMapsByUserId(@PathVariable Long userId) {
+    public ApiResponse<List<MapResponseDto>> getMapsByUserId(@PathVariable(name = "userId") @ExistUser Long userId) {
         List<MapResponseDto> maps = mapService.getMapsByUserId(userId);
-        return new ApiResponse<>(true, maps, "Maps for user " + userId + " retrieved successfully");
+        return ApiResponse.onSuccess(maps);
     }
 
     @PostMapping
     @Operation(summary = "맵 생성 API", description = "맵과 도시 정보 생성")
-    public ApiResponse<MapResponseDto> createMap(@RequestBody MapRequestDto requestDto) {
+    public ApiResponse<MapResponseDto> createMap(@RequestBody @Valid MapRequestDto requestDto) {
         MapResponseDto mapResponseDto = mapService.createMapWithCity(requestDto);
-        return new ApiResponse<>(true, mapResponseDto, "Map created successfully with city information");
+        return ApiResponse.onSuccess(mapResponseDto);
     }
 
     @GetMapping("/stats/{userId}")
     @Operation(summary = "유저별 맵 통계 API", description = "유저별 방문한 나라와 도시 수 반환")
-    public ApiResponse<MapStatsResponseDto> getMapStatsByUserId(@PathVariable Long userId) {
+    public ApiResponse<MapStatsResponseDto> getMapStatsByUserId(@PathVariable(name = "userId") @ExistUser Long userId) {
         MapStatsResponseDto stats = mapService.getMapStatsByUserId(userId);
-        return new ApiResponse<>(true, stats, "Map stats for user " + userId + " retrieved successfully");
+        return ApiResponse.onSuccess(stats);
     }
 
     @GetMapping("/markers")
@@ -50,33 +68,43 @@ public class MapController {
         String tokenWithoutBearer = token.substring(7);
         List<MapResponseDto.getMarkerResponse> markers = mapService.getMarkers(tokenWithoutBearer);
 
-        if (markers == null || markers.isEmpty()) {
-            return new ApiResponse<>(false, null, "No markers found");
-        }
-        return new ApiResponse<>(true, markers, "Markers retrieved successfully");
+        return ApiResponse.onSuccess(markers);
     }
 
     // 맵 색상 수정 엔드포인트
     @PutMapping("/{mapId}/color")
     @Operation(summary = "맵 색상 수정 API", description = "맵의 색상을 수정")
-    public ApiResponse<MapResponseDto> updateMapColor(@PathVariable Long mapId, @RequestBody MapColorDto colorDto) {
+    public ApiResponse<MapResponseDto> updateMapColor(@PathVariable(name = "mapId") @ExistMap Long mapId, @RequestBody @Valid MapColorDto colorDto) {
         MapResponseDto updatedMap = mapService.updateMapColor(mapId, colorDto.getColor());
-        return new ApiResponse<>(true, updatedMap, "Map color updated successfully");
+        return ApiResponse.onSuccess(updatedMap);
     }
 
     // 맵 색상 삭제 엔드포인트
     @DeleteMapping("/{mapId}/color")
     @Operation(summary = "맵 색상 삭제 API", description = "맵의 색상을 삭제")
-    public ApiResponse<Void> deleteMapColor(@PathVariable Long mapId) {
+    public ApiResponse<Void> deleteMapColor(@PathVariable(name = "mapId") @ExistMap Long mapId) {
         mapService.deleteMapColor(mapId);
-        return new ApiResponse<>(true, null, "Map color deleted successfully");
+        return ApiResponse.onSuccess(null);
     }
 
     // 여러 색상 선택 엔드포인트
     @PutMapping("/{mapId}/colors")
     @Operation(summary = "맵 여러 색상 선택 API", description = "맵의 색상을 여러 개 선택")
-    public ApiResponse<MapResponseDto> updateMultipleMapColors(@PathVariable Long mapId, @RequestBody MapColorsDto colorsDto) {
+    public ApiResponse<MapResponseDto> updateMultipleMapColors(@PathVariable(name = "mapId") @ExistMap Long mapId, @RequestBody MapColorsDto colorsDto) {
         MapResponseDto updatedMap = mapService.updateMultipleMapColors(mapId, colorsDto.getColors());
-        return new ApiResponse<>(true, updatedMap, "Map colors updated successfully");
+        return ApiResponse.onSuccess(updatedMap);
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "도시, 국가 검색 API", description = "도시, 국가 검색")
+    public ApiResponse<List<CityResponseDto.searchDto>> searchCities(@RequestParam String keyword){
+        List<CityResponseDto.searchDto> result = cityService.searchCity(keyword);
+
+        if (result.isEmpty()) {
+            return ApiResponse.onFailure("404", "No matching cities or countries found.", null);
+        }
+        else {
+            return ApiResponse.onSuccess(result);
+        }
     }
 }

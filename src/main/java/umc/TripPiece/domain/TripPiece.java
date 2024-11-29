@@ -3,6 +3,8 @@ package umc.TripPiece.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import umc.TripPiece.domain.common.BaseEntity;
 import umc.TripPiece.domain.enums.Category;
 //import umc.TripPiece.domain.enums.Category;
@@ -13,6 +15,8 @@ import java.util.List;
 @Entity
 @Getter
 @Builder
+@DynamicUpdate
+@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class TripPiece extends BaseEntity {
@@ -26,6 +30,7 @@ public class TripPiece extends BaseEntity {
     @ColumnDefault("'MEMO'")
     private Category category;
 
+    @Setter
     @Column(nullable = false)
     private String description;
 
@@ -42,32 +47,16 @@ public class TripPiece extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Setter
     @OneToMany(mappedBy = "tripPiece", cascade = CascadeType.ALL)
     private List<Picture> pictures = new ArrayList<>();
 
+    @Setter
     @OneToMany(mappedBy = "tripPiece", cascade = CascadeType.ALL)
     private List<Video> videos = new ArrayList<>();
 
+    @Setter
     @OneToMany(mappedBy = "tripPiece", cascade = CascadeType.ALL)
     private List<Emoji> emojis = new ArrayList<>();
-
-    public void updateMemo(String description) {
-        this.description = description;
-    }
-
-    public void updatePicture(String description, List<Picture> pictures) {
-        this.description = description;
-        this.pictures = pictures;
-    }
-
-    public void updateVideo(String description, List<Video> videos) {
-        this.description = description;
-        this.videos = videos;
-    }
-
-    public void updateEmoji(String description, List<Emoji> emojis) {
-        this.description = description;
-        this.emojis = emojis;
-    }
 
 }
