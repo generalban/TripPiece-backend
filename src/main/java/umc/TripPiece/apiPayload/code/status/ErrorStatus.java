@@ -18,9 +18,9 @@ public enum ErrorStatus implements BaseErrorCode {
     _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
 
     // Not Found
-    NOT_FOUND_MAP(HttpStatus.NOT_FOUND, "MAP400", "해당 맵을 찾을 수 없습니다."),
-    NOT_FOUND_USER(HttpStatus.NOT_FOUND, "USER400", "해당 유저를 찾을 수 없습니다."),
-    NOT_FOUND_CITY(HttpStatus.NOT_FOUND, "CITY400", "해당 도시를 찾을 수 없습니다."),
+    NOT_FOUND_MAP(HttpStatus.NOT_FOUND, "MAP404", "해당 맵을 찾을 수 없습니다."),
+    NOT_FOUND_USER(HttpStatus.NOT_FOUND, "USER404", "해당 유저를 찾을 수 없습니다."),
+    NOT_FOUND_CITY(HttpStatus.NOT_FOUND, "CITY404", "해당 도시를 찾을 수 없습니다."),
 
     // s3 관련 오류
     PICTURE_EXTENSION_ERROR(HttpStatus.BAD_REQUEST, "PICTURE400", "이미지의 확장자가 잘못되었습니다."),
@@ -41,7 +41,7 @@ public enum ErrorStatus implements BaseErrorCode {
     PROFILE_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "PROFILE500", "프로필 업데이트에 실패했습니다."),
 
     // 여행 조각 관련 오류
-    NOT_FOUND_TRIPPIECE(HttpStatus.NOT_FOUND, "TRIPPIECE400", "여행 조각이 존재하지 않습니다"),
+    NOT_FOUND_TRIPPIECE(HttpStatus.NOT_FOUND, "TRIPPIECE404", "여행 조각이 존재하지 않습니다"),
     INVALID_TRIPPIECE_SORT_OPTION(HttpStatus.BAD_REQUEST, "TRIPPIECE401", "유효하지 않은 정렬 조건입니다.");
 
     private final HttpStatus httpStatus;
