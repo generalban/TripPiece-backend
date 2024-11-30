@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.TripPiece.apiPayload.ApiResponse;
 import umc.TripPiece.apiPayload.code.status.ErrorStatus;
+import umc.TripPiece.apiPayload.exception.handler.BadRequestHandler;
 import umc.TripPiece.apiPayload.exception.handler.NotFoundHandler;
 import umc.TripPiece.repository.TripPieceRepository;
 import umc.TripPiece.service.TripPieceService;
@@ -29,6 +30,10 @@ public class TripPieceController {
             @RequestHeader("Authorization") String token,
             @RequestParam(value = "sort", defaultValue = "latest") String sort) {
 
+        if (!"latest".equals(sort) && !"earliest".equals(sort)) {
+            throw new BadRequestHandler(ErrorStatus.INVALID_TRIPPIECE_SORT_OPTION);
+        }
+
         String tokenWithoutBearer = token.substring(7);
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getTripPieceList(tokenWithoutBearer, sort);
 
@@ -41,6 +46,10 @@ public class TripPieceController {
     @GetMapping("/mytrippieces/memo")
     @Operation(summary = "지난 여행 조각(메모) API", description = "유저의 여행조각(메모, 이모지)을 정렬 기준에 따라 반환")
     public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getMemoListLatest(@RequestHeader("Authorization") String token, @RequestParam(value = "sort", defaultValue = "latest") String sort){
+        if (!"latest".equals(sort) && !"earliest".equals(sort)) {
+            throw new BadRequestHandler(ErrorStatus.INVALID_TRIPPIECE_SORT_OPTION);
+        }
+
         String tokenWithoutBearer = token.substring(7);
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getMemoList(tokenWithoutBearer, sort);
 
@@ -52,6 +61,10 @@ public class TripPieceController {
     @GetMapping("/mytrippieces/picture")
     @Operation(summary = "지난 여행 조각(사진) API", description = "유저의 여행조각(사진, 셀카)을 정렬 기준에 따라 반환")
     public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getPictureListLatest(@RequestHeader("Authorization") String token, @RequestParam(value = "sort", defaultValue = "latest") String sort) {
+        if (!"latest".equals(sort) && !"earliest".equals(sort)) {
+            throw new BadRequestHandler(ErrorStatus.INVALID_TRIPPIECE_SORT_OPTION);
+        }
+
         String tokenWithoutBearer = token.substring(7);
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getPictureList(tokenWithoutBearer, sort);
 
@@ -63,6 +76,10 @@ public class TripPieceController {
     @GetMapping("/mytrippieces/video")
     @Operation(summary = "지난 여행 조각(동영상) API", description = "유저의 여행조각(영상, '지금 어디에 있나요?')을 정렬 기준에 따라 반환")
     public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getVideoListLatest(@RequestHeader("Authorization") String token, @RequestParam(value = "sort", defaultValue = "latest") String sort){
+        if (!"latest".equals(sort) && !"earliest".equals(sort)) {
+            throw new BadRequestHandler(ErrorStatus.INVALID_TRIPPIECE_SORT_OPTION);
+        }
+
         String tokenWithoutBearer = token.substring(7);
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getVideoList(tokenWithoutBearer, sort);
 

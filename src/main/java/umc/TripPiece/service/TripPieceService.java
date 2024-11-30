@@ -13,7 +13,6 @@ import umc.TripPiece.domain.jwt.JWTUtil;
 import umc.TripPiece.repository.EmojiRepository;
 import umc.TripPiece.repository.PictureRepository;
 import umc.TripPiece.repository.TripPieceRepository;
-import umc.TripPiece.repository.UserRepository;
 import umc.TripPiece.repository.UuidRepository;
 import umc.TripPiece.repository.VideoRepository;
 import umc.TripPiece.web.dto.request.TripPieceRequestDto;
@@ -76,6 +75,7 @@ public class TripPieceService {
 
                 tripPieceListDto.setCategory(Category.PICTURE);
                 tripPieceListDto.setMediaUrl(pictures.get(randomIndex).getPictureUrl());
+                tripPieceListDto.setMemo(tripPiece.getDescription());
             }
             else if (category == Category.VIDEO || category == Category.WHERE)
             {
@@ -84,6 +84,7 @@ public class TripPieceService {
 
                 tripPieceListDto.setCategory(Category.VIDEO);
                 tripPieceListDto.setMediaUrl(video.getVideoUrl());
+                tripPieceListDto.setMemo(tripPiece.getDescription());
             }
 
             tripPieceListDto.setCreatedAt(tripPiece.getCreatedAt());
@@ -164,7 +165,7 @@ public class TripPieceService {
 
             tripPieceListDto.setCategory(Category.PICTURE);
             tripPieceListDto.setMediaUrl(pictures.get(randomIndex).getPictureUrl());
-
+            tripPieceListDto.setMemo(tripPiece.getDescription());
             tripPieceListDto.setCreatedAt(tripPiece.getCreatedAt());
             tripPieceListDto.setCountryName(country.getName());
             tripPieceListDto.setCityName(city.getName());
@@ -199,7 +200,7 @@ public class TripPieceService {
 
             tripPieceListDto.setCategory(Category.VIDEO);
             tripPieceListDto.setMediaUrl(video.getVideoUrl());
-
+            tripPieceListDto.setMemo(tripPiece.getDescription());
             tripPieceListDto.setCreatedAt(tripPiece.getCreatedAt());
             tripPieceListDto.setCountryName(country.getName());
             tripPieceListDto.setCityName(city.getName());
