@@ -12,6 +12,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import umc.TripPiece.apiPayload.code.status.ErrorStatus;
+import umc.TripPiece.apiPayload.exception.GeneralException;
+import umc.TripPiece.apiPayload.exception.handler.UserHandler;
 import umc.TripPiece.converter.UserConverter;
 import umc.TripPiece.domain.User;
 import umc.TripPiece.domain.jwt.JWTUtil;
@@ -118,13 +121,14 @@ public class UserController {
     @Operation(summary = "프로필 수정하기 API",
             description = "프로필 수정하기")
     public ApiResponse<UserResponseDto.UpdateResultDto> update(@RequestPart("info") @Valid UserRequestDto.UpdateDto request, @RequestHeader("Authorization") String token, @RequestPart(value = "profileImg", required = false) MultipartFile profileImg) {
-        String tokenWithoutBearer = token.substring(7);
-        User user = userService.update(request, tokenWithoutBearer, profileImg);
-
-        if (user != null) {
+        try {
+            String tokenWithoutBearer = token.substring(7);
+            User user = userService.update(request, tokenWithoutBearer, profileImg);
             return ApiResponse.onSuccess(UserConverter.toUpdateResultDto(user));
-        } else {
-            return ApiResponse.onFailure("400", "프로필 수정에 실패했습니다.", null);
+        } catch (GeneralException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UserHandler(ErrorStatus.PROFILE_UPDATE_FAILED);
         }
     }
 

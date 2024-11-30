@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import umc.TripPiece.apiPayload.code.status.ErrorStatus;
+import umc.TripPiece.apiPayload.exception.handler.UserHandler;
 import umc.TripPiece.aws.s3.AmazonS3Manager;
 import umc.TripPiece.converter.UserConverter;
 import umc.TripPiece.domain.Travel;
@@ -230,6 +232,7 @@ public class UserServiceImpl implements UserService{
 
     @Transactional
     public User update(UserRequestDto.UpdateDto request, String token, MultipartFile profileImg) {
+        final long MAX_UPLOAD_SIZE = 5 * 1024 * 1024;
 
         // 프로필 이미지 일련번호 생성
         String uuid = UUID.randomUUID().toString();
@@ -238,15 +241,23 @@ public class UserServiceImpl implements UserService{
 
         Long userId = jwtUtil.getUserIdFromToken(token);
         User user = userRepository.findById(userId).orElseThrow(() ->
-                new IllegalArgumentException("존재하지 않는 계정입니다.")
+                new UserHandler(ErrorStatus.USER_NOT_FOUND)
         );
 
         String profileImgUrl;
 
-        if(profileImg == null) {
-            profileImgUrl = user.getProfileImg();
+        if (profileImg != null) {
+            // 파일 크기 검사
+            if (profileImg.getSize() > MAX_UPLOAD_SIZE) {
+                throw new UserHandler(ErrorStatus.PAYLOAD_TOO_LARGE);
+            }
+            try {
+                profileImgUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), profileImg);
+            } catch (Exception e) {
+                throw new UserHandler(ErrorStatus.INVALID_PROFILE_IMAGE);
+            }
         } else {
-            profileImgUrl = s3Manager.uploadFile(s3Manager.generateTripPieceKeyName(savedUuid), profileImg);
+            profileImgUrl = user.getProfileImg();
         }
 
         if(request.getNickname() != null){
@@ -265,7 +276,6 @@ public class UserServiceImpl implements UserService{
         user.setProfileImg(profileImgUrl);
 
         return user;
-
     }
 
     @Override
