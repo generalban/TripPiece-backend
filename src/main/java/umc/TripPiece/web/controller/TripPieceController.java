@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.TripPiece.apiPayload.ApiResponse;
+import umc.TripPiece.apiPayload.code.status.ErrorStatus;
+import umc.TripPiece.apiPayload.exception.handler.NotFoundHandler;
 import umc.TripPiece.repository.TripPieceRepository;
 import umc.TripPiece.service.TripPieceService;
 import umc.TripPiece.web.dto.request.TripPieceRequestDto;
@@ -31,7 +33,7 @@ public class TripPieceController {
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getTripPieceList(tokenWithoutBearer, sort);
 
         if (tripPieceList == null || tripPieceList.isEmpty()) {
-            return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
+            throw new NotFoundHandler(ErrorStatus.NOT_FOUND_TRIPPIECE);
         }
         return ApiResponse.onSuccess(tripPieceList);
     }
@@ -43,7 +45,7 @@ public class TripPieceController {
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getMemoList(tokenWithoutBearer, sort);
 
         if (tripPieceList == null || tripPieceList.isEmpty())
-            return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
+            throw new NotFoundHandler(ErrorStatus.NOT_FOUND_TRIPPIECE);
         return ApiResponse.onSuccess(tripPieceList);
     }
 
@@ -54,7 +56,7 @@ public class TripPieceController {
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getPictureList(tokenWithoutBearer, sort);
 
         if (tripPieceList == null || tripPieceList.isEmpty())
-            return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
+            throw new NotFoundHandler(ErrorStatus.NOT_FOUND_TRIPPIECE);
         return ApiResponse.onSuccess(tripPieceList);
     }
 
@@ -65,7 +67,7 @@ public class TripPieceController {
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getVideoList(tokenWithoutBearer, sort);
 
         if (tripPieceList == null || tripPieceList.isEmpty())
-            return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
+            throw new NotFoundHandler(ErrorStatus.NOT_FOUND_TRIPPIECE);
         return ApiResponse.onSuccess(tripPieceList);
     }
 
@@ -74,7 +76,7 @@ public class TripPieceController {
     public ApiResponse<TripPieceResponseDto.getTripPieceDto> getTripPiece(@PathVariable("tripPieceId") Long tripPieceId){
         TripPieceResponseDto.getTripPieceDto response = tripPieceService.getTripPiece(tripPieceId);
         if (response == null)
-            return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
+            throw new NotFoundHandler(ErrorStatus.NOT_FOUND_TRIPPIECE);
         return ApiResponse.onSuccess(response);
     }
 
@@ -82,7 +84,7 @@ public class TripPieceController {
     @Operation(summary = "여행 조각 삭제 API", description = "tripPieceId를 입력 받아 해당 여행 조각을 삭제")
     public ApiResponse<Object> deleteTripPiece(@PathVariable("tripPieceId") Long tripPieceId){
         if (!tripPieceRepository.existsById(tripPieceId))
-            return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
+            throw new NotFoundHandler(ErrorStatus.NOT_FOUND_TRIPPIECE);
         else {
             tripPieceService.delete(tripPieceId);
             return ApiResponse.onSuccess(null);
