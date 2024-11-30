@@ -21,79 +21,49 @@ public class TripPieceController {
     private final TripPieceService tripPieceService;
     private final TripPieceRepository tripPieceRepository;
 
-    @GetMapping("/mytrippieces/all/latest")
-    @Operation(summary = "지난 여행 조각(전체, 최신순) API", description = "유저의 여행조각(전체)을 최신순으로 반환")
-    public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getTripPieceListLatest(@RequestHeader("Authorization") String token){
+    @GetMapping("/mytrippieces/all")
+    @Operation(summary = "지난 여행 조각(전체) API", description = "유저의 여행조각(전체)을 정렬 기준에 따라 반환")
+    public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getTripPieceList(
+            @RequestHeader("Authorization") String token,
+            @RequestParam(value = "sort", defaultValue = "latest") String sort) {
+
         String tokenWithoutBearer = token.substring(7);
-        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getTripPieceListLatest(tokenWithoutBearer);
+        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getTripPieceList(tokenWithoutBearer, sort);
+
+        if (tripPieceList == null || tripPieceList.isEmpty()) {
+            return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
+        }
+        return ApiResponse.onSuccess(tripPieceList);
+    }
+
+    @GetMapping("/mytrippieces/memo")
+    @Operation(summary = "지난 여행 조각(메모) API", description = "유저의 여행조각(메모, 이모지)을 정렬 기준에 따라 반환")
+    public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getMemoListLatest(@RequestHeader("Authorization") String token, @RequestParam(value = "sort", defaultValue = "latest") String sort){
+        String tokenWithoutBearer = token.substring(7);
+        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getMemoList(tokenWithoutBearer, sort);
+
         if (tripPieceList == null || tripPieceList.isEmpty())
             return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
         return ApiResponse.onSuccess(tripPieceList);
     }
 
-    @GetMapping("/mytrippieces/all/earliest")
-    @Operation(summary = "지난 여행 조각(전체, 오래된순) API", description = "유저의 여행조각(전체)을 오래된순으로 반환")
-    public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getTripPieceListEarliest(@RequestHeader("Authorization") String token){
+    @GetMapping("/mytrippieces/picture")
+    @Operation(summary = "지난 여행 조각(사진) API", description = "유저의 여행조각(사진, 셀카)을 정렬 기준에 따라 반환")
+    public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getPictureListLatest(@RequestHeader("Authorization") String token, @RequestParam(value = "sort", defaultValue = "latest") String sort) {
         String tokenWithoutBearer = token.substring(7);
-        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getTripPieceListEarliest(tokenWithoutBearer);
+        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getPictureList(tokenWithoutBearer, sort);
+
         if (tripPieceList == null || tripPieceList.isEmpty())
             return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
         return ApiResponse.onSuccess(tripPieceList);
     }
 
-    @GetMapping("/mytrippieces/memo/latest")
-    @Operation(summary = "지난 여행 조각(메모, 최신순) API", description = "유저의 여행조각(메모, 이모지)을 최신순으로 반환")
-    public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getMemoListLatest(@RequestHeader("Authorization") String token){
+    @GetMapping("/mytrippieces/video")
+    @Operation(summary = "지난 여행 조각(동영상) API", description = "유저의 여행조각(영상, '지금 어디에 있나요?')을 정렬 기준에 따라 반환")
+    public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getVideoListLatest(@RequestHeader("Authorization") String token, @RequestParam(value = "sort", defaultValue = "latest") String sort){
         String tokenWithoutBearer = token.substring(7);
-        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getMemoListLatest(tokenWithoutBearer);
-        if (tripPieceList == null || tripPieceList.isEmpty())
-            return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
-        return ApiResponse.onSuccess(tripPieceList);
-    }
+        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getVideoList(tokenWithoutBearer, sort);
 
-    @GetMapping("/mytrippieces/memo/earliest")
-    @Operation(summary = "지난 여행 조각(메모, 오래된순) API", description = "유저의 여행조각(메모, 이모지)을 오래된순으로 반환")
-    public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getMemoListEarliest(@RequestHeader("Authorization") String token){
-        String tokenWithoutBearer = token.substring(7);
-        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getMemoListEarliest(tokenWithoutBearer);
-        return ApiResponse.onSuccess(tripPieceList);
-    }
-
-    @GetMapping("/mytrippieces/picture/latest")
-    @Operation(summary = "지난 여행 조각(사진, 최신순) API", description = "유저의 여행조각(사진, 셀카)을 최신순으로 반환")
-    public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getPictureListLatest(@RequestHeader("Authorization") String token){
-        String tokenWithoutBearer = token.substring(7);
-        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getPictureListLatest(tokenWithoutBearer);
-        if (tripPieceList == null || tripPieceList.isEmpty())
-            return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
-        return ApiResponse.onSuccess(tripPieceList);
-    }
-
-    @GetMapping("/mytrippieces/picture/earliest")
-    @Operation(summary = "지난 여행 조각(사진, 오래된순) API", description = "유저의 여행조각(사진, 셀카)을 오래된순으로 반환")
-    public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getPictureListEarliest(@RequestHeader("Authorization") String token){
-        String tokenWithoutBearer = token.substring(7);
-        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getPictureListEarliest(tokenWithoutBearer);
-        if (tripPieceList == null || tripPieceList.isEmpty())
-            return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
-        return ApiResponse.onSuccess(tripPieceList);
-    }
-
-    @GetMapping("/mytrippieces/video/latest")
-    @Operation(summary = "지난 여행 조각(동영상, 최신순) API", description = "유저의 여행조각(영상, '지금 어디에 있나요?')을 최신순으로 반환")
-    public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getVideoListLatest(@RequestHeader("Authorization") String token){
-        String tokenWithoutBearer = token.substring(7);
-        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getVideoListLatest(tokenWithoutBearer);
-        if (tripPieceList == null || tripPieceList.isEmpty())
-            return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
-        return ApiResponse.onSuccess(tripPieceList);
-    }
-
-    @GetMapping("/mytrippieces/video/earliest")
-    @Operation(summary = "지난 여행 조각(동영상, 오래된순) API", description = "유저의 여행조각(영상, '지금 어디에 있나요?')을 오래된순으로 반환")
-    public ApiResponse<List<TripPieceResponseDto.TripPieceListDto>> getVideoListEarliest(@RequestHeader("Authorization") String token){
-        String tokenWithoutBearer = token.substring(7);
-        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = tripPieceService.getVideoListEarliest(tokenWithoutBearer);
         if (tripPieceList == null || tripPieceList.isEmpty())
             return ApiResponse.onFailure("400", "여행 조각이 존재하지 않습니다.", null);
         return ApiResponse.onSuccess(tripPieceList);

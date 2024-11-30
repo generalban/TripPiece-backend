@@ -37,11 +37,16 @@ public class TripPieceService {
     private final JWTUtil jwtUtil;
 
     @Transactional
-    public List<TripPieceResponseDto.TripPieceListDto> getTripPieceListLatest(String token) {
+    public List<TripPieceResponseDto.TripPieceListDto> getTripPieceList(String token, String sort) {
         Long userId = jwtUtil.getUserIdFromToken(token);
 
+        // 정렬 기준에 따라 데이터를 조회
+        List<TripPiece> tripPieces = "earliest".equalsIgnoreCase(sort)
+                ? tripPieceRepository.findByUserIdOrderByCreatedAtAsc(userId)
+                : tripPieceRepository.findByUserIdOrderByCreatedAtDesc(userId);
+
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
-        List<TripPiece> tripPieces = tripPieceRepository.findByUserIdOrderByCreatedAtDesc(userId);
+
         for (TripPiece tripPiece : tripPieces) {
             Travel travel = tripPiece.getTravel();
             City city = travel.getCity();
@@ -92,66 +97,15 @@ public class TripPieceService {
     }
 
     @Transactional
-    public List<TripPieceResponseDto.TripPieceListDto> getTripPieceListEarliest(String token) {
+    public List<TripPieceResponseDto.TripPieceListDto> getMemoList(String token, String sort) {
         Long userId = jwtUtil.getUserIdFromToken(token);
 
-        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
-        List<TripPiece> tripPieces = tripPieceRepository.findByUserIdOrderByCreatedAtAsc(userId);
-        for (TripPiece tripPiece : tripPieces) {
-            Travel travel = tripPiece.getTravel();
-            City city = travel.getCity();
-            Country country = city.getCountry();
-            Category category = tripPiece.getCategory();
-
-            TripPieceResponseDto.TripPieceListDto tripPieceListDto = new TripPieceResponseDto.TripPieceListDto();
-
-            if (category == Category.MEMO)
-            {
-                tripPieceListDto.setCategory(Category.MEMO);
-                tripPieceListDto.setMemo(tripPiece.getDescription());
-            }
-            else if (category == Category.EMOJI)
-            {
-                List<Emoji> emojis = tripPiece.getEmojis();
-
-                tripPieceListDto.setCategory(Category.MEMO);
-                tripPieceListDto.setMemo(emojis.get(0).getEmoji() + emojis.get(1).getEmoji() + emojis.get(2).getEmoji() + emojis.get(3).getEmoji());
-            }
-            else if (category == Category.PICTURE || category == Category.SELFIE)
-            {
-                // 여러개 사진이 있다면, 썸네일 랜덤
-                List<Picture> pictures = tripPiece.getPictures();
-                Random random = new Random();
-                int randomIndex = random.nextInt(pictures.size());
-
-                tripPieceListDto.setCategory(Category.PICTURE);
-                tripPieceListDto.setMediaUrl(pictures.get(randomIndex).getPictureUrl());
-            }
-            else if (category == Category.VIDEO || category == Category.WHERE)
-            {
-                List<Video> videos = tripPiece.getVideos();
-                Video video = videos.get(0);
-
-                tripPieceListDto.setCategory(Category.VIDEO);
-                tripPieceListDto.setMediaUrl(video.getVideoUrl());
-            }
-
-            tripPieceListDto.setCreatedAt(tripPiece.getCreatedAt());
-            tripPieceListDto.setCountryName(country.getName());
-            tripPieceListDto.setCityName(city.getName());
-
-            tripPieceList.add(tripPieceListDto);
-        }
-
-        return tripPieceList;
-    }
-
-    @Transactional
-    public List<TripPieceResponseDto.TripPieceListDto> getMemoListLatest(String token) {
-        Long userId = jwtUtil.getUserIdFromToken(token);
+        // 정렬 기준에 따라 데이터를 조회
+        List<TripPiece> tripPieces = "earliest".equalsIgnoreCase(sort)
+                ? tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtAsc(userId, Category.MEMO, Category.EMOJI)
+                : tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtDesc(userId, Category.MEMO, Category.EMOJI);
 
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
-        List<TripPiece> tripPieces = tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtDesc(userId, Category.MEMO, Category.EMOJI);
 
         for (TripPiece tripPiece : tripPieces) {
             Travel travel = tripPiece.getTravel();
@@ -185,82 +139,16 @@ public class TripPieceService {
     }
 
     @Transactional
-    public List<TripPieceResponseDto.TripPieceListDto> getMemoListEarliest(String token) {
+    public List<TripPieceResponseDto.TripPieceListDto> getPictureList(String token, String sort) {
         Long userId = jwtUtil.getUserIdFromToken(token);
 
-        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
-        List<TripPiece> tripPieces = tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtAsc(userId, Category.MEMO, Category.EMOJI);
+        // 정렬 기준에 따라 데이터를 조회
+        List<TripPiece> tripPieces = "earliest".equalsIgnoreCase(sort)
+                ? tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtAsc(userId, Category.PICTURE, Category.SELFIE)
+                : tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtDesc(userId, Category.PICTURE, Category.SELFIE);
 
-        for (TripPiece tripPiece : tripPieces) {
-            Travel travel = tripPiece.getTravel();
-            City city = travel.getCity();
-            Country country = city.getCountry();
-            Category category = tripPiece.getCategory();
-
-            TripPieceResponseDto.TripPieceListDto tripPieceListDto = new TripPieceResponseDto.TripPieceListDto();
-
-            tripPieceListDto.setCategory(Category.MEMO);
-
-            if (category == Category.MEMO)
-            {
-                tripPieceListDto.setMemo(tripPiece.getDescription());
-            }
-            else if (category == Category.EMOJI)
-            {
-                List<Emoji> emojis = tripPiece.getEmojis();
-
-                tripPieceListDto.setMemo(emojis.get(0).getEmoji() + emojis.get(1).getEmoji() + emojis.get(2).getEmoji() + emojis.get(3).getEmoji());
-            }
-
-            tripPieceListDto.setCreatedAt(tripPiece.getCreatedAt());
-            tripPieceListDto.setCountryName(country.getName());
-            tripPieceListDto.setCityName(city.getName());
-
-            tripPieceList.add(tripPieceListDto);
-        }
-
-        return tripPieceList;
-    }
-
-    @Transactional
-    public List<TripPieceResponseDto.TripPieceListDto> getPictureListLatest(String token) {
-        Long userId = jwtUtil.getUserIdFromToken(token);
 
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
-        List<TripPiece> tripPieces = tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtDesc(userId, Category.PICTURE, Category.SELFIE);
-
-        for (TripPiece tripPiece : tripPieces) {
-            Travel travel = tripPiece.getTravel();
-            City city = travel.getCity();
-            Country country = city.getCountry();
-
-            TripPieceResponseDto.TripPieceListDto tripPieceListDto = new TripPieceResponseDto.TripPieceListDto();
-
-            // 여러개 사진이 있다면, 썸네일 랜덤
-            List<Picture> pictures = tripPiece.getPictures();
-            Random random = new Random();
-            int randomIndex = random.nextInt(pictures.size());
-
-            tripPieceListDto.setCategory(Category.PICTURE);
-            tripPieceListDto.setMediaUrl(pictures.get(randomIndex).getPictureUrl());
-
-            tripPieceListDto.setCreatedAt(tripPiece.getCreatedAt());
-            tripPieceListDto.setCountryName(country.getName());
-            tripPieceListDto.setCityName(city.getName());
-
-            tripPieceList.add(tripPieceListDto);
-        }
-
-        return tripPieceList;
-    }
-
-
-    @Transactional
-    public List<TripPieceResponseDto.TripPieceListDto> getPictureListEarliest(String token) {
-        Long userId = jwtUtil.getUserIdFromToken(token);
-
-        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
-        List<TripPiece> tripPieces = tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtAsc(userId, Category.PICTURE, Category.SELFIE);
 
         for (TripPiece tripPiece : tripPieces) {
             Travel travel = tripPiece.getTravel();
@@ -288,41 +176,16 @@ public class TripPieceService {
     }
 
     @Transactional
-    public List<TripPieceResponseDto.TripPieceListDto> getVideoListLatest(String token) {
+    public List<TripPieceResponseDto.TripPieceListDto> getVideoList(String token, String sort) {
         Long userId = jwtUtil.getUserIdFromToken(token);
 
-        List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
-        List<TripPiece> tripPieces = tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtDesc(userId, Category.VIDEO, Category.WHERE);
+        // 정렬 기준에 따라 데이터를 조회
+        List<TripPiece> tripPieces = "earliest".equalsIgnoreCase(sort)
+                ? tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtAsc(userId, Category.VIDEO, Category.WHERE)
+                : tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtDesc(userId, Category.VIDEO, Category.WHERE);
 
-        for (TripPiece tripPiece : tripPieces) {
-            Travel travel = tripPiece.getTravel();
-            City city = travel.getCity();
-            Country country = city.getCountry();
-
-            TripPieceResponseDto.TripPieceListDto tripPieceListDto = new TripPieceResponseDto.TripPieceListDto();
-
-            List<Video> videos = tripPiece.getVideos();
-            Video video = videos.get(0);
-
-            tripPieceListDto.setCategory(Category.VIDEO);
-            tripPieceListDto.setMediaUrl(video.getVideoUrl());
-
-            tripPieceListDto.setCreatedAt(tripPiece.getCreatedAt());
-            tripPieceListDto.setCountryName(country.getName());
-            tripPieceListDto.setCityName(city.getName());
-
-            tripPieceList.add(tripPieceListDto);
-        }
-
-        return tripPieceList;
-    }
-
-    @Transactional
-    public List<TripPieceResponseDto.TripPieceListDto> getVideoListEarliest(String token) {
-        Long userId = jwtUtil.getUserIdFromToken(token);
 
         List<TripPieceResponseDto.TripPieceListDto> tripPieceList = new ArrayList<>();
-        List<TripPiece> tripPieces = tripPieceRepository.findByUserIdAndCategoryOrCategoryOrderByCreatedAtAsc(userId, Category.VIDEO, Category.WHERE);
 
         for (TripPiece tripPiece : tripPieces) {
             Travel travel = tripPiece.getTravel();
