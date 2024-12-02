@@ -16,7 +16,7 @@ jobs:
           distribution: 'adopt'
           java-version: '17'
 
-      # 소스 코드 체크아웃
+      # 소스 코드 체크아웃.
       - name: Checkout repository
         uses: actions/checkout@v2
 
