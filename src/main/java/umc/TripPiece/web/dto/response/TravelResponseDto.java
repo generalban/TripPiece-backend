@@ -105,11 +105,4 @@ public class TravelResponseDto {
         Integer videoNum;
     }
 
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class getPictureTripPieceDto {
-
-    }
 }

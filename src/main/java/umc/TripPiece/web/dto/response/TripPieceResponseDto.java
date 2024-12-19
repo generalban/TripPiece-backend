@@ -10,6 +10,20 @@ public class TripPieceResponseDto {
 
     @Builder
     @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TripPieceListDto {
+        Category category;
+        LocalDateTime createdAt;
+        String countryName;
+        String cityName;
+        String memo;
+        String mediaUrl;
+    }
+
+    @Builder
+    @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class getTripPieceDto {
