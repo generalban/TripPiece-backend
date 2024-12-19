@@ -295,11 +295,20 @@ public class TravelService {
         return TravelConverter.toOngoingTravelResultDto(travel, nickname, profileImg, countryName, dayCount);
     }
 
+    @Transactional
+    public List<TravelResponseDto.UpdatablePictureDto> getPictureResponses(Long travelId) {
+        Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new IllegalArgumentException("travel not found"));
+
+        return getPictures(travel).stream()
+                .map(TravelConverter::toUpdatablePictureDto)
+                .toList();
+    }
+
     private void setPictureThumbnail(Travel travel) {
         List<Picture> pictures = getPictures(travel);
 
         // 여행 종료 시 썸네일 랜덤 지정
-        while (!isThumbnailAvailable(travel)) {
+        while (isThumbnailAvailable(travel)) {
             int randomIndex = (int) (Math.random() * pictures.size());
             Picture picture = pictures.get(randomIndex);
             picture.setTravel_thumbnail(true);

@@ -195,5 +195,11 @@ public class TravelController {
         return ApiResponse.onSuccess(travel);
     }
 
+    @GetMapping("/mytravels/update/{travelId}")
+    @Operation(summary = "특정 여행기의 사진들을 모두 불러오는 API", description = "여행기 수정 시에 활용")
+    public ApiResponse<List<TravelResponseDto.UpdatablePictureDto>> getUpdatablePictures(@PathVariable("travelId") Long travelId) {
+        List<TravelResponseDto.UpdatablePictureDto> response = travelService.getPictureResponses(travelId);
+        return ApiResponse.onSuccess(response);
+    }
 
 }
