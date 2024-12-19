@@ -241,6 +241,8 @@ public class TravelService {
         Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new IllegalArgumentException("travel not found"));
         travel.setStatus(TravelStatus.COMPLETED);
         List<TripPiece> tripPieces = tripPieceRepository.findByTravelId(travelId);
+        setPictureThumbnail(travel);
+
         return TravelConverter.toTripSummary(travel, tripPieces);
     }
 
@@ -293,5 +295,38 @@ public class TravelService {
         return TravelConverter.toOngoingTravelResultDto(travel, nickname, profileImg, countryName, dayCount);
     }
 
+    private void setPictureThumbnail(Travel travel) {
+        List<Picture> pictures = getPictures(travel);
+
+        // 여행 종료 시 썸네일 랜덤 지정
+        while (!isThumbnailAvailable(travel)) {
+            int randomIndex = (int) (Math.random() * pictures.size());
+            Picture picture = pictures.get(randomIndex);
+            picture.setTravel_thumbnail(true);
+            pictures.remove(picture);
+        }
+    }
+
+
+    private boolean isThumbnailAvailable(Travel travel) {
+        List<Picture> pictures = getPictures(travel);
+
+        return pictures.stream()
+                .filter(Picture::getTravel_thumbnail)
+                .count() < 9;
+    }
+
+    private List<Picture> getPictures(Travel travel) {
+        List<Picture> pictures = new ArrayList<>();
+
+        travel.getTripPieces().stream()
+                .filter(tripPiece -> tripPiece.getCategory() == Category.PICTURE || tripPiece.getCategory() == Category.SELFIE)
+                .forEach(tripPiece -> {
+                    List<Picture> pictureList = tripPiece.getPictures();
+                    pictures.addAll(pictureList);
+                });
+
+        return pictures;
+    }
 
 }
