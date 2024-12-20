@@ -118,5 +118,12 @@ public class TravelConverter {
                 .build();
     }
 
+    public static TravelResponseDto.UpdatablePictureDto toUpdatablePictureDto(Picture picture) {
+        return TravelResponseDto.UpdatablePictureDto.builder()
+                .id(picture.getId())
+                .pictureUrl(picture.getPictureUrl())
+                .travel_thumbnail(picture.getTravel_thumbnail())
+                .build();
+    }
 
 }
