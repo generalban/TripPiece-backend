@@ -241,7 +241,7 @@ public class TravelService {
         Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new IllegalArgumentException("travel not found"));
         travel.setStatus(TravelStatus.COMPLETED);
         List<TripPiece> tripPieces = tripPieceRepository.findByTravelId(travelId);
-        setPictureThumbnail(travel);
+        initPicturesThumbnail(travel);
 
         return TravelConverter.toTripSummary(travel, tripPieces);
     }
@@ -326,7 +326,28 @@ public class TravelService {
         return TravelConverter.toUpdatablePictureDto(picture);
     }
 
-    private void setPictureThumbnail(Travel travel) {
+    @Transactional
+    public TravelResponseDto.UpdatablePictureDto setPictureThumbnail(Long pictureId, Integer index) {
+        Picture picture = pictureRepository.findById(pictureId).orElseThrow(() -> new IllegalArgumentException("picture not found"));
+
+        if (index < 1 || index > 9) throw new IllegalArgumentException("index 값은 1에서 9까지의 값이어야 합니다.");
+        if (isInvalidIndex(pictureId, index)) throw new IllegalArgumentException("해당 index에는 이미 썸네일이 지정되어 있습니다.");
+
+        picture.setThumbnail_index(index);
+        picture.setTravel_thumbnail(true);
+        return TravelConverter.toUpdatablePictureDto(picture);
+    }
+
+    private boolean isInvalidIndex(Long pictureId, Integer index) {
+        TripPiece tripPiece = pictureRepository.findById(pictureId).get().getTripPiece();
+        Travel travel = tripPiece.getTravel();
+
+        return getPictures(travel).stream()
+                .filter(picture -> picture.getTravel_thumbnail().equals(true))
+                .anyMatch(picture -> picture.getThumbnail_index().equals(index));
+    }
+
+    private void initPicturesThumbnail(Travel travel) {
         List<Picture> pictures = getPictures(travel);
         int thumbnailIndex = 1;
 

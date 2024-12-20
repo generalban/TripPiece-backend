@@ -123,6 +123,7 @@ public class TravelConverter {
                 .id(picture.getId())
                 .pictureUrl(picture.getPictureUrl())
                 .travel_thumbnail(picture.getTravel_thumbnail())
+                .thumbnail_index(picture.getThumbnail_index())
                 .build();
     }
 

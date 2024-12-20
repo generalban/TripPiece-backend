@@ -215,4 +215,11 @@ public class TravelController {
         TravelResponseDto.UpdatablePictureDto response = travelService.removeThumbnail(pictureId);
         return ApiResponse.onSuccess(response);
     }
+
+    @PostMapping("/mytravels/thumbnail/set/{pictureId}")
+    @Operation(summary = "특정 여행기에서 특정 사진을 썸네일로 설정하는 API", description = "index(1~9)를 입력받아 해당 자리에 썸네일 설정")
+    public ApiResponse<TravelResponseDto.UpdatablePictureDto> setThumbnailPicture(@PathVariable("pictureId") Long pictureId, Integer index) {
+        TravelResponseDto.UpdatablePictureDto response = travelService.setPictureThumbnail(pictureId, index);
+        return ApiResponse.onSuccess(response);
+    }
 }
