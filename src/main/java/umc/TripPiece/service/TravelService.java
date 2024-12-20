@@ -304,6 +304,16 @@ public class TravelService {
                 .toList();
     }
 
+    @Transactional
+    public List<TravelResponseDto.UpdatablePictureDto> getThumbnailPictures(Long travelId) {
+        Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new IllegalArgumentException("travel not found"));
+
+        return getPictures(travel).stream()
+                .filter(picture -> picture.getTravel_thumbnail().equals(true))
+                .map(TravelConverter::toUpdatablePictureDto)
+                .toList();
+    }
+
     private void setPictureThumbnail(Travel travel) {
         List<Picture> pictures = getPictures(travel);
 

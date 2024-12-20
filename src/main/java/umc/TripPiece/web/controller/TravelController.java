@@ -202,4 +202,11 @@ public class TravelController {
         return ApiResponse.onSuccess(response);
     }
 
+    @GetMapping("/mytravels/thumbnail/{travelId}")
+    @Operation(summary = "특정 여행기의 썸네일 사진들을 불러오는 API", description = "9개의 사진을 불러온다")
+    public ApiResponse<List<TravelResponseDto.UpdatablePictureDto>> getThumbnailPictures(@PathVariable("travelId") Long travelId) {
+        List<TravelResponseDto.UpdatablePictureDto> response = travelService.getThumbnailPictures(travelId);
+        return ApiResponse.onSuccess(response);
+    }
+
 }
