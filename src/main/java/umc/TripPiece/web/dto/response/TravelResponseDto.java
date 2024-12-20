@@ -113,5 +113,6 @@ public class TravelResponseDto {
         Long id;
         String pictureUrl;
         Boolean travel_thumbnail;
+        Integer thumbnail_index;
     }
 }

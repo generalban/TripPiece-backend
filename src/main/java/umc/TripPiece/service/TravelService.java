@@ -316,9 +316,20 @@ public class TravelService {
                 .toList();
     }
 
+    @Transactional
+    public TravelResponseDto.UpdatablePictureDto removeThumbnail(Long pictureId) {
+        Picture picture = pictureRepository.findById(pictureId).orElseThrow(() -> new IllegalArgumentException("picture not found"));
+
+        // index가 0이면 thumbnail 해제
+        picture.setThumbnail_index(0);
+        picture.setTravel_thumbnail(false);
+        return TravelConverter.toUpdatablePictureDto(picture);
+    }
+
     private void setPictureThumbnail(Travel travel) {
         List<Picture> pictures = getPictures(travel);
         int thumbnailIndex = 1;
+
         // 여행 종료 시 썸네일 랜덤 지정
         while (isThumbnailAvailable(travel)) {
             int randomIndex = (int) (Math.random() * pictures.size());
@@ -351,5 +362,4 @@ public class TravelService {
 
         return pictures;
     }
-
 }

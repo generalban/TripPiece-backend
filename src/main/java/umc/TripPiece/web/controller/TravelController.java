@@ -209,4 +209,10 @@ public class TravelController {
         return ApiResponse.onSuccess(response);
     }
 
+    @PostMapping("/mytravels/thumbnail/remove/{pictureId}")
+    @Operation(summary = "특정 여행기에서 썸네일로 설정된 사진을 해제하는 API", description = "썸네일에서 해제한다")
+    public ApiResponse<TravelResponseDto.UpdatablePictureDto> removeThumbnailPicture(@PathVariable("pictureId") Long pictureId) {
+        TravelResponseDto.UpdatablePictureDto response = travelService.removeThumbnail(pictureId);
+        return ApiResponse.onSuccess(response);
+    }
 }
