@@ -362,6 +362,9 @@ public class TravelService {
             picture.setThumbnail_index(thumbnailIndex);
             pictures.remove(picture);
             thumbnailIndex++;
+
+            // 사진이 9장보다 적을 때, 다 설정이 되면 메서드 종료
+            if (pictures.isEmpty()) return;
         }
     }
 
