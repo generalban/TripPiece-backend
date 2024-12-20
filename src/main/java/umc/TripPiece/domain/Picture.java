@@ -28,6 +28,11 @@ public class Picture extends BaseEntity {
     @Setter
     private Boolean travel_thumbnail;
 
+    @Column
+    @ColumnDefault("0")
+    @Setter
+    private Integer thumbnail_index;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trip_piece_id")
     private TripPiece tripPiece;
