@@ -320,7 +320,10 @@ public class TravelService {
     public TravelResponseDto.UpdatablePictureDto removeThumbnail(Long pictureId) {
         Picture picture = pictureRepository.findById(pictureId).orElseThrow(() -> new IllegalArgumentException("picture not found"));
 
-        // index가 0이면 thumbnail 해제
+        if (picture.getTravel_thumbnail().equals(false) && picture.getThumbnail_index() == 0)
+            throw new IllegalArgumentException("이미 썸네일이 해제되어있는 사진입니다.");
+
+        // index를 0으로 만들어 thumbnail 해제
         picture.setThumbnail_index(0);
         picture.setTravel_thumbnail(false);
         return TravelConverter.toUpdatablePictureDto(picture);
