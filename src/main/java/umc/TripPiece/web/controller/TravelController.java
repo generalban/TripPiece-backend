@@ -209,17 +209,11 @@ public class TravelController {
         return ApiResponse.onSuccess(response);
     }
 
-    @PostMapping("/mytravels/thumbnail/remove/{pictureId}")
-    @Operation(summary = "특정 여행기에서 썸네일로 설정된 사진을 해제하는 API", description = "썸네일에서 해제한다")
-    public ApiResponse<TravelResponseDto.UpdatablePictureDto> removeThumbnailPicture(@PathVariable("pictureId") Long pictureId) {
-        TravelResponseDto.UpdatablePictureDto response = travelService.removeThumbnail(pictureId);
+    @PostMapping("/mytravels/thumbnail/update/{travelId}")
+    @Operation(summary = "특정 여행기에서 썸네일을 편집하는 API", description = "리스트의 크기는 9이며, 썸네일에 표시될 사진의 id가 index 순서대로 정렬되어 있다. id값에 -1이 입력되면 썸네일을 제거한다")
+    public ApiResponse<List<TravelResponseDto.UpdatablePictureDto>> updateThumbnailPictures(@PathVariable("travelId") Long travelId, @RequestParam(name = "pictureIdList") List<Long> pictureIdList) {
+        List<TravelResponseDto.UpdatablePictureDto> response = travelService.updateThumbnail(travelId, pictureIdList);
         return ApiResponse.onSuccess(response);
     }
 
-    @PostMapping("/mytravels/thumbnail/set/{pictureId}")
-    @Operation(summary = "특정 여행기에서 특정 사진을 썸네일로 설정하는 API", description = "index(1~9)를 입력받아 해당 자리에 썸네일 설정")
-    public ApiResponse<TravelResponseDto.UpdatablePictureDto> setThumbnailPicture(@PathVariable("pictureId") Long pictureId, Integer index) {
-        TravelResponseDto.UpdatablePictureDto response = travelService.setPictureThumbnail(pictureId, index);
-        return ApiResponse.onSuccess(response);
-    }
 }

@@ -317,37 +317,66 @@ public class TravelService {
     }
 
     @Transactional
-    public TravelResponseDto.UpdatablePictureDto removeThumbnail(Long pictureId) {
-        Picture picture = pictureRepository.findById(pictureId).orElseThrow(() -> new IllegalArgumentException("picture not found"));
+    public List<TravelResponseDto.UpdatablePictureDto> updateThumbnail(Long travelId, List<Long> pictureIdList) {
+        if (pictureIdList.size() != 9) throw new IllegalArgumentException("리스트의 크기는 9여야 합니다.");
 
-        if (picture.getTravel_thumbnail().equals(false) && picture.getThumbnail_index() == 0)
-            throw new IllegalArgumentException("이미 썸네일이 해제되어있는 사진입니다.");
+        Travel travel = travelRepository.findById(travelId).get();
 
-        // index를 0으로 만들어 thumbnail 해제
-        picture.setThumbnail_index(0);
-        picture.setTravel_thumbnail(false);
-        return TravelConverter.toUpdatablePictureDto(picture);
-    }
+        List<Picture> pictures = pictureIdList.stream()
+                .map(id -> {
+                    // id = -1이면 null 객체를 담음
+                    if (id == -1) return null;
 
-    @Transactional
-    public TravelResponseDto.UpdatablePictureDto setPictureThumbnail(Long pictureId, Integer index) {
-        Picture picture = pictureRepository.findById(pictureId).orElseThrow(() -> new IllegalArgumentException("picture not found"));
+                    Picture picture = pictureRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(String.format("사진을 찾을 수 없습니다. (id = %d)", id)));
+                    if (!getPictures(travel).contains(picture)) throw new IllegalArgumentException("해당 여행기에 존재하지 않는 사진입니다.");
 
-        if (index < 1 || index > 9) throw new IllegalArgumentException("index 값은 1에서 9까지의 값이어야 합니다.");
-        if (isInvalidIndex(pictureId, index)) throw new IllegalArgumentException("해당 index에는 이미 썸네일이 지정되어 있습니다.");
+                    return picture;
+                })
+                .toList();
 
-        picture.setThumbnail_index(index);
-        picture.setTravel_thumbnail(true);
-        return TravelConverter.toUpdatablePictureDto(picture);
-    }
+        for (int i = 0; i < 9; i++) {
+            int temp = i;
 
-    private boolean isInvalidIndex(Long pictureId, Integer index) {
-        TripPiece tripPiece = pictureRepository.findById(pictureId).get().getTripPiece();
-        Travel travel = tripPiece.getTravel();
+            // null 객체라면 썸네일 삭제 로직 수행
+            if (pictures.get(temp) == null) {
 
-        return getPictures(travel).stream()
-                .filter(picture -> picture.getTravel_thumbnail().equals(true))
-                .anyMatch(picture -> picture.getThumbnail_index().equals(index));
+                Picture originPicture = getPictures(travel).stream()
+                        .filter(picture -> picture.getThumbnail_index().equals(temp + 1))
+                        .findFirst().orElse(null);
+
+                // 기존의 사진을 썸네일에서 해제
+                if (originPicture != null) {
+                    originPicture.setTravel_thumbnail(false);
+                    originPicture.setThumbnail_index(0);
+                }
+                continue;
+            }
+
+            // 기존의 사진
+            Picture originPicture = getPictures(travel).stream()
+                    .filter(picture -> picture.getThumbnail_index().equals(temp + 1))
+                    .findFirst().orElse(null);
+
+            // 새로 설정할 사진
+            Picture newPicture = pictures.get(i);
+
+            // 같은 객체이면 해당 위치의 썸네일 유지
+            if (originPicture != null && originPicture.equals(newPicture)) continue;
+
+            // 다른 객체이면 기존의 사진을 썸네일에서 해제
+            if (originPicture != null) {
+                originPicture.setTravel_thumbnail(false);
+                originPicture.setThumbnail_index(0);
+            }
+            // 다른 객체이면 새로운 사진을 썸네일로 설정
+            newPicture.setTravel_thumbnail(true);
+            newPicture.setThumbnail_index(temp + 1);
+        }
+
+        return pictures.stream()
+                .filter(Objects::nonNull)
+                .map(TravelConverter::toUpdatablePictureDto)
+                .toList();
     }
 
     private void initPicturesThumbnail(Travel travel) {
@@ -367,7 +396,6 @@ public class TravelService {
             if (pictures.isEmpty()) return;
         }
     }
-
 
     private boolean isThumbnailAvailable(Travel travel) {
         List<Picture> pictures = getPictures(travel);
