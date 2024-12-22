@@ -104,6 +104,7 @@ public class TravelConverter {
 
     public static TravelResponseDto.getOngoingTravelResultDto toOngoingTravelResultDto(Travel travel, String nickname, String profileImg, String countryName, Long dayCount) {
         return TravelResponseDto.getOngoingTravelResultDto.builder()
+                .id(travel.getId())
                 .profileImg(profileImg)
                 .nickname(nickname)
                 .title(travel.getTitle())
