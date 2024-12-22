@@ -320,7 +320,7 @@ public class TravelService {
     public List<TravelResponseDto.UpdatablePictureDto> updateThumbnail(Long travelId, List<Long> pictureIdList) {
         if (pictureIdList.size() != 9) throw new IllegalArgumentException("리스트의 크기는 9여야 합니다.");
 
-        Travel travel = travelRepository.findById(travelId).get();
+        Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 여행기입니다."));
 
         List<Picture> pictures = pictureIdList.stream()
                 .map(id -> {
@@ -328,33 +328,18 @@ public class TravelService {
                     if (id == -1) return null;
 
                     Picture picture = pictureRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(String.format("사진을 찾을 수 없습니다. (id = %d)", id)));
-                    if (!getPictures(travel).contains(picture)) throw new IllegalArgumentException("해당 여행기에 존재하지 않는 사진입니다.");
+                    if (!getPictures(travel).contains(picture)) throw new IllegalArgumentException(String.format("해당 여행기에 존재하지 않는 사진입니다. (id = %d)", picture.getId()));
 
                     return picture;
                 })
                 .toList();
 
         for (int i = 0; i < 9; i++) {
-            int temp = i;
-
-            // null 객체라면 썸네일 삭제 로직 수행
-            if (pictures.get(temp) == null) {
-
-                Picture originPicture = getPictures(travel).stream()
-                        .filter(picture -> picture.getThumbnail_index().equals(temp + 1))
-                        .findFirst().orElse(null);
-
-                // 기존의 사진을 썸네일에서 해제
-                if (originPicture != null) {
-                    originPicture.setTravel_thumbnail(false);
-                    originPicture.setThumbnail_index(0);
-                }
-                continue;
-            }
+            int tempI = i;
 
             // 기존의 사진
             Picture originPicture = getPictures(travel).stream()
-                    .filter(picture -> picture.getThumbnail_index().equals(temp + 1))
+                    .filter(picture -> picture.getThumbnail_index().equals(tempI + 1))
                     .findFirst().orElse(null);
 
             // 새로 설정할 사진
@@ -363,14 +348,20 @@ public class TravelService {
             // 같은 객체이면 해당 위치의 썸네일 유지
             if (originPicture != null && originPicture.equals(newPicture)) continue;
 
-            // 다른 객체이면 기존의 사진을 썸네일에서 해제
+            // 기존의 사진을 썸네일에서 해제
             if (originPicture != null) {
                 originPicture.setTravel_thumbnail(false);
                 originPicture.setThumbnail_index(0);
             }
-            // 다른 객체이면 새로운 사진을 썸네일로 설정
+
+            // 새 사진이 null 객체라면 해제 후 로직 종료
+            if (newPicture == null) {
+                continue;
+            }
+
+            // 새 사진이 다른 객체이면 썸네일로 지정
             newPicture.setTravel_thumbnail(true);
-            newPicture.setThumbnail_index(temp + 1);
+            newPicture.setThumbnail_index(i + 1);
         }
 
         return pictures.stream()
