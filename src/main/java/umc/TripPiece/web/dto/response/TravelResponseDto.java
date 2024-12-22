@@ -105,4 +105,14 @@ public class TravelResponseDto {
         Integer videoNum;
     }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdatablePictureDto {
+        Long id;
+        String pictureUrl;
+        Boolean travel_thumbnail;
+        Integer thumbnail_index;
+    }
 }
