@@ -92,6 +92,7 @@ public class TravelResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class getOngoingTravelResultDto {
+        Long id;
         String profileImg;
         String nickname;
         String title;
