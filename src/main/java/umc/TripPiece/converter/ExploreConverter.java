@@ -26,4 +26,14 @@ public class ExploreConverter {
                 .nickname(user.getNickname())
                 .build();
     }
+
+    public static ExploreResponseDto.PopularCitiesDto toPopularCitiesDto(City city){
+        return ExploreResponseDto.PopularCitiesDto.builder()
+                .id(city.getId())
+                .city(city.getName())
+                .country(city.getCountry().getName())
+                .thumbnail(city.getCityImage())
+                .count(city.getLogCount())
+                .build();
+    }
 }

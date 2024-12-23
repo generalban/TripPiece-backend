@@ -30,4 +30,14 @@ public class ExploreController {
      }
         return ApiResponse.onSuccess(travels);
     }
+
+    @GetMapping("/popular")
+    @Operation(summary = "요즘 떠오르는 도시 API", description = "도시별 여행기순 내림차순")
+    public ApiResponse<List<ExploreResponseDto.PopularCitiesDto>> getPopularCities(){
+        List<ExploreResponseDto.PopularCitiesDto> cities = exploreService.getCitiesByTravelCount();
+        if(cities.isEmpty()){
+            return ApiResponse.onFailure("400", "생성된 여행기 없음.", null);
+        }
+        return ApiResponse.onSuccess(cities);
+    }
 }

@@ -42,5 +42,11 @@ public class ExploreService {
     return travels.stream().distinct().map(ExploreConverter::toExploreListDto).toList();
     }
 
+    @Transactional
+    public List<ExploreResponseDto.PopularCitiesDto> getCitiesByTravelCount() {
+       List<City> cities = cityRepository.findAllByOrderByLogCountDesc();
+       return cities.stream().map(ExploreConverter::toPopularCitiesDto).toList();
+    }
+
 
 }
