@@ -31,19 +31,16 @@ public class ExploreService {
     public List<ExploreResponseDto.ExploreListDto> searchTravels(String query){
         List<City> cities = cityRepository.findByNameContainingIgnoreCase(query);
         List<Country> countries = countryRepository.findByNameContainingIgnoreCase(query);
-
     Set<Long> cityIds = new HashSet<>();
-
     cities.forEach(city -> cityIds.add(city.getId()));
 
         countries.forEach(country -> {
             List<City> citiesInCountry = cityRepository.findByCountryId(country.getId());
             citiesInCountry.forEach(city -> cityIds.add(city.getId()));
         });
-
     List<Travel> travels = travelRepository.findByCityIdInAndTravelOpenTrue(new ArrayList<>(cityIds));
-
     return travels.stream().distinct().map(ExploreConverter::toExploreListDto).toList();
-
     }
+
+
 }

@@ -240,6 +240,10 @@ public class TravelService {
     public TravelResponseDto.TripSummaryDto endTravel(Long travelId) {
         Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new IllegalArgumentException("travel not found"));
         travel.setStatus(TravelStatus.COMPLETED);
+
+        City city = travel.getCity();
+        city.setLogCount(city.getLogCount() + 1);
+
         List<TripPiece> tripPieces = tripPieceRepository.findByTravelId(travelId);
         initPicturesThumbnail(travel);
 

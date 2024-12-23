@@ -22,8 +22,11 @@ public class City {
 
     private String name;
     private String comment;
+    private String cityImage;
+
     @Setter
-    private Long logCount;
+    @Column(name = "log_count", nullable = false, columnDefinition = "BIGINT DEFAULT 0")
+    private Long logCount = 0L;
 
     @OneToMany(mappedBy = "city")
     private List<Travel> travels = new ArrayList<>();
