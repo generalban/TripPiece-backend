@@ -211,7 +211,6 @@ public class TravelService {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("user not found"));
 
         City city = cityRepository.findByNameContainingIgnoreCase(request.getCityName()).stream().findFirst().orElseThrow(() -> new IllegalArgumentException("city not found"));
-        city.setLogCount(city.getLogCount() + 1);
 
         if (request.getStartDate().isAfter(request.getEndDate())) {
             throw new IllegalArgumentException("Start date cannot be after end date.");
@@ -240,6 +239,10 @@ public class TravelService {
     public TravelResponseDto.TripSummaryDto endTravel(Long travelId) {
         Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new IllegalArgumentException("travel not found"));
         travel.setStatus(TravelStatus.COMPLETED);
+
+        City city = travel.getCity();
+        city.setLogCount(city.getLogCount() + 1);
+
         List<TripPiece> tripPieces = tripPieceRepository.findByTravelId(travelId);
         initPicturesThumbnail(travel);
 

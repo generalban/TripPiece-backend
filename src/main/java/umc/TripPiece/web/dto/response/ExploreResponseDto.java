@@ -26,9 +26,20 @@ public class ExploreResponseDto {
         private String countryName;
         private TravelStatus status;
         private String countryImage;
-
         private Long userId;
         private String profileImg;
         private String nickname;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PopularCitiesDto {
+        private Long id;
+        private String city;
+        private String country;
+        private String thumbnail;
+        private Long count;
     }
 }
