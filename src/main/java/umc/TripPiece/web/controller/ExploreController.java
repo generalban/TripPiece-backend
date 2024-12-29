@@ -22,9 +22,8 @@ public class ExploreController {
     private final ExploreService exploreService;
     @GetMapping("/search")
     @Operation(summary = "도시, 국가 검색 API", description = "도시, 국가 검색")
-    public ApiResponse<List<ExploreResponseDto.ExploreListDto>> getSearchedTravelList(@RequestParam String query) {
-     List<ExploreResponseDto.ExploreListDto> travels = exploreService.searchTravels(query);
-
+    public ApiResponse<List<ExploreResponseDto.ExploreListDto>> getSearchedTravelList(@RequestParam String query, @RequestParam(defaultValue = "latest") String sort) {
+     List<ExploreResponseDto.ExploreListDto> travels = exploreService.searchTravels(query, sort);
      if(travels.isEmpty()){
          return ApiResponse.onFailure("400", "생성된 여행기 없음.", null);
      }
