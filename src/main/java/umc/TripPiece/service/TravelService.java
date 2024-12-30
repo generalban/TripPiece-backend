@@ -211,7 +211,6 @@ public class TravelService {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("user not found"));
 
         City city = cityRepository.findByNameContainingIgnoreCase(request.getCityName()).stream().findFirst().orElseThrow(() -> new IllegalArgumentException("city not found"));
-        city.setLogCount(city.getLogCount() + 1);
 
         if (request.getStartDate().isAfter(request.getEndDate())) {
             throw new IllegalArgumentException("Start date cannot be after end date.");
@@ -240,7 +239,13 @@ public class TravelService {
     public TravelResponseDto.TripSummaryDto endTravel(Long travelId) {
         Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new IllegalArgumentException("travel not found"));
         travel.setStatus(TravelStatus.COMPLETED);
+
+        City city = travel.getCity();
+        city.setLogCount(city.getLogCount() + 1);
+
         List<TripPiece> tripPieces = tripPieceRepository.findByTravelId(travelId);
+        initPicturesThumbnail(travel);
+
         return TravelConverter.toTripSummary(travel, tripPieces);
     }
 
@@ -293,5 +298,117 @@ public class TravelService {
         return TravelConverter.toOngoingTravelResultDto(travel, nickname, profileImg, countryName, dayCount);
     }
 
+    @Transactional
+    public List<TravelResponseDto.UpdatablePictureDto> getPictureResponses(Long travelId) {
+        Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new IllegalArgumentException("travel not found"));
 
+        return getPictures(travel).stream()
+                .map(TravelConverter::toUpdatablePictureDto)
+                .toList();
+    }
+
+    @Transactional
+    public List<TravelResponseDto.UpdatablePictureDto> getThumbnailPictures(Long travelId) {
+        Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new IllegalArgumentException("travel not found"));
+
+        // index 순으로 List 반환
+        return getPictures(travel).stream()
+                .filter(picture -> picture.getTravel_thumbnail().equals(true))
+                .sorted(Comparator.comparingInt(Picture::getThumbnail_index))
+                .map(TravelConverter::toUpdatablePictureDto)
+                .toList();
+    }
+
+    @Transactional
+    public List<TravelResponseDto.UpdatablePictureDto> updateThumbnail(Long travelId, List<Long> pictureIdList) {
+        if (pictureIdList.size() != 9) throw new IllegalArgumentException("리스트의 크기는 9여야 합니다.");
+
+        Travel travel = travelRepository.findById(travelId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 여행기입니다."));
+
+        List<Picture> pictures = pictureIdList.stream()
+                .map(id -> {
+                    // id = -1이면 null 객체를 담음
+                    if (id == -1) return null;
+
+                    Picture picture = pictureRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(String.format("사진을 찾을 수 없습니다. (id = %d)", id)));
+                    if (!getPictures(travel).contains(picture)) throw new IllegalArgumentException(String.format("해당 여행기에 존재하지 않는 사진입니다. (id = %d)", picture.getId()));
+
+                    return picture;
+                })
+                .toList();
+
+        for (int i = 0; i < 9; i++) {
+            int tempI = i;
+
+            // 기존의 사진
+            Picture originPicture = getPictures(travel).stream()
+                    .filter(picture -> picture.getThumbnail_index().equals(tempI + 1))
+                    .findFirst().orElse(null);
+
+            // 새로 설정할 사진
+            Picture newPicture = pictures.get(i);
+
+            // 같은 객체이면 해당 위치의 썸네일 유지
+            if (originPicture != null && originPicture.equals(newPicture)) continue;
+
+            // 기존의 사진을 썸네일에서 해제
+            if (originPicture != null) {
+                originPicture.setTravel_thumbnail(false);
+                originPicture.setThumbnail_index(0);
+            }
+
+            // 새 사진이 null 객체라면 해제 후 로직 종료
+            if (newPicture == null) {
+                continue;
+            }
+
+            // 새 사진이 다른 객체이면 썸네일로 지정
+            newPicture.setTravel_thumbnail(true);
+            newPicture.setThumbnail_index(i + 1);
+        }
+
+        return pictures.stream()
+                .filter(Objects::nonNull)
+                .map(TravelConverter::toUpdatablePictureDto)
+                .toList();
+    }
+
+    private void initPicturesThumbnail(Travel travel) {
+        List<Picture> pictures = getPictures(travel);
+        int thumbnailIndex = 1;
+
+        // 여행 종료 시 썸네일 랜덤 지정
+        while (isThumbnailAvailable(travel)) {
+            int randomIndex = (int) (Math.random() * pictures.size());
+            Picture picture = pictures.get(randomIndex);
+            picture.setTravel_thumbnail(true);
+            picture.setThumbnail_index(thumbnailIndex);
+            pictures.remove(picture);
+            thumbnailIndex++;
+
+            // 사진이 9장보다 적을 때, 다 설정이 되면 메서드 종료
+            if (pictures.isEmpty()) return;
+        }
+    }
+
+    private boolean isThumbnailAvailable(Travel travel) {
+        List<Picture> pictures = getPictures(travel);
+
+        return pictures.stream()
+                .filter(Picture::getTravel_thumbnail)
+                .count() < 9;
+    }
+
+    private List<Picture> getPictures(Travel travel) {
+        List<Picture> pictures = new ArrayList<>();
+
+        travel.getTripPieces().stream()
+                .filter(tripPiece -> tripPiece.getCategory() == Category.PICTURE || tripPiece.getCategory() == Category.SELFIE)
+                .forEach(tripPiece -> {
+                    List<Picture> pictureList = tripPiece.getPictures();
+                    pictures.addAll(pictureList);
+                });
+
+        return pictures;
+    }
 }

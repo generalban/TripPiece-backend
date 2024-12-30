@@ -195,5 +195,25 @@ public class TravelController {
         return ApiResponse.onSuccess(travel);
     }
 
+    @GetMapping("/mytravels/update/{travelId}")
+    @Operation(summary = "특정 여행기의 사진들을 모두 불러오는 API", description = "여행기 수정 시에 활용")
+    public ApiResponse<List<TravelResponseDto.UpdatablePictureDto>> getUpdatablePictures(@PathVariable("travelId") Long travelId) {
+        List<TravelResponseDto.UpdatablePictureDto> response = travelService.getPictureResponses(travelId);
+        return ApiResponse.onSuccess(response);
+    }
+
+    @GetMapping("/mytravels/thumbnail/{travelId}")
+    @Operation(summary = "특정 여행기의 썸네일 사진들을 불러오는 API", description = "9개의 사진을 불러온다")
+    public ApiResponse<List<TravelResponseDto.UpdatablePictureDto>> getThumbnailPictures(@PathVariable("travelId") Long travelId) {
+        List<TravelResponseDto.UpdatablePictureDto> response = travelService.getThumbnailPictures(travelId);
+        return ApiResponse.onSuccess(response);
+    }
+
+    @PostMapping("/mytravels/thumbnail/update/{travelId}")
+    @Operation(summary = "특정 여행기에서 썸네일을 편집하는 API", description = "리스트의 크기는 9이며, 썸네일에 표시될 사진의 id가 index 순서대로 정렬되어 있다. id값에 -1이 입력되면 썸네일을 제거한다")
+    public ApiResponse<List<TravelResponseDto.UpdatablePictureDto>> updateThumbnailPictures(@PathVariable("travelId") Long travelId, @RequestParam(name = "pictureIdList") List<Long> pictureIdList) {
+        List<TravelResponseDto.UpdatablePictureDto> response = travelService.updateThumbnail(travelId, pictureIdList);
+        return ApiResponse.onSuccess(response);
+    }
 
 }

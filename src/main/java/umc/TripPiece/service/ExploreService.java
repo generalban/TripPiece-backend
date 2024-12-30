@@ -28,22 +28,33 @@ public class ExploreService {
     private final TravelRepository travelRepository;
 
     @Transactional
-    public List<ExploreResponseDto.ExploreListDto> searchTravels(String query){
+    public List<ExploreResponseDto.ExploreListDto> searchTravels(String query, String sort){
         List<City> cities = cityRepository.findByNameContainingIgnoreCase(query);
         List<Country> countries = countryRepository.findByNameContainingIgnoreCase(query);
-
-    Set<Long> cityIds = new HashSet<>();
-
-    cities.forEach(city -> cityIds.add(city.getId()));
+        Set<Long> cityIds = new HashSet<>();
+        cities.forEach(city -> cityIds.add(city.getId()));
 
         countries.forEach(country -> {
             List<City> citiesInCountry = cityRepository.findByCountryId(country.getId());
             citiesInCountry.forEach(city -> cityIds.add(city.getId()));
         });
 
-    List<Travel> travels = travelRepository.findByCityIdInAndTravelOpenTrue(new ArrayList<>(cityIds));
-
-    return travels.stream().distinct().map(ExploreConverter::toExploreListDto).toList();
-
+        List<Travel> travels;
+        if(sort.equals("latest")) {
+            travels = travelRepository.findByCityIdInAndTravelOpenTrueOrderByCreatedAtDesc(new ArrayList<>(cityIds));
+        } else if (sort.equals("oldest")) {
+            travels = travelRepository.findByCityIdInAndTravelOpenTrueOrderByCreatedAtAsc(new ArrayList<>(cityIds));
+        } else {
+            throw new IllegalArgumentException("파라미터 값이 잘못 되었습니다.");
+        }
+        return travels.stream().distinct().map(ExploreConverter::toExploreListDto).toList();
     }
+
+    @Transactional
+    public List<ExploreResponseDto.PopularCitiesDto> getCitiesByTravelCount() {
+       List<City> cities = cityRepository.findAllByOrderByLogCountDesc();
+       return cities.stream().map(ExploreConverter::toPopularCitiesDto).toList();
+    }
+
+
 }

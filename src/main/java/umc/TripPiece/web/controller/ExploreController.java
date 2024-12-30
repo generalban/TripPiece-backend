@@ -22,12 +22,21 @@ public class ExploreController {
     private final ExploreService exploreService;
     @GetMapping("/search")
     @Operation(summary = "도시, 국가 검색 API", description = "도시, 국가 검색")
-    public ApiResponse<List<ExploreResponseDto.ExploreListDto>> getSearchedTravelList(@RequestParam String query) {
-     List<ExploreResponseDto.ExploreListDto> travels = exploreService.searchTravels(query);
-
+    public ApiResponse<List<ExploreResponseDto.ExploreListDto>> getSearchedTravelList(@RequestParam String query, @RequestParam(defaultValue = "latest") String sort) {
+     List<ExploreResponseDto.ExploreListDto> travels = exploreService.searchTravels(query, sort);
      if(travels.isEmpty()){
          return ApiResponse.onFailure("400", "생성된 여행기 없음.", null);
      }
         return ApiResponse.onSuccess(travels);
+    }
+
+    @GetMapping("/popular")
+    @Operation(summary = "요즘 떠오르는 도시 API", description = "도시별 여행기순 내림차순")
+    public ApiResponse<List<ExploreResponseDto.PopularCitiesDto>> getPopularCities(){
+        List<ExploreResponseDto.PopularCitiesDto> cities = exploreService.getCitiesByTravelCount();
+        if(cities.isEmpty()){
+            return ApiResponse.onFailure("400", "생성된 여행기 없음.", null);
+        }
+        return ApiResponse.onSuccess(cities);
     }
 }

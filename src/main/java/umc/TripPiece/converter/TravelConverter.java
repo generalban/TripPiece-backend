@@ -104,6 +104,7 @@ public class TravelConverter {
 
     public static TravelResponseDto.getOngoingTravelResultDto toOngoingTravelResultDto(Travel travel, String nickname, String profileImg, String countryName, Long dayCount) {
         return TravelResponseDto.getOngoingTravelResultDto.builder()
+                .id(travel.getId())
                 .profileImg(profileImg)
                 .nickname(nickname)
                 .title(travel.getTitle())
@@ -118,5 +119,13 @@ public class TravelConverter {
                 .build();
     }
 
+    public static TravelResponseDto.UpdatablePictureDto toUpdatablePictureDto(Picture picture) {
+        return TravelResponseDto.UpdatablePictureDto.builder()
+                .id(picture.getId())
+                .pictureUrl(picture.getPictureUrl())
+                .travel_thumbnail(picture.getTravel_thumbnail())
+                .thumbnail_index(picture.getThumbnail_index())
+                .build();
+    }
 
 }
